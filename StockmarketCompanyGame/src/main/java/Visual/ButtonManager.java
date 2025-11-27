@@ -1,6 +1,7 @@
 package Visual;
 
 import GameLogic.Company;
+import GameLogic.ErrorMessageHandler;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
@@ -9,6 +10,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class ButtonManager {
+	private ErrorMessageHandler errorMessage = new ErrorMessageHandler();
+	
 	private Button resources = new Button("Resources");
 	private Button listEmployees = new Button("List Employees");
 	private Button nextCycle = new Button("Next Cycle"); 
@@ -38,13 +41,20 @@ public class ButtonManager {
 	
 	public void action(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Company company) {
 		startButton.setOnAction(event -> {
+			boolean errorOccured = false;
 			if(visual.getInsertName().getText().isBlank()) {
-				return;
+				errorMessage.errorMessageText(visual.getInsertName(), vBox);
+				errorOccured = true;
 			}
-			if(visual.getSelectCompanyType() == null) {
-				return;
+			if(visual.getSelectCompanyType().getValue() == null) {
+				errorMessage.errorMessageComboBox(visual.getSelectCompanyType(), vBox);
+				errorOccured = true;
 			}
-			if(visual.getSelectCompanySpecification() == null) {
+			if(visual.getSelectCompanySpecification().getValue() == null) {
+				errorMessage.errorMessageComboBox(visual.getSelectCompanySpecification(), vBox);
+				errorOccured = true;
+			}
+			if(errorOccured) {
 				return;
 			}
 			
@@ -80,6 +90,19 @@ public class ButtonManager {
 			height = (amount + visual.getAmount()) * 20 + 10;
 			System.out.println(height);
 		});
+		visual.getInsertName().setOnMouseClicked(event ->{
+			errorMessage.errorMessageHandlerText(visual.getInsertName(), vBox);
+		});
+		visual.getSelectCompanyType().setOnMouseClicked(event ->{
+			errorMessage.errorMessageHandlerComboBox(visual.getSelectCompanyType(), vBox);
+		});
+		visual.getSelectCompanySpecification().setOnMouseClicked(event ->{
+			errorMessage.errorMessageHandlerComboBox(visual.getSelectCompanySpecification(), vBox);
+		});
+	}
+	
+	public void errorHandlingTextFieldDelete() {
+		
 	}
 	
 	private void startUpMain(VBox vBox, VisualElementsHolder visual,Company company) {
