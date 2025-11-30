@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 public class ErrorMessageHandler {
 	private ArrayList<Boolean> errorRecieved = new ArrayList<>();
 	//Adds the error Label for a ComboBox
-	public void errorMessageComboBox(ComboBox comboBox, VBox vBox) {
+	public void errorMessageComboBox(ComboBox<String> comboBox, VBox vBox) {
 		if(alreadyExistsCombo(vBox, comboBox)) {
 			Label error = new Label("Error");
 			int index = 0;
@@ -33,7 +33,7 @@ public class ErrorMessageHandler {
 		}
 	}
 	//Deletes the Error Label for a ComboBox.
-	public void errorMessageHandlerComboBox(ComboBox comboBox, VBox vBox) {
+	public void errorMessageHandlerComboBox(ComboBox<String> comboBox, VBox vBox) {
 		if(check()) {
 			int index = vBox.getChildren().indexOf(comboBox) - 1;
 			Label textBox = (Label)vBox.getChildren().get(index);
@@ -59,7 +59,7 @@ public class ErrorMessageHandler {
 		return errorTrue;
 	}
 	//Checks, if the Label above is, is the Error label and if yes, it does not create another one.
-	private boolean alreadyExistsCombo(VBox vBox, ComboBox comboBox) {
+	private boolean alreadyExistsCombo(VBox vBox, ComboBox<String> comboBox) {
 		boolean doesNotExist = true;
 		
 		try {
