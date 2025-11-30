@@ -13,18 +13,28 @@ public class ButtonManager {
 	private ErrorMessageHandler errorMessage = new ErrorMessageHandler();
 	
 	private Button resources = new Button("Resources");
+	private Button equipment = new Button("Equipment");
 	private Button listEmployees = new Button("List Employees");
 	private Button nextCycle = new Button("Next Cycle"); 
 
 	private Button startButton = new Button("Start the game"); 	
 
 	private Button employeeManager = new Button("Manage Employees"); 
+	private Button goBack = new Button("Go Back");
+	
 	private int amount = 0;
 	private int height = 270;
 	private double moneyStart = 0.0;
 	
+	private enum companyType{Foodtruck,EDVManager,CraftBuisness};
+	
 	private void CSS(Button button) {
 		amount += 1;
+		button.setPrefSize(200, 20);
+		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
+	}
+	
+	private void CSSNonFungible(Button button) {
 		button.setPrefSize(200, 20);
 		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
 	}
@@ -35,6 +45,8 @@ public class ButtonManager {
 		CSS(nextCycle);
 		CSS(startButton);
 		CSS(employeeManager);
+		CSS(equipment);
+		CSSNonFungible(goBack);
 		
 		action(vBox, visual, warningCanvas, company);
 	}
@@ -84,12 +96,40 @@ public class ButtonManager {
 			money.setText(String.valueOf(company.getMoneyOfCompany()));
 			visual.setMoneyOfCompany(money);
 			
-			startUpMain(vBox,visual,company);
-			startUpStockMarket(vBox,visual,warningCanvas);
+			startUpMain(vBox,visual);
+			startUpCompany(vBox,visual,warningCanvas);
 			System.out.println(companyNameSet);
 			height = (amount + visual.getAmount()) * 20 + 10;
 			System.out.println(height);
 		});
+		
+		resources.setOnAction(event->{
+			vBox.getChildren().clear();
+			vBox.getChildren().addAll(goBack);
+		});
+		
+		employeeManager.setOnAction(event->{
+			vBox.getChildren().clear();
+			vBox.getChildren().addAll(goBack);
+		});
+		
+		listEmployees.setOnAction(event->{
+			vBox.getChildren().clear();
+			vBox.getChildren().addAll(goBack);
+		});
+		
+		equipment.setOnAction(event->{
+			vBox.getChildren().clear();
+			vBox.getChildren().addAll(goBack);
+		});
+		
+		goBack.setOnAction(event->{
+			vBox.getChildren().clear();
+			
+			startUpMain(vBox,visual);
+			startUpCompany(vBox,visual,warningCanvas);
+		});
+		
 		visual.getInsertName().setOnMouseClicked(event ->{
 			errorMessage.errorMessageHandlerText(visual.getInsertName(), vBox);
 		});
@@ -101,11 +141,7 @@ public class ButtonManager {
 		});
 	}
 	
-	public void errorHandlingTextFieldDelete() {
-		
-	}
-	
-	private void startUpMain(VBox vBox, VisualElementsHolder visual,Company company) {
+	public void startUpMain(VBox vBox, VisualElementsHolder visual) {
 		HBox hBox = new HBox();
 		Label name = new Label("Name of Company: ");
 		Label money = new Label(" | Money of the Company (€): ");
@@ -121,14 +157,14 @@ public class ButtonManager {
 		vBox.getChildren().add(hBox);
 	}
 	
-	private void startUpStockMarket(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas) {
+	public void startUpCompany(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas) {
 		Label availableResources = new Label("Available Resources");
 		Label employeeLabel = new Label("List Employee Data");
 		visual.CSSLabel(availableResources);
 		visual.CSSLabel(employeeLabel);
 		
 		VBox vBoxAdd = new VBox();
-		vBoxAdd.getChildren().addAll(availableResources,resources,employeeLabel,listEmployees,employeeManager);
+		vBoxAdd.getChildren().addAll(availableResources,resources,equipment,employeeLabel,listEmployees,employeeManager);
 		
 		Label nextCycleLabel = new Label("Next Cycle");
 		visual.CSSLabel(nextCycleLabel);

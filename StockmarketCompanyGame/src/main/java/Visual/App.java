@@ -1,5 +1,8 @@
 package Visual;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import GameLogic.Company;
 import GameLogic.GameManager;
 import javafx.application.Application;
@@ -7,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -24,7 +28,7 @@ public class App extends Application {
 	
 	private Canvas gameCanvas = new Canvas(width,height);
 	private GraphicsContext gamePencil = gameCanvas.getGraphicsContext2D();
-	private Canvas warningCanvas = new Canvas(width,100);
+	private Canvas warningCanvas = new Canvas(width,height - 290);
 	private GraphicsContext warningPencil = warningCanvas.getGraphicsContext2D();
 	private StackPane gamePane = new StackPane(gameCanvas);
 	private VBox gameVBox = new VBox();
@@ -38,6 +42,8 @@ public class App extends Application {
     	visualElementsHolder.insertCycleDates();
     	visualElementsHolder.insertSpecifications();
     	visualElementsHolder.insertTypes();
+    	
+    	Scene scene = new Scene(gamePane, width, height);
     	
     	gameVBox.getChildren().addAll(visualElementsHolder.getEnterName(),visualElementsHolder.getInsertName());
     	visualElementsHolder.start();
@@ -64,7 +70,6 @@ public class App extends Application {
     	
         gameManager.loop(gameCanvas,gamePencil,gamePane,warningCanvas,warningPencil);
         
-        var scene = new Scene(gamePane, width, height);
         stage.setScene(scene);
         stage.show();
     }
