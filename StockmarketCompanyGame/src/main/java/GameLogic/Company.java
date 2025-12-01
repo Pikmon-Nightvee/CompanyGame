@@ -11,6 +11,11 @@ public class Company {
 		this.moneyOfCompany = moneyOfCompany;
 	}
 
+	@Override
+	public String toString() {
+		return "Company [name=" + name + ", moneyOfCompany=" + moneyOfCompany + ", reputation=" + reputation + "]";
+	}
+
 	public int getReputation() {
 		return reputation;
 	}

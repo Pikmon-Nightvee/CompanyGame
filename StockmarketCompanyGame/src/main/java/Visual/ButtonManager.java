@@ -14,7 +14,7 @@ public class ButtonManager {
 	
 	private Button resources = new Button("Resources");
 	private Button equipment = new Button("Equipment");
-	private Button listEmployees = new Button("List Employees");
+	private Button employ = new Button("Employ");
 	private Button nextCycle = new Button("Next Cycle"); 
 
 	private Button startButton = new Button("Start the game"); 	
@@ -41,7 +41,7 @@ public class ButtonManager {
 	
 	public void start(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Company company) {
 		CSS(resources);
-		CSS(listEmployees);
+		CSS(employ);
 		CSS(nextCycle);
 		CSS(startButton);
 		CSS(employeeManager);
@@ -101,6 +101,7 @@ public class ButtonManager {
 			System.out.println(companyNameSet);
 			height = (amount + visual.getAmount()) * 20 + 10;
 			System.out.println(height);
+			System.out.println(company.toString());
 		});
 		
 		resources.setOnAction(event->{
@@ -113,7 +114,7 @@ public class ButtonManager {
 			vBox.getChildren().addAll(goBack);
 		});
 		
-		listEmployees.setOnAction(event->{
+		employ.setOnAction(event->{
 			vBox.getChildren().clear();
 			vBox.getChildren().addAll(goBack);
 		});
@@ -164,7 +165,7 @@ public class ButtonManager {
 		visual.CSSLabel(employeeLabel);
 		
 		VBox vBoxAdd = new VBox();
-		vBoxAdd.getChildren().addAll(availableResources,resources,equipment,employeeLabel,listEmployees,employeeManager);
+		vBoxAdd.getChildren().addAll(availableResources,resources,equipment,employeeLabel,employ,employeeManager);
 		
 		Label nextCycleLabel = new Label("Next Cycle");
 		visual.CSSLabel(nextCycleLabel);

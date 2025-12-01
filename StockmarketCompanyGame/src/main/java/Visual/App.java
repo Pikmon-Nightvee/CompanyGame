@@ -3,6 +3,7 @@ package Visual;
 import java.util.HashSet;
 import java.util.Set;
 
+import FileLogic.CreateImportantCSVFiles;
 import GameLogic.Company;
 import GameLogic.GameManager;
 import javafx.application.Application;
@@ -34,9 +35,12 @@ public class App extends Application {
 	private VBox gameVBox = new VBox();
 	
 	private Company company = new Company(null, 0.0);
+	private CreateImportantCSVFiles createCSV = new CreateImportantCSVFiles();
 	
     @Override
     public void start(Stage stage) {
+    	createCSV.createFilesEmployees();
+    	
     	gamePane.getChildren().addAll(gameVBox);
     	visualElementsHolder.insertDifficulty();
     	visualElementsHolder.insertCycleDates();
