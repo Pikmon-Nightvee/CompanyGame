@@ -12,7 +12,7 @@ public class CreateImportantCSVFiles {
 	 */
 	public void createFilesEmployees() {
 		try {
-			File file = new File("DataCSV/GameAlreadyStarted.csv");
+			File file = new File("DataCSV/EmployeeData/GameAlreadyStarted.csv");
 			if(file.createNewFile()) {
 				System.out.println("Important File: Game State created");
 				try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),true))){
@@ -25,14 +25,14 @@ public class CreateImportantCSVFiles {
 				System.out.println("Important File: Game State exists");
 			}
 			
-			file = new File("DataCSV/UnemployedEmployees.csv");
+			file = new File("DataCSV/EmployeeData/UnemployedEmployees.csv");
 			if(file.createNewFile()) {
 				System.out.println("Important File: Unemployed created");
 			}else {
 				System.out.println("Important File: Unemployed exists");
 			}
 			
-			file = new File("DataCSV/EmployedEmployees.csv");
+			file = new File("DataCSV/EmployeeData/EmployedEmployees.csv");
 			if(file.createNewFile()) {
 				System.out.println("Important File: Employed created");
 			}else {
