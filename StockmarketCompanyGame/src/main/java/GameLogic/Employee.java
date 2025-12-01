@@ -28,4 +28,7 @@ public class Employee {
 	public int getReliability() {
 		return reliability;
 	}
+	public int getCost() {
+		return cost;
+	}
 }
