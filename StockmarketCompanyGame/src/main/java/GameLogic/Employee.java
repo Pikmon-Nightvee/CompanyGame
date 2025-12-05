@@ -15,7 +15,7 @@ public class Employee {
 		this.reliability = reliability;
 		this.cost = cost;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -30,5 +30,11 @@ public class Employee {
 	}
 	public int getCost() {
 		return cost;
+	}
+	
+	@Override
+	public String toString() {
+		return "Employee [name=" + name + ", accuracy=" + accuracy + ", speed=" + speed + ", reliability=" + reliability
+				+ ", cost=" + cost + "]";
 	}
 }

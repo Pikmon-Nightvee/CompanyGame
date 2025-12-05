@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import FileLogic.CreateImportantCSVFiles;
+import FileLogic.ReadCSVFiles;
 import GameLogic.Company;
 import GameLogic.GameManager;
 import javafx.application.Application;
@@ -36,10 +37,12 @@ public class App extends Application {
 	
 	private Company company = new Company(null, 0.0);
 	private CreateImportantCSVFiles createCSV = new CreateImportantCSVFiles();
+	private ReadCSVFiles readCSV = new ReadCSVFiles();
 	
     @Override
     public void start(Stage stage) {
     	createCSV.createFilesEmployees();
+    	readCSV.employedEmployees();
     	
     	gamePane.getChildren().addAll(gameVBox);
     	visualElementsHolder.insertDifficulty();

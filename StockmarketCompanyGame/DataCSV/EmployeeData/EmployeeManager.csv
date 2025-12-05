@@ -1,101 +1,100 @@
-Mitarbeiter1,7,10,5,
-Mitarbeiter2,8,6,7,
-Mitarbeiter3,4,4,3,
-Mitarbeiter4,1,10,10,
-Mitarbeiter5,2,8,4,
-Mitarbeiter6,9,10,4,
-Mitarbeiter7,8,7,10,
-Mitarbeiter8,5,9,6,
-Mitarbeiter9,6,9,3,
-Mitarbeiter10,8,5,7,
-Mitarbeiter11,2,1,3,
-Mitarbeiter12,7,3,1,
-Mitarbeiter13,6,1,1,
-Mitarbeiter14,1,6,8,
-Mitarbeiter15,8,6,9,
-Mitarbeiter16,3,8,10,
-Mitarbeiter17,6,3,6,
-Mitarbeiter18,4,9,9,
-Mitarbeiter19,10,5,9,
-Mitarbeiter20,3,2,9,
-Mitarbeiter21,6,4,7,
-Mitarbeiter22,4,1,9
-Mitarbeiter23,3,6,8,
-Mitarbeiter24,6,3,4,
-Mitarbeiter25,2,9,2,
-Mitarbeiter26,1,4,10,
-Mitarbeiter27,8,9,8,
-Mitarbeiter28,7,9,4,
-Mitarbeiter29,4,7,2,
-Mitarbeiter30,10,8,7,
-Mitarbeiter31,8,3,5,
-Mitarbeiter32,5,5,1,
-Mitarbeiter33,9,9,6,
-Mitarbeiter34,4,4,4,
-Mitarbeiter35,1,4,5,
-Mitarbeiter36,7,6,7,
-Mitarbeiter37,3,9,9,
-Mitarbeiter38,9,2,3,
-Mitarbeiter39,7,9,6,
-Mitarbeiter40,2,9,3,
-Mitarbeiter41,10,10,7,
-Mitarbeiter42,6,3,9,
-Mitarbeiter43,7,3,4,
-Mitarbeiter44,8,7,6,
-Mitarbeiter45,4,2,4,
-Mitarbeiter46,6,3,7,
-Mitarbeiter47,7,9,5,
-Mitarbeiter48,10,2,5,
-Mitarbeiter49,4,9,9,
-Mitarbeiter50,6,8,8,
-Mitarbeiter51,10,1,4,
-Mitarbeiter52,9,6,10,
-Mitarbeiter53,7,4,4,
-Mitarbeiter54,3,4,3,
-Mitarbeiter55,6,3,6,
-Mitarbeiter56,1,7,1,
-Mitarbeiter57,4,9,7,
-Mitarbeiter58,2,2,6,
-Mitarbeiter59,4,5,8,
-Mitarbeiter60,5,9,10,
-Mitarbeiter61,9,6,1,
-Mitarbeiter62,2,1,6,
-Mitarbeiter63,6,4,3,
-Mitarbeiter64,1,6,3,
-Mitarbeiter65,4,5,6,
-Mitarbeiter66,4,6,2,
-Mitarbeiter67,8,6,9,
-Mitarbeiter68,6,1,9,
-Mitarbeiter69,3,3,1,
-Mitarbeiter70,3,10,6,
-Mitarbeiter71,1,6,5,
-Mitarbeiter72,3,5,2,
-Mitarbeiter73,5,10,7,
-Mitarbeiter74,10,8,9,
-Mitarbeiter75,8,6,10,
-Mitarbeiter76,8,5,1,
-Mitarbeiter77,3,5,9,
-Mitarbeiter78,9,1,3,
-Mitarbeiter79,3,10,8,
-Mitarbeiter80,1,7,7,
-Mitarbeiter81,3,6,9,
-Mitarbeiter82,9,7,1,
-Mitarbeiter83,10,6,2,
-Mitarbeiter84,5,5,6,
-Mitarbeiter85,3,6,7,
-Mitarbeiter86,5,5,7,
-Mitarbeiter87,7,10,8,
-Mitarbeiter88,3,9,3,
-Mitarbeiter89,6,5,3,
-Mitarbeiter90,6,1,5,
-Mitarbeiter91,6,4,9,
-Mitarbeiter92,6,3,3,
-Mitarbeiter93,1,4,5,
-Mitarbeiter94,9,3,1,
-Mitarbeiter95,2,2,7,
-Mitarbeiter96,6,4,3,
-Mitarbeiter97,4,9,9,
-Mitarbeiter98,1,7,7,
-Mitarbeiter99,1,10,4,
-Mitarbeiter100,3,1,6,
-Jürgen,10,10,10
+Anna Müller,4821,7,9,8
+Lukas Steiner,5390,5,6,7
+Marie Bauer,7281,8,7,9
+Jonas Hofer,6932,6,5,6
+Laura Berger,8210,9,8,8
+Paul Leitner,4155,4,7,5
+Sarah König,7643,8,6,7
+Maximilian Auer,6578,7,8,6
+Sophie Winkler,9123,9,9,9
+Felix Schmid,4982,6,5,8
+Nina Brandt,7344,8,4,7
+Tobias Leitner,6888,7,7,8
+Clara Fuchs,5120,5,9,6
+Sebastian Lang,7812,8,8,7
+Lea Graf,6021,6,7,8
+David Vogel,7981,9,6,6
+Julia Weber,6844,7,8,7
+Simon Huber,5450,4,7,8
+Lisa Schuster,7551,9,8,6
+Daniel Krüger,4230,7,4,8
+Mia Maier,6380,6,8,7
+Noah König,8222,8,6,9
+Hannah Bauer,6912,7,9,5
+Elias Steiner,4731,5,7,6
+Emma Winkler,5843,8,6,6
+Finn Schmid,5277,6,5,7
+Lena Brandt,7633,7,7,9
+Matteo Fuchs,6419,8,4,6
+Amelie Lang,7120,9,8,7
+Ben Graf,4291,4,6,5
+Marlene Vogel,7155,7,8,7
+Oliver Weber,8332,8,7,8
+Johanna Huber,5910,6,6,7
+Leon Schuster,5122,5,8,8
+Klara Krüger,7088,9,7,6
+Michael Maier,7421,8,9,9
+Franz Müller,5455,6,5,7
+Petra Steiner,6120,7,8,6
+Stefan Bauer,4920,5,6,5
+Anna Hofer,5988,7,7,8
+Lukas Berger,8990,9,8,6
+Marie Leitner,4881,6,7,6
+Jonas König,5043,5,6,8
+Laura Auer,7321,7,9,7
+Paul Winkler,7690,8,8,8
+Sarah Schmid,4622,4,7,
+Maximilian Brandt,9211,9,7,9
+Sophie Fuchs,5310,6,8,6
+Felix Lang,5744,7,5,7
+Nina Graf,6850,8,6,8
+Tobias Vogel,4901,5,7,5
+Clara Weber,8433,9,8,8
+Sebastian Huber,6521,7,9,7
+Lea Schuster,5220,6,7,6
+David Krüger,6682,8,6,7
+Julia Maier,7355,9,9,6
+Simon Müller,4951,4,6,6
+Lisa Steiner,6248,7,8,8
+Daniel Bauer,7188,9,5,7
+Mia Hofer,5473,7,6,8
+Noah Berger,7630,8,7,7
+Hannah Leitner,4822,6,5,6
+Elias König,7977,9,8,7
+Emma Auer,5631,7,6,8
+Finn Winkler,4388,5,7,5
+Lena Schmid,8120,9,7,9
+Matteo Brandt,6731,6,8,8
+Amelie Fuchs,5570,7,5,6
+Ben Lang,4922,6,4,7
+Marlene Graf,7441,9,8,8
+Oliver Vogel,7223,8,7,6
+Johanna Weber,6890,7,6,8
+Leon Huber,7911,9,9,7
+Klara Schuster,5333,6,7,8
+Michael Krüger,6129,7,6,9
+Franz Maier,5588,5,7,7
+Petra Müller,8792,9,8,8 
+Stefan Steiner,4610,6,5,5
+Anna Bauer,6022,8,7,7
+Lukas Hofer,5364,6,6,6 
+Marie Berger,8190,9,8,7
+Jonas Leitner,5933,7,7,8
+Laura König,6255,7,6,8
+Paul Auer,5010,5,8,7
+Sarah Winkler,8422,8,9,9
+Maximilian Schmid,6880,7,6,6
+Sophie Brandt,6444,7,8,7
+Felix Fuchs,4372,4,7,5
+Nina Lang,7699,9,8,8
+Tobias Graf,5121,6,5,6
+Clara Vogel,8888,9,9,7
+Sebastian Weber,7341,8,7,9
+Lea Huber,5433,6,8,7
+David Schuster,6712,7,6,7
+Julia Krüger,8219,9,8,8
+Simon Maier,4940,5,7,5
+Lisa Müller,6130,8,6,7
+Daniel Steiner,9021,9,9,8
+Mia Bauer,5299,6,4,7
+Noah Hofer,7877,8,8,8

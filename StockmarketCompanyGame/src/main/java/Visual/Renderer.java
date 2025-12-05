@@ -2,6 +2,9 @@ package Visual;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 
 public class Renderer {
 	public void drawMainCanvas(Canvas canvas, GraphicsContext pencil) {
