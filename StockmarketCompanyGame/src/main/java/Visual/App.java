@@ -5,6 +5,7 @@ import java.util.Set;
 
 import FileLogic.CreateImportantCSVFiles;
 import FileLogic.ReadCSVFiles;
+import FileLogic.WriteCSVFiles;
 import GameLogic.Company;
 import GameLogic.GameManager;
 import javafx.application.Application;
@@ -36,18 +37,15 @@ public class App extends Application {
 	private VBox gameVBox = new VBox();
 	
 	private Company company = new Company(null, 0.0);
+	
 	private CreateImportantCSVFiles createCSV = new CreateImportantCSVFiles();
 	private ReadCSVFiles readCSV = new ReadCSVFiles();
+	private WriteCSVFiles writeCSV = new WriteCSVFiles();
 	
     @Override
     public void start(Stage stage) {
-    	createCSV.createFilesEmployees();
-    	readCSV.employedEmployees();
-    	if(readCSV.gameAlreadyStarted()) {
-    		readCSV.gameAlreadyPlayedCompanyData();
-    	}else {
-    		System.out.println("New Game");
-    	}
+    	createCSV.createImportantGameStateFiles(readCSV,writeCSV);
+    	createCSV.createFilesEmployees(readCSV,writeCSV);
     	
     	gamePane.getChildren().addAll(gameVBox);
     	visualElementsHolder.insertDifficulty();

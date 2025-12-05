@@ -74,4 +74,24 @@ public class ReadCSVFiles {
 		
 		return employees;
 	}
+	
+	public ArrayList<String> allEmployees() {
+		File file = new File("DataCSV/EmployeeData/EmployeeManager.csv");
+		ArrayList<String> unEmployed = new ArrayList<>();
+		
+		try(Scanner reader = new Scanner(file)){
+			while(reader.hasNext()) {
+				String dataLine = reader.nextLine();
+				unEmployed.add(dataLine);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		for(String e : unEmployed) {
+			System.out.println(e);
+		}
+		
+		return unEmployed;
+	}
 }

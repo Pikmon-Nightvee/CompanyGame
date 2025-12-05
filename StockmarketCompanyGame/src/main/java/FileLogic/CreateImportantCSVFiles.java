@@ -1,45 +1,22 @@
 package FileLogic;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 
 public class CreateImportantCSVFiles {
-	/*3 CSV Files:
-	 *	Game Started
-	 *	Employed Employees
-	 *	Not Employed Employees
-	 */
-	public void createFilesEmployees() {
-		try {
-			File file = new File("DataCSV/GameStartUp/GameAlreadyStarted.csv");
-			if(file.createNewFile()) {
-				System.out.println("Important File: Game State created");
-				try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),true))){
-					writer.write("false");
-					writer.write("\n");
-				}catch(Exception e) {
-					e.printStackTrace();
-				}
-			}else {
-				System.out.println("Important File: Game State exists");
-			}
-			file = new File("DataCSV/GameStartUp/CompanyData.csv");
-			if(file.createNewFile()) {
-				System.out.println("Important File: Company Data created");
-				try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),true))){
-					writer.write("false");
-					writer.write("\n");
-				}catch(Exception e) {
-					e.printStackTrace();
-				}
-			}else {
-				System.out.println("Important File: Company Data exists");
-			}
-			
-			file = new File("DataCSV/EmployeeData/UnemployedEmployees.csv");
+	/*4 Directories for:
+	 *	Game State
+	 *	Employees
+	 *	Equipment
+	 *	ResourceData
+	 *	
+	 *	Creates these dirs, aswell as the files. Needs to be extended.
+	 */	
+	public void createFilesEmployees(ReadCSVFiles readerCSV,WriteCSVFiles writeCSV) {
+		try {			
+			File file = new File("DataCSV/EmployeeData/UnemployedEmployees.csv");
 			if(file.createNewFile()) {
 				System.out.println("Important File: Unemployed created");
+				writeCSV.resetData(readerCSV);
 			}else {
 				System.out.println("Important File: Unemployed exists");
 			}
@@ -47,8 +24,30 @@ public class CreateImportantCSVFiles {
 			file = new File("DataCSV/EmployeeData/EmployedEmployees.csv");
 			if(file.createNewFile()) {
 				System.out.println("Important File: Employed created");
+				writeCSV.resetData(readerCSV);
 			}else {
 				System.out.println("Important File: Employed exists");
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void createImportantGameStateFiles(ReadCSVFiles readerCSV,WriteCSVFiles writeCSV) {
+		try {
+			File file = new File("DataCSV/GameStartUp/GameAlreadyStarted.csv");
+			if(file.createNewFile()) {
+				System.out.println("Important File: Game State created");
+				writeCSV.resetData(readerCSV);
+			}else {
+				System.out.println("Important File: Game State exists");
+			}
+			file = new File("DataCSV/GameStartUp/CompanyData.csv");
+			if(file.createNewFile()) {
+				System.out.println("Important File: Company Data created");
+				writeCSV.resetData(readerCSV);
+			}else {
+				System.out.println("Important File: Company Data exists");
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
