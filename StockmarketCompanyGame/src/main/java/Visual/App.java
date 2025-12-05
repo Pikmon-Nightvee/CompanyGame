@@ -43,6 +43,11 @@ public class App extends Application {
     public void start(Stage stage) {
     	createCSV.createFilesEmployees();
     	readCSV.employedEmployees();
+    	if(readCSV.gameAlreadyStarted()) {
+    		readCSV.gameAlreadyPlayedCompanyData();
+    	}else {
+    		System.out.println("New Game");
+    	}
     	
     	gamePane.getChildren().addAll(gameVBox);
     	visualElementsHolder.insertDifficulty();

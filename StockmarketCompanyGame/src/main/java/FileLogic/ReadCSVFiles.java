@@ -9,12 +9,41 @@ import GameLogic.Employee;
 
 public class ReadCSVFiles {
 	public Company gameAlreadyPlayedCompanyData() {
+		File file = new File("DataCSV/GameStartUp/CompanyData.csv");
 		Company company = new Company("",0.0);
+		
+		try(Scanner reader = new Scanner(file)){
+			String dataLine = reader.nextLine();
+			String[] data = dataLine.split(",");
+			
+			String name = data[0];
+			double money = Double.parseDouble(data[1]);
+			int reputation = Integer.parseInt(data[2]);
+			
+			company.setName(name);
+			company.setMoneyOfCompany(money);
+			company.setReputation(reputation);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println(company.toString());
 		return company;
 	}
 	
 	public boolean gameAlreadyStarted() {
-		return false;
+		File file = new File("DataCSV/GameStartUp/GameAlreadyStarted.csv");
+		boolean alreadyStarted = false;
+		
+		try(Scanner reader = new Scanner(file)){
+			String dataLine = reader.nextLine();
+			if(dataLine.equals("true")) {
+				alreadyStarted = true;
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return alreadyStarted;
 	}
 	
 	public ArrayList<Employee> employedEmployees() {
