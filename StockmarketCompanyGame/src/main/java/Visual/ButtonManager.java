@@ -34,7 +34,7 @@ public class ButtonManager {
 		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
 	}
 	
-	private void CSSNonFungible(Button button) {
+	private void CSSNoAddAmount(Button button) {
 		button.setPrefSize(200, 20);
 		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
 	}
@@ -46,7 +46,7 @@ public class ButtonManager {
 		CSS(startButton);
 		CSS(employeeManager);
 		CSS(equipment);
-		CSSNonFungible(goBack);
+		CSSNoAddAmount(goBack);
 		
 		action(vBox, visual, warningCanvas, company);
 	}
@@ -149,9 +149,9 @@ public class ButtonManager {
 		Label companyType = new Label(" | Company Type: ");
 		Label companySpecification = new Label(visual.getSelectCompanySpecification().getValue());
 		visual.CSSLabel(money);
-		visual.CSSLabelNonFungible(name);
-		visual.CSSLabelNonFungible(companyType);
-		visual.CSSLabelNonFungible(companySpecification);
+		visual.CSSLabelNoAddAmount(name);
+		visual.CSSLabelNoAddAmount(companyType);
+		visual.CSSLabelNoAddAmount(companySpecification);
 		
 		hBox.getChildren().addAll(name,visual.getNameOfCompany(),money,visual.getMoneyOfCompany(),companyType,companySpecification);
 		vBox.setAlignment(Pos.TOP_LEFT);

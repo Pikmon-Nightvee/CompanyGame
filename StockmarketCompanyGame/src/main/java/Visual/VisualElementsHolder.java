@@ -57,11 +57,11 @@ public class VisualElementsHolder {
 		amount += 1;
 		label.setStyle("-fx-font-size: 20px;-fx-font-weight: bold;");
 	}
-	private void CSSBoxNonFungible(ComboBox<String> comboBox) {
+	private void CSSBoxNoAddAmount(ComboBox<String> comboBox) {
 		comboBox.setPrefSize(200, 20);
 		comboBox.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
 	}
-	public void CSSLabelNonFungible(Label label) {
+	public void CSSLabelNoAddAmount(Label label) {
 		label.setStyle("-fx-font-size: 20px;-fx-font-weight: bold;");
 	}
 	private void CSSTextArea(TextField field) {
@@ -70,16 +70,16 @@ public class VisualElementsHolder {
 	
 	public void start() {
 		CSSBox(selectCycleAmount);
-		CSSBoxNonFungible(selectDifficulty);
-		CSSBoxNonFungible(selectCompanyType);
-		CSSBoxNonFungible(selectCompanySpecification);
+		CSSBoxNoAddAmount(selectDifficulty);
+		CSSBoxNoAddAmount(selectCompanyType);
+		CSSBoxNoAddAmount(selectCompanySpecification);
 		
 		CSSLabel(moneyOfCompany);
 		CSSLabel(nameOfCompany);
-		CSSLabelNonFungible(enterName);
-		CSSLabelNonFungible(difficulty);
-		CSSLabelNonFungible(chooseCompanyType);
-		CSSLabelNonFungible(chooseCompanyWork);
+		CSSLabelNoAddAmount(enterName);
+		CSSLabelNoAddAmount(difficulty);
+		CSSLabelNoAddAmount(chooseCompanyType);
+		CSSLabelNoAddAmount(chooseCompanyWork);
 		
 		CSSTextArea(insertName);
 	}
