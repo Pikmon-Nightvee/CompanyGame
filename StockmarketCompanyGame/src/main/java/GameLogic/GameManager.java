@@ -20,7 +20,7 @@ public class GameManager {
 		warningPencil.setFill(Color.BLACK);
 		
 		//30FPS Update Loop
-		gameTimeline = new Timeline(new KeyFrame(Duration.seconds(0.0032), event -> {
+		gameTimeline = new Timeline(new KeyFrame(Duration.seconds(0.032), event -> {
 			renderer.drawMainCanvas(gameCanvas, gamePencil);
 			renderer.drawWarningCanvas(warningCanvas, warningPencil);
 		}));
