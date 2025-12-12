@@ -1,8 +1,5 @@
 package Visual;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import FileLogic.CreateImportantCSVFiles;
 import FileLogic.ReadCSVFiles;
 import FileLogic.WriteCSVFiles;
@@ -13,7 +10,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -57,7 +53,7 @@ public class App extends Application {
     	
     	gameVBox.getChildren().addAll(visualElementsHolder.getEnterName(),visualElementsHolder.getInsertName());
     	visualElementsHolder.start();
-    	buttonManager.start(gameVBox, visualElementsHolder,warningCanvas,company);
+    	buttonManager.start(gameVBox, visualElementsHolder,warningCanvas,gameCanvas,company);
     	
     	visualElementsHolder.getSelectDifficulty().setValue("Easy");
     	visualElementsHolder.getSelectCycleAmount().setValue("Day");
@@ -76,6 +72,7 @@ public class App extends Application {
     	gamePane.heightProperty().addListener((obs, oldVal, newVal) -> {
     		gameCanvas.setHeight(newVal.doubleValue());
     		warningCanvas.setHeight((newVal.doubleValue()- buttonManager.getHeight()));
+    		buttonManager.changeTextAreaSize(gameCanvas, visualElementsHolder);
     	});
     	
         gameManager.loop(gameCanvas,gamePencil,gamePane,warningCanvas,warningPencil);

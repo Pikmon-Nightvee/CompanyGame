@@ -14,7 +14,17 @@ public class WriteCSVFiles {
 	}
 	
 	public void gameWasPlayed() {
-		
+		try {
+			File file = new File("DataCSV/GameStartUp/GameAlreadyStarted.csv");
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),false))){
+				writer.write("true");
+				writer.write("\n");
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void resetData(ReadCSVFiles readCSV) {
@@ -28,6 +38,7 @@ public class WriteCSVFiles {
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
+			
 			file = new File("DataCSV/GameStartUp/CompanyData.csv");
 			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
 				writer.write("");

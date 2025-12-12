@@ -75,6 +75,34 @@ public class ReadCSVFiles {
 		return employees;
 	}
 	
+	public ArrayList<Employee> unemployedEmployees() {
+		File file = new File("DataCSV/EmployeeData/UnemployedEmployees.csv");
+		ArrayList<Employee> employees = new ArrayList<>();
+		
+		try(Scanner reader = new Scanner(file)){
+			while(reader.hasNext()) {
+				String dataLine = reader.nextLine();
+				String[] data = dataLine.split(",");
+				
+				String name = data[0];
+				int cost = Integer.parseInt(data[1]);
+				int accuracy = Integer.parseInt(data[2]);
+				int speed = Integer.parseInt(data[3]);
+				int reliability = Integer.parseInt(data[4]);
+				
+				Employee employeeToAdd = new Employee(name,accuracy,speed,reliability,cost);
+				employees.add(employeeToAdd);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		for(Employee e : employees) {
+			System.out.println(e.toString());
+		}
+		
+		return employees;
+	}
+	
 	public ArrayList<String> allEmployees() {
 		File file = new File("DataCSV/EmployeeData/EmployeeManager.csv");
 		ArrayList<String> unEmployed = new ArrayList<>();

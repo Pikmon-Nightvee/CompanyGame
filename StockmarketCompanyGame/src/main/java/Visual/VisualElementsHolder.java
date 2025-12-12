@@ -1,11 +1,18 @@
 package Visual;
 
+import java.util.ArrayList;
+
+import FileLogic.ReadCSVFiles;
+import GameLogic.Employee;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 public class VisualElementsHolder {
 	private int amount = 0;
+	private int subAmount = 0;
 	
 	//Labels:
 	private Label moneyOfCompany = new Label("");
@@ -14,15 +21,25 @@ public class VisualElementsHolder {
 	private Label difficulty = new Label("Game difficulty:");
 	private Label chooseCompanyType = new Label("Company Type:");
 	private Label chooseCompanyWork = new Label("Company Specilty:");
+	private Label employ = new Label("Hire");
+	private Label employUnemployed = new Label("Select who to hire");
+	private Label statsOfUnemployed = new Label("Unemployed stats:");
 	
-	//TextAreas:
+	//TextFields:
 	private TextField insertName = new TextField();
+
+	//TextAreas:
+	private TextArea unemployedStats = new TextArea();
 	
 	//ComboBox:
 	private ComboBox <String>selectDifficulty = new ComboBox<>();
 	private ComboBox <String>selectCycleAmount = new ComboBox<>();
 	private ComboBox <String>selectCompanyType = new ComboBox<>();
 	private ComboBox <String>selectCompanySpecification = new ComboBox<>();
+	private ComboBox <String>selectUnemployed = new ComboBox<>();
+	
+	//CSV reader:
+	private ReadCSVFiles readerCSV = new ReadCSVFiles();
 	
 	//CSS Styles and call up
 	public void insertTypes() {
@@ -48,6 +65,24 @@ public class VisualElementsHolder {
 		selectCycleAmount.getItems().add("Year");
 	}
 	
+	public void unemployedTextArea() {
+		
+	}
+	
+	public void setTextAreaSize(String select,int size, Canvas canvas) {
+		switch(select){
+		case "Unemployed": unemployedStats.setPrefSize(canvas.getWidth(), size);;break;
+		}
+	}
+	
+	private void insertUnemployed() {
+		ArrayList<Employee> unemployed = new ArrayList<>();
+		unemployed = readerCSV.unemployedEmployees();
+		for(Employee unemployedEmployee : unemployed) {
+			selectUnemployed.getItems().add(unemployedEmployee.getName());
+		}
+	}
+	
 	private void CSSBox(ComboBox<String> comboBox) {
 		amount += 1;
 		comboBox.setPrefSize(200, 20);
@@ -64,11 +99,16 @@ public class VisualElementsHolder {
 	public void CSSLabelNoAddAmount(Label label) {
 		label.setStyle("-fx-font-size: 20px;-fx-font-weight: bold;");
 	}
-	private void CSSTextArea(TextField field) {
+	private void CSSTextField(TextField field) {
 		field.setPrefSize(5, 1);
+	}
+	private void CSSTextArea(TextArea area) {
+		area.setPrefSize(5, 1);
 	}
 	
 	public void start() {
+		insertUnemployed();
+		
 		CSSBox(selectCycleAmount);
 		CSSBoxNoAddAmount(selectDifficulty);
 		CSSBoxNoAddAmount(selectCompanyType);
@@ -81,7 +121,31 @@ public class VisualElementsHolder {
 		CSSLabelNoAddAmount(chooseCompanyType);
 		CSSLabelNoAddAmount(chooseCompanyWork);
 		
-		CSSTextArea(insertName);
+		CSSTextField(insertName);
+
+		CSSTextArea(unemployedStats);
+	}
+	
+	public void subSelectUnemployed() {
+		subAmount = 0;
+		CSSBoxSubSelect(selectUnemployed);
+		
+		CSSLabelSubSelect(employUnemployed);
+		CSSLabelSubSelect(statsOfUnemployed);
+		CSSLabelSubSelect(employ);
+		
+		//For TextArea:
+		subAmount++;
+	}
+	
+	private void CSSBoxSubSelect(ComboBox<String> comboBox) {
+		subAmount += 1;
+		comboBox.setPrefSize(200, 20);
+		comboBox.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
+	}
+	public void CSSLabelSubSelect(Label label) {
+		subAmount += 1;
+		label.setStyle("-fx-font-size: 20px;-fx-font-weight: bold;");
 	}
 	
 	//Getters and Setters
@@ -138,5 +202,33 @@ public class VisualElementsHolder {
 
 	public int getAmount() {
 		return amount;
+	}
+
+	public Label getEmployUnemployed() {
+		return employUnemployed;
+	}
+
+	public Label getStatsOfUnemployed() {
+		return statsOfUnemployed;
+	}
+
+	public TextArea getUnemployedStats() {
+		return unemployedStats;
+	}
+
+	public ComboBox<String> getSelectUnemployed() {
+		return selectUnemployed;
+	}
+
+	public Label getEmploy() {
+		return employ;
+	}
+
+	public int getSubAmount() {
+		return subAmount;
+	}
+
+	public void setSubAmount(int subAmount) {
+		this.subAmount = subAmount;
 	}
 }

@@ -22,8 +22,13 @@ public class ButtonManager {
 	private Button employeeManager = new Button("Manage Employees"); 
 	private Button goBack = new Button("Go Back");
 	
+	private Button employSelectedEmployee = new Button("Employ");
+	
 	private int amount = 0;
 	private int height = 270;
+	
+	private int subSelect = 0;
+	private int subHeight = 0;
 	private double moneyStart = 0.0;
 	
 	private enum companyType{Foodtruck,EDVManager,CraftBuisness};
@@ -34,24 +39,30 @@ public class ButtonManager {
 		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
 	}
 	
+	private void CSSSubSelect(Button button) {
+		subSelect += 1;
+		button.setPrefSize(200, 20);
+		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
+	}
+	
 	private void CSSNoAddAmount(Button button) {
 		button.setPrefSize(200, 20);
 		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
 	}
 	
-	public void start(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Company company) {
+	public void start(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company) {
 		CSS(resources);
 		CSS(employ);
 		CSS(nextCycle);
 		CSS(startButton);
 		CSS(employeeManager);
 		CSS(equipment);
-		CSSNoAddAmount(goBack);
+		CSSSubSelect(goBack);
 		
-		action(vBox, visual, warningCanvas, company);
+		action(vBox, visual, warningCanvas, gameCanvas, company);
 	}
 	
-	public void action(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Company company) {
+	public void action(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company) {
 		startButton.setOnAction(event -> {
 			boolean errorOccured = false;
 			if(visual.getInsertName().getText().isBlank()) {
@@ -117,6 +128,12 @@ public class ButtonManager {
 		employ.setOnAction(event->{
 			vBox.getChildren().clear();
 			vBox.getChildren().addAll(goBack);
+			subSelect = 1;
+			
+			CSSSubSelect(employSelectedEmployee);
+			visual.subSelectUnemployed();
+			
+			unemployedEmployees(vBox,visual,gameCanvas);
 		});
 		
 		equipment.setOnAction(event->{
@@ -140,6 +157,25 @@ public class ButtonManager {
 		visual.getSelectCompanySpecification().setOnMouseClicked(event ->{
 			errorMessage.errorMessageHandlerComboBox(visual.getSelectCompanySpecification(), vBox);
 		});
+	}
+	
+	private void unemployedEmployees(VBox vBox, VisualElementsHolder visual, Canvas gameCanvas) {
+		vBox.getChildren().addAll(visual.getEmploy(),employSelectedEmployee);
+		vBox.getChildren().addAll(visual.getEmployUnemployed(),visual.getSelectUnemployed(),visual.getStatsOfUnemployed());
+
+		System.out.println("Elements: " + (subSelect+ visual.getSubAmount())); 
+		changeTextAreaSize(gameCanvas,visual);
+		
+		vBox.getChildren().add(visual.getUnemployedStats());
+	}
+	
+	public void changeTextAreaSize(Canvas gameCanvas,VisualElementsHolder visual) {
+		int accountForGapsInbetweenElements = 40;
+		subHeight = visual.getSubAmount() + subSelect + 1;
+		subHeight *= 20;
+		subHeight = (int)gameCanvas.getHeight()-(subHeight+accountForGapsInbetweenElements);
+		
+		visual.setTextAreaSize("Unemployed", subHeight, gameCanvas);
 	}
 	
 	public void startUpMain(VBox vBox, VisualElementsHolder visual) {
@@ -187,5 +223,9 @@ public class ButtonManager {
 
 	public double getMoneyStart() {
 		return moneyStart;
+	}
+
+	public int getSubHeight() {
+		return subHeight;
 	}
 }
