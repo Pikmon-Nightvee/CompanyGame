@@ -18,6 +18,7 @@ import javafx.stage.Stage;
  * JavaFX App
  */
 public class App extends Application {
+	//TODO: Fix TextArea height math, sth is wrong there.
 	private int width = 1000;
 	private int height = 480;
 	
@@ -72,7 +73,16 @@ public class App extends Application {
     	gamePane.heightProperty().addListener((obs, oldVal, newVal) -> {
     		gameCanvas.setHeight(newVal.doubleValue());
     		warningCanvas.setHeight((newVal.doubleValue()- buttonManager.getHeight()));
-    		buttonManager.changeTextAreaSize(gameCanvas, visualElementsHolder);
+    		System.out.println(newVal.doubleValue());
+    		String text = "";
+    		
+    		if(buttonManager.isInEmployeeManager()) {
+    			text = "Employed";
+    		}else if(buttonManager.isInUnemployedManager()) {
+    			text = "Unemployed";
+    		}
+    		
+    		buttonManager.changeTextAreaSize(gameCanvas, visualElementsHolder,text);
     	});
     	
         gameManager.loop(gameCanvas,gamePencil,gamePane,warningCanvas,warningPencil);

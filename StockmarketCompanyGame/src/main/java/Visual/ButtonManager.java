@@ -24,12 +24,18 @@ public class ButtonManager {
 	
 	private Button employSelectedEmployee = new Button("Employ");
 	
+	private Button assignTo = new Button("Asign to");
+	private Button fireEmployee = new Button("Fire");
+	
 	private int amount = 0;
 	private int height = 270;
 	
 	private int subSelect = 0;
 	private int subHeight = 0;
 	private double moneyStart = 0.0;
+	
+	private boolean inEmployeeManager = false;
+	private boolean inUnemployedManager = false;
 	
 	private enum companyType{Foodtruck,EDVManager,CraftBuisness};
 	
@@ -123,12 +129,23 @@ public class ButtonManager {
 		employeeManager.setOnAction(event->{
 			vBox.getChildren().clear();
 			vBox.getChildren().addAll(goBack);
+			inEmployeeManager = true;
+			
+			vBox.getChildren().addAll(visual.getFireEmployee(),fireEmployee);
+			vBox.getChildren().addAll(visual.getAssignedEmployee(),assignTo);
+			vBox.getChildren().addAll(visual.getAssignEmployeeTo(),visual.getAssignEmployed());
+			vBox.getChildren().addAll(visual.getHiredEmployees(),visual.getEmployedStats());
+			
+			CSSSubSelect(assignTo);
+			CSSSubSelect(fireEmployee);
+			visual.subSelectEmployed();
+			changeTextAreaSize(gameCanvas,visual,"Employed");
 		});
 		
 		employ.setOnAction(event->{
 			vBox.getChildren().clear();
 			vBox.getChildren().addAll(goBack);
-			subSelect = 1;
+			inUnemployedManager = true;
 			
 			CSSSubSelect(employSelectedEmployee);
 			visual.subSelectUnemployed();
@@ -141,8 +158,33 @@ public class ButtonManager {
 			vBox.getChildren().addAll(goBack);
 		});
 		
+		employSelectedEmployee.setOnAction(event->{
+			if(visual.getSelectUnemployed().getValue() == null) {
+				errorMessage.errorMessageComboBox(visual.getSelectUnemployed(), vBox);
+				return;
+			}
+		});
+		
+		assignTo.setOnAction(event->{
+			if(visual.getAssignEmployed().getValue() == null) {
+				errorMessage.errorMessageComboBox(visual.getAssignEmployed(), vBox);
+				return;
+			}
+		});
+		
+		fireEmployee.setOnAction(event->{
+			if(visual.getAssignEmployed().getValue() == null) {
+				errorMessage.errorMessageComboBox(visual.getAssignEmployed(), vBox);
+				return;
+			}
+		});
+		
 		goBack.setOnAction(event->{
 			vBox.getChildren().clear();
+			
+			inUnemployedManager = true;
+			inEmployeeManager = true;
+			subSelect = 1;
 			
 			startUpMain(vBox,visual);
 			startUpCompany(vBox,visual,warningCanvas);
@@ -157,25 +199,32 @@ public class ButtonManager {
 		visual.getSelectCompanySpecification().setOnMouseClicked(event ->{
 			errorMessage.errorMessageHandlerComboBox(visual.getSelectCompanySpecification(), vBox);
 		});
+		visual.getSelectUnemployed().setOnMouseClicked(event ->{
+			errorMessage.errorMessageHandlerComboBox(visual.getSelectUnemployed(), vBox);
+		});
+		visual.getAssignEmployed().setOnMouseClicked(event ->{
+			errorMessage.errorMessageHandlerComboBox(visual.getAssignEmployed(), vBox);
+		});
 	}
 	
 	private void unemployedEmployees(VBox vBox, VisualElementsHolder visual, Canvas gameCanvas) {
 		vBox.getChildren().addAll(visual.getEmploy(),employSelectedEmployee);
 		vBox.getChildren().addAll(visual.getEmployUnemployed(),visual.getSelectUnemployed(),visual.getStatsOfUnemployed());
 
-		System.out.println("Elements: " + (subSelect+ visual.getSubAmount())); 
-		changeTextAreaSize(gameCanvas,visual);
+		changeTextAreaSize(gameCanvas,visual,"Unemployed");
 		
 		vBox.getChildren().add(visual.getUnemployedStats());
 	}
 	
-	public void changeTextAreaSize(Canvas gameCanvas,VisualElementsHolder visual) {
-		int accountForGapsInbetweenElements = 40;
-		subHeight = visual.getSubAmount() + subSelect + 1;
+	public void changeTextAreaSize(Canvas gameCanvas,VisualElementsHolder visual,String textArea) {
+		int accountForGapsInbetweenElements = 10;
+		subHeight = visual.getSubAmount() + subSelect;
 		subHeight *= 20;
-		subHeight = (int)gameCanvas.getHeight()-(subHeight+accountForGapsInbetweenElements);
+		subHeight += accountForGapsInbetweenElements;
+		subHeight = (int)gameCanvas.getHeight() - subHeight;
+		System.out.println("Elements: " + subSelect + " Height: " + subHeight); 
 		
-		visual.setTextAreaSize("Unemployed", subHeight, gameCanvas);
+		visual.setTextAreaSize(textArea, subHeight, gameCanvas);
 	}
 	
 	public void startUpMain(VBox vBox, VisualElementsHolder visual) {
@@ -227,5 +276,13 @@ public class ButtonManager {
 
 	public int getSubHeight() {
 		return subHeight;
+	}
+
+	public boolean isInEmployeeManager() {
+		return inEmployeeManager;
+	}
+
+	public boolean isInUnemployedManager() {
+		return inUnemployedManager;
 	}
 }

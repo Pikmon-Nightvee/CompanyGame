@@ -25,11 +25,17 @@ public class VisualElementsHolder {
 	private Label employUnemployed = new Label("Select who to hire");
 	private Label statsOfUnemployed = new Label("Unemployed stats:");
 	
+	private Label assignEmployeeTo = new Label("Select Employee to asign");
+	private Label assignedEmployee = new Label("Asign employee to");
+	private Label hiredEmployees = new Label("Hired:");
+	private Label fireEmployee = new Label("Fire");
+	
 	//TextFields:
 	private TextField insertName = new TextField();
 
 	//TextAreas:
 	private TextArea unemployedStats = new TextArea();
+	private TextArea employedStats = new TextArea();
 	
 	//ComboBox:
 	private ComboBox <String>selectDifficulty = new ComboBox<>();
@@ -37,6 +43,8 @@ public class VisualElementsHolder {
 	private ComboBox <String>selectCompanyType = new ComboBox<>();
 	private ComboBox <String>selectCompanySpecification = new ComboBox<>();
 	private ComboBox <String>selectUnemployed = new ComboBox<>();
+
+	private ComboBox <String>assignEmployed = new ComboBox<>();
 	
 	//CSV reader:
 	private ReadCSVFiles readerCSV = new ReadCSVFiles();
@@ -61,17 +69,43 @@ public class VisualElementsHolder {
 	
 	public void insertCycleDates() {
 		selectCycleAmount.getItems().add("Day");
+		selectCycleAmount.getItems().add("Week");
 		selectCycleAmount.getItems().add("Month");
 		selectCycleAmount.getItems().add("Year");
 	}
 	
 	public void unemployedTextArea() {
+		String text = "";
+		StringBuilder builder = new StringBuilder();
 		
+		ArrayList<Employee> unemployed = new ArrayList<>();
+		unemployed = readerCSV.unemployedEmployees();
+		for(Employee unemployedEmployee : unemployed) {
+			builder.append(unemployedEmployee.toString());
+		}
+		text = builder.toString();
+		
+		unemployedStats.setText(text);
+	}
+	
+	public void employedTextArea() {
+		String text = "";
+		StringBuilder builder = new StringBuilder();
+		
+		ArrayList<Employee> unemployed = new ArrayList<>();
+		unemployed = readerCSV.employedEmployees();
+		for(Employee employedEmployee : unemployed) {
+			builder.append(employedEmployee.toString());
+		}
+		text = builder.toString();
+		
+		employedStats.setText(text);
 	}
 	
 	public void setTextAreaSize(String select,int size, Canvas canvas) {
 		switch(select){
-		case "Unemployed": unemployedStats.setPrefSize(canvas.getWidth(), size);;break;
+		case "Unemployed": unemployedStats.setPrefSize(canvas.getWidth(), size); System.out.println(size);break;
+		case"Employed":employedStats.setPrefSize(canvas.getWidth(), size); System.out.println(size);break;
 		}
 	}
 	
@@ -80,6 +114,14 @@ public class VisualElementsHolder {
 		unemployed = readerCSV.unemployedEmployees();
 		for(Employee unemployedEmployee : unemployed) {
 			selectUnemployed.getItems().add(unemployedEmployee.getName());
+		}
+	}
+	
+	private void insertEmployed() {
+		ArrayList<Employee> unemployed = new ArrayList<>();
+		unemployed = readerCSV.employedEmployees();
+		for(Employee employedEmployee : unemployed) {
+			assignEmployed.getItems().add(employedEmployee.getName());
 		}
 	}
 	
@@ -108,6 +150,7 @@ public class VisualElementsHolder {
 	
 	public void start() {
 		insertUnemployed();
+		insertEmployed();
 		
 		CSSBox(selectCycleAmount);
 		CSSBoxNoAddAmount(selectDifficulty);
@@ -124,6 +167,11 @@ public class VisualElementsHolder {
 		CSSTextField(insertName);
 
 		CSSTextArea(unemployedStats);
+		CSSTextArea(employedStats);
+		unemployedStats.setEditable(false);
+		employedStats.setEditable(false);
+		unemployedTextArea();
+		employedTextArea();
 	}
 	
 	public void subSelectUnemployed() {
@@ -135,7 +183,21 @@ public class VisualElementsHolder {
 		CSSLabelSubSelect(employ);
 		
 		//For TextArea:
-		subAmount++;
+		subAmount += 1;
+	}
+	
+	public void subSelectEmployed() {
+		subAmount = 0;
+		CSSBoxSubSelect(assignEmployed);
+		
+		CSSLabelSubSelect(assignEmployeeTo);
+		CSSLabelSubSelect(assignedEmployee);
+		CSSLabelSubSelect(hiredEmployees);
+		CSSLabelSubSelect(fireEmployee);
+		
+		//For TextArea:
+		subAmount += 1;
+		System.out.println(subAmount);
 	}
 	
 	private void CSSBoxSubSelect(ComboBox<String> comboBox) {
@@ -230,5 +292,29 @@ public class VisualElementsHolder {
 
 	public void setSubAmount(int subAmount) {
 		this.subAmount = subAmount;
+	}
+
+	public Label getAssignEmployeeTo() {
+		return assignEmployeeTo;
+	}
+
+	public Label getAssignedEmployee() {
+		return assignedEmployee;
+	}
+
+	public Label getHiredEmployees() {
+		return hiredEmployees;
+	}
+
+	public TextArea getEmployedStats() {
+		return employedStats;
+	}
+
+	public ComboBox<String> getAssignEmployed() {
+		return assignEmployed;
+	}
+
+	public Label getFireEmployee() {
+		return fireEmployee;
 	}
 }

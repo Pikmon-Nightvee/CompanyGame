@@ -35,6 +35,6 @@ public class Employee {
 	@Override
 	public String toString() {
 		return "Employee [name=" + name + ", accuracy=" + accuracy + ", speed=" + speed + ", reliability=" + reliability
-				+ ", cost=" + cost + "]";
+				+ ", cost=" + cost + "]" + "\n";
 	}
 }

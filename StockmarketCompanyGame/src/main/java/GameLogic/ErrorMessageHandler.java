@@ -24,7 +24,7 @@ public class ErrorMessageHandler {
 			System.out.println("index: " + index);
 	
 			error.setStyle("-fx-text-fill: red;-fx-font-weight: bold;");
-			comboBox.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+			comboBox.setStyle("-fx-border-color: red; -fx-border-width: 2px;-fx-font-weight: bold;");
 			
 			vBox.getChildren().set(index, comboBox);
 			vBox.getChildren().add(index, error);
@@ -41,7 +41,7 @@ public class ErrorMessageHandler {
 			if(textBox.getText().contains("Error")) {
 				errorRecieved.remove(0);
 				vBox.getChildren().remove(index);
-				comboBox.setStyle("-fx-font-size:15px;");	
+				comboBox.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");	
 			}
 		}
 	}
@@ -106,7 +106,7 @@ public class ErrorMessageHandler {
 			index = vBox.getChildren().indexOf(text);
 			System.out.println("index: " + index);
 	
-			error.setStyle("-fx-text-fill: red;-fx-font-weight: bold;");
+			error.setStyle("-fx-text-fill: red;");
 			text.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
 			vBox.getChildren().add(index, error);
 	
