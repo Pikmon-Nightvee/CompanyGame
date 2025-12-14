@@ -109,7 +109,8 @@ public class VisualElementsHolder {
 		}
 	}
 	
-	private void insertUnemployed() {
+	public void insertUnemployed() {
+		selectUnemployed.getItems().clear();
 		ArrayList<Employee> unemployed = new ArrayList<>();
 		unemployed = readerCSV.unemployedEmployees();
 		for(Employee unemployedEmployee : unemployed) {
@@ -117,7 +118,8 @@ public class VisualElementsHolder {
 		}
 	}
 	
-	private void insertEmployed() {
+	public void insertEmployed() {
+		assignEmployed.getItems().clear();
 		ArrayList<Employee> unemployed = new ArrayList<>();
 		unemployed = readerCSV.employedEmployees();
 		for(Employee employedEmployee : unemployed) {

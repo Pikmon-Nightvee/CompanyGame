@@ -1,5 +1,6 @@
 package Visual;
 
+import FileLogic.WriteCSVFiles;
 import GameLogic.Company;
 import GameLogic.ErrorMessageHandler;
 import javafx.geometry.Pos;
@@ -69,6 +70,8 @@ public class ButtonManager {
 	}
 	
 	public void action(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company) {
+		WriteCSVFiles writer = new WriteCSVFiles();
+		
 		startButton.setOnAction(event -> {
 			boolean errorOccured = false;
 			if(visual.getInsertName().getText().isBlank()) {
@@ -163,6 +166,13 @@ public class ButtonManager {
 				errorMessage.errorMessageComboBox(visual.getSelectUnemployed(), vBox);
 				return;
 			}
+			writer.manageEmployeeInFiles(visual.getSelectUnemployed().getValue(), "toEmployed");
+			
+			visual.getSelectUnemployed().setValue(null);
+			visual.employedTextArea();
+			visual.unemployedTextArea();
+			visual.insertUnemployed();
+			visual.insertEmployed();
 		});
 		
 		assignTo.setOnAction(event->{
@@ -177,6 +187,13 @@ public class ButtonManager {
 				errorMessage.errorMessageComboBox(visual.getAssignEmployed(), vBox);
 				return;
 			}
+			writer.manageEmployeeInFiles(visual.getAssignEmployed().getValue(), "toUnemployed");
+			
+			visual.getAssignEmployed().setValue(null);
+			visual.employedTextArea();
+			visual.unemployedTextArea();
+			visual.insertUnemployed();
+			visual.insertEmployed();
 		});
 		
 		goBack.setOnAction(event->{
