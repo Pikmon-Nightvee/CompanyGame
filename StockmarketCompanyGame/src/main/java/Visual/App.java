@@ -88,6 +88,7 @@ public class App extends Application {
         gameManager.loop(gameCanvas,gamePencil,gamePane,warningCanvas,warningPencil);
         
         stage.setScene(scene);
+        stage.setTitle("StarUp");
         stage.show();
     }
 
