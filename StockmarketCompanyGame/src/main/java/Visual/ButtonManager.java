@@ -32,6 +32,8 @@ public class ButtonManager {
 	private Button buy = new Button("Buy");
 	private Button sell = new Button("Sell");
 	private Button changeOutput = new Button("Change");
+
+	private Button produceProduct = new Button("Produce");
 	
 	private int amount = 0;
 	private int height = 270;
@@ -42,7 +44,10 @@ public class ButtonManager {
 	
 	private boolean inEmployeeManager = false;
 	private boolean inUnemployedManager = false;
-	private boolean changeTextResEqu = false;
+	private boolean changeTextRes = false;
+	private boolean changeTextEqu = false;
+	private boolean changeTextPro = false;
+	private boolean isProduce = false;
 	
 	private void CSS(Button button) {
 		amount += 1;
@@ -137,20 +142,39 @@ public class ButtonManager {
 		});
 		
 		changeOutput.setOnAction(event->{
-			if(changeTextResEqu) {
-				changeTextResEqu = false;
-				visual.changeEquipmentText("On stock:" + "\n");
-				visual.changeResourceText("On stock:" + "\n");
+			if(!isProduce) {
+				if(changeTextRes) {
+					changeTextRes = false;
+					visual.changeResourceText("On stock:" + "\n");
+				}else{
+					changeTextRes = true;
+					visual.changeResourceText("On sell:" + "\n");
+				}
+				if(changeTextEqu) {
+					changeTextEqu = false;
+					visual.changeEquipmentText("On stock:" + "\n");
+				}else {
+					changeTextEqu = true;
+					visual.changeEquipmentText("On sell:" + "\n");
+				}
+				
 			}else {
-				changeTextResEqu = true;
-				visual.changeEquipmentText("On sell:" + "\n");
-				visual.changeResourceText("On sell:" + "\n");
+				if(changeTextPro) {
+					changeTextPro = false;
+					visual.setProductAllText("On stock:" + "\n");
+				}else {
+					changeTextPro = true;
+					visual.setProductAllText("On sell:" + "\n");
+				}
 			}
 		});
 		
 		produce.setOnAction(event->{
 			vBox.getChildren().clear();
 			vBox.getChildren().addAll(goBack);
+			
+			produceUI(vBox,visual);
+			isProduce = true;
 		});
 		
 		employeeManager.setOnAction(event->{
@@ -227,6 +251,7 @@ public class ButtonManager {
 			
 			inUnemployedManager = true;
 			inEmployeeManager = true;
+			isProduce = false;
 			subSelect = 1;
 			
 			startUpMain(vBox,visual);
@@ -259,6 +284,15 @@ public class ButtonManager {
 		vBox.getChildren().add(visual.getUnemployedStats());
 	}
 	
+	private void produceUI(VBox vBox, VisualElementsHolder visual) {
+		vBox.getChildren().addAll(visual.getEmployeesAvailable(),visual.getAvailableEmployees());
+		vBox.getChildren().addAll(visual.getSelectProductLabel(),visual.getSelectProduct());
+		vBox.getChildren().addAll(visual.getStartProduction(),produceProduct);
+		vBox.getChildren().addAll(visual.getAmountLabel(),visual.getAmountToProduce());
+		vBox.getChildren().addAll(changeOutput);
+		vBox.getChildren().addAll(visual.getProductLabel(),visual.getProductAll());
+	}
+	
 	private void resourceEquipmentUI(boolean isResource, VBox vBox, VisualElementsHolder visual) {
 		CSSSubSelect(buy);
 		CSSSubSelect(sell);
@@ -268,15 +302,14 @@ public class ButtonManager {
 		vBox.getChildren().addAll(visual.getBuyLabel(),buy,visual.getSellLabel(),sell);
 		vBox.getChildren().addAll(visual.getAmountLabel(),visual.getAmountBuySell());
 		if(isResource) {
-			visual.getResourceEquipmentSelect().setText("Select resource");
-			vBox.getChildren().addAll(visual.getResourceEquipmentSelect(),visual.getSelectResource());	
+			vBox.getChildren().addAll(visual.getResourceSelect(),visual.getSelectResource());	
 		}else {
-			visual.getResourceEquipmentSelect().setText("Select equipment");
-			vBox.getChildren().addAll(visual.getResourceEquipmentSelect(),visual.getSelectEquipment());
+			vBox.getChildren().addAll(visual.getEquipmentSelect(),visual.getSelectEquipment());
 		}
 		vBox.getChildren().addAll(visual.getChangeTextArea(),changeOutput);
 		if(isResource) {
 			vBox.getChildren().addAll(visual.getResourceAll());
+			System.out.println("hi");
 		}else {
 			vBox.getChildren().addAll(visual.getEquipmentAll());
 		}

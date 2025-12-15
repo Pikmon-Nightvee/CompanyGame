@@ -33,13 +33,21 @@ public class VisualElementsHolder {
 	private Label buyLabel = new Label("Buy:");
 	private Label sellLabel = new Label("Sell:");
 	private Label amountLabel = new Label("Put in amount");
-	private Label resourceEquipmentSelect = new Label("Select resource:");
+	private Label equipmentSelect = new Label("Select equipment:");
+	private Label resourceSelect = new Label("Select resource:");
 	private Label changeTextArea = new Label("Change output:");
+
+	private Label employeesAvailable = new Label("Available Employees");
+	private Label selectProductLabel = new Label("Select Product:");
+	private Label startProduction = new Label("Produce:");
+	private Label productLabel = new Label("Producable Products:");
 	
 	//TextFields:
 	private TextField insertName = new TextField();
 
 	private TextField amountBuySell = new TextField();
+
+	private TextField amountToProduce = new TextField();
 
 	//TextAreas:
 	private TextArea unemployedStats = new TextArea();
@@ -47,6 +55,8 @@ public class VisualElementsHolder {
 	
 	private TextArea equipmentAll = new TextArea();
 	private TextArea resourceAll = new TextArea();
+	
+	private TextArea productAll = new TextArea();
 	
 	//ComboBox:
 	private ComboBox <String>selectDifficulty = new ComboBox<>();
@@ -59,6 +69,9 @@ public class VisualElementsHolder {
 
 	private ComboBox <String>selectResource = new ComboBox<>();
 	private ComboBox <String>selectEquipment = new ComboBox<>();
+
+	private ComboBox <String>availableEmployees = new ComboBox<>();
+	private ComboBox <String>selectProduct = new ComboBox<>();
 	
 	//CSV reader:
 	private ReadCSVFiles readerCSV = new ReadCSVFiles();
@@ -186,6 +199,14 @@ public class VisualElementsHolder {
 		CSSTextArea(employedStats);
 		unemployedStats.setEditable(false);
 		employedStats.setEditable(false);
+		
+		equipmentAll.setText("On stock:" + "\n");
+		equipmentAll.setEditable(false);
+		resourceAll.setText("On stock:" + "\n");
+		resourceAll.setEditable(false);
+		productAll.setText("On stock:" + "\n");
+		productAll.setEditable(false);
+		
 		unemployedTextArea();
 		employedTextArea();
 	}
@@ -205,21 +226,23 @@ public class VisualElementsHolder {
 	public void subSelectResourceEquipment() {
 		CSSBoxSubSelect(selectResource);
 		CSSBoxSubSelect(selectEquipment);
-		equipmentAll.setText("On stock:" + "\n");
-		equipmentAll.setEditable(false);
-		resourceAll.setText("On stock:" + "\n");
-		resourceAll.setEditable(false);
+
+		CSSLabelSubSelect(resourceSelect);
+		CSSLabelSubSelect(equipmentSelect);
 		
 		subAmount = 1;
 		CSSLabelSubSelect(buyLabel);
 		CSSLabelSubSelect(sellLabel);
-		CSSLabelSubSelect(resourceEquipmentSelect);
 		CSSLabelSubSelect(changeTextArea);
 		CSSLabelSubSelect(amountLabel);
 		
 		//For TextArea:
 		subAmount += 1;
 		System.out.println(subAmount);
+	} 
+
+	public void subSelectProduce() {
+		
 	}
 	
 	public void subSelectEmployed() {
@@ -354,8 +377,12 @@ public class VisualElementsHolder {
 		return sellLabel;
 	}
 
-	public Label getResourceEquipmentSelect() {
-		return resourceEquipmentSelect;
+	public Label getEquipmentSelect() {
+		return equipmentSelect;
+	}
+
+	public Label getResourceSelect() {
+		return resourceSelect;
 	}
 
 	public Label getChangeTextArea() {
@@ -400,5 +427,41 @@ public class VisualElementsHolder {
 
 	public void changeResourceText(String text) {
 		resourceAll.setText(text);
+	}
+
+	public Label getEmployeesAvailable() {
+		return employeesAvailable;
+	}
+
+	public Label getSelectProductLabel() {
+		return selectProductLabel;
+	}
+
+	public Label getProductLabel() {
+		return productLabel;
+	}
+
+	public Label getStartProduction() {
+		return startProduction;
+	}
+
+	public TextField getAmountToProduce() {
+		return amountToProduce;
+	}
+
+	public TextArea getProductAll() {
+		return productAll;
+	}
+
+	public void setProductAllText(String text) {
+		productAll.setText(text);
+	}
+
+	public ComboBox<String> getAvailableEmployees() {
+		return availableEmployees;
+	}
+
+	public ComboBox<String> getSelectProduct() {
+		return selectProduct;
 	}
 }

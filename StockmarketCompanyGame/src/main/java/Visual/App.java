@@ -87,7 +87,6 @@ public class App extends Application {
     	
         gameManager.loop(gameCanvas,gamePencil,gamePane,warningCanvas,warningPencil);
         
-        stage.setTitle("StarCorp");
         stage.setScene(scene);
         stage.show();
     }
