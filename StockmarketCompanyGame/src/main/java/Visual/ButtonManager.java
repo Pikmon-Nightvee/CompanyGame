@@ -17,6 +17,7 @@ public class ButtonManager {
 	private Button equipment = new Button("Equipment");
 	private Button employ = new Button("Employ");
 	private Button nextCycle = new Button("Next Cycle"); 
+	private Button produce = new Button("Produce");
 
 	private Button startButton = new Button("Start the game"); 	
 
@@ -28,6 +29,10 @@ public class ButtonManager {
 	private Button assignTo = new Button("Asign to");
 	private Button fireEmployee = new Button("Fire");
 	
+	private Button buy = new Button("Buy");
+	private Button sell = new Button("Sell");
+	private Button changeOutput = new Button("Change");
+	
 	private int amount = 0;
 	private int height = 270;
 	
@@ -37,8 +42,7 @@ public class ButtonManager {
 	
 	private boolean inEmployeeManager = false;
 	private boolean inUnemployedManager = false;
-	
-	private enum companyType{Foodtruck,EDVManager,CraftBuisness};
+	private boolean changeTextResEqu = false;
 	
 	private void CSS(Button button) {
 		amount += 1;
@@ -64,6 +68,7 @@ public class ButtonManager {
 		CSS(startButton);
 		CSS(employeeManager);
 		CSS(equipment);
+		CSSNoAddAmount(produce);
 		CSSSubSelect(goBack);
 		
 		action(vBox, visual, warningCanvas, gameCanvas, company);
@@ -127,6 +132,25 @@ public class ButtonManager {
 		resources.setOnAction(event->{
 			vBox.getChildren().clear();
 			vBox.getChildren().addAll(goBack);
+			
+			resourceEquipmentUI(true,vBox,visual);
+		});
+		
+		changeOutput.setOnAction(event->{
+			if(changeTextResEqu) {
+				changeTextResEqu = false;
+				visual.changeEquipmentText("On stock:" + "\n");
+				visual.changeResourceText("On stock:" + "\n");
+			}else {
+				changeTextResEqu = true;
+				visual.changeEquipmentText("On sell:" + "\n");
+				visual.changeResourceText("On sell:" + "\n");
+			}
+		});
+		
+		produce.setOnAction(event->{
+			vBox.getChildren().clear();
+			vBox.getChildren().addAll(goBack);
 		});
 		
 		employeeManager.setOnAction(event->{
@@ -159,6 +183,8 @@ public class ButtonManager {
 		equipment.setOnAction(event->{
 			vBox.getChildren().clear();
 			vBox.getChildren().addAll(goBack);
+			
+			resourceEquipmentUI(false,vBox,visual);
 		});
 		
 		employSelectedEmployee.setOnAction(event->{
@@ -233,6 +259,29 @@ public class ButtonManager {
 		vBox.getChildren().add(visual.getUnemployedStats());
 	}
 	
+	private void resourceEquipmentUI(boolean isResource, VBox vBox, VisualElementsHolder visual) {
+		CSSSubSelect(buy);
+		CSSSubSelect(sell);
+		CSSSubSelect(changeOutput);
+		visual.subSelectResourceEquipment();
+		
+		vBox.getChildren().addAll(visual.getBuyLabel(),buy,visual.getSellLabel(),sell);
+		vBox.getChildren().addAll(visual.getAmountLabel(),visual.getAmountBuySell());
+		if(isResource) {
+			visual.getResourceEquipmentSelect().setText("Select resource");
+			vBox.getChildren().addAll(visual.getResourceEquipmentSelect(),visual.getSelectResource());	
+		}else {
+			visual.getResourceEquipmentSelect().setText("Select equipment");
+			vBox.getChildren().addAll(visual.getResourceEquipmentSelect(),visual.getSelectEquipment());
+		}
+		vBox.getChildren().addAll(visual.getChangeTextArea(),changeOutput);
+		if(isResource) {
+			vBox.getChildren().addAll(visual.getResourceAll());
+		}else {
+			vBox.getChildren().addAll(visual.getEquipmentAll());
+		}
+	}
+	
 	public void changeTextAreaSize(Canvas gameCanvas,VisualElementsHolder visual,String textArea) {
 		int accountForGapsInbetweenElements = 10;
 		subHeight = visual.getSubAmount() + subSelect;
@@ -263,11 +312,17 @@ public class ButtonManager {
 	public void startUpCompany(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas) {
 		Label availableResources = new Label("Available Resources");
 		Label employeeLabel = new Label("List Employee Data");
+		Label produceLabel = new Label("   Produce product");
 		visual.CSSLabel(availableResources);
 		visual.CSSLabel(employeeLabel);
+		visual.CSSLabelNoAddAmount(produceLabel);
 		
+		HBox hBoxLabel = new HBox();
+		HBox hBoxButtons = new HBox();
+		hBoxLabel.getChildren().addAll(availableResources,produceLabel);		
+		hBoxButtons.getChildren().addAll(resources,produce);
 		VBox vBoxAdd = new VBox();
-		vBoxAdd.getChildren().addAll(availableResources,resources,equipment,employeeLabel,employ,employeeManager);
+		vBoxAdd.getChildren().addAll(hBoxLabel,hBoxButtons,equipment,employeeLabel,employ,employeeManager);
 		
 		Label nextCycleLabel = new Label("Next Cycle");
 		visual.CSSLabel(nextCycleLabel);

@@ -30,12 +30,23 @@ public class VisualElementsHolder {
 	private Label hiredEmployees = new Label("Hired:");
 	private Label fireEmployee = new Label("Fire");
 	
+	private Label buyLabel = new Label("Buy:");
+	private Label sellLabel = new Label("Sell:");
+	private Label amountLabel = new Label("Put in amount");
+	private Label resourceEquipmentSelect = new Label("Select resource:");
+	private Label changeTextArea = new Label("Change output:");
+	
 	//TextFields:
 	private TextField insertName = new TextField();
+
+	private TextField amountBuySell = new TextField();
 
 	//TextAreas:
 	private TextArea unemployedStats = new TextArea();
 	private TextArea employedStats = new TextArea();
+	
+	private TextArea equipmentAll = new TextArea();
+	private TextArea resourceAll = new TextArea();
 	
 	//ComboBox:
 	private ComboBox <String>selectDifficulty = new ComboBox<>();
@@ -45,6 +56,9 @@ public class VisualElementsHolder {
 	private ComboBox <String>selectUnemployed = new ComboBox<>();
 
 	private ComboBox <String>assignEmployed = new ComboBox<>();
+
+	private ComboBox <String>selectResource = new ComboBox<>();
+	private ComboBox <String>selectEquipment = new ComboBox<>();
 	
 	//CSV reader:
 	private ReadCSVFiles readerCSV = new ReadCSVFiles();
@@ -188,6 +202,26 @@ public class VisualElementsHolder {
 		subAmount += 1;
 	}
 	
+	public void subSelectResourceEquipment() {
+		CSSBoxSubSelect(selectResource);
+		CSSBoxSubSelect(selectEquipment);
+		equipmentAll.setText("On stock:" + "\n");
+		equipmentAll.setEditable(false);
+		resourceAll.setText("On stock:" + "\n");
+		resourceAll.setEditable(false);
+		
+		subAmount = 1;
+		CSSLabelSubSelect(buyLabel);
+		CSSLabelSubSelect(sellLabel);
+		CSSLabelSubSelect(resourceEquipmentSelect);
+		CSSLabelSubSelect(changeTextArea);
+		CSSLabelSubSelect(amountLabel);
+		
+		//For TextArea:
+		subAmount += 1;
+		System.out.println(subAmount);
+	}
+	
 	public void subSelectEmployed() {
 		subAmount = 0;
 		CSSBoxSubSelect(assignEmployed);
@@ -312,11 +346,59 @@ public class VisualElementsHolder {
 		return employedStats;
 	}
 
+	public Label getBuyLabel() {
+		return buyLabel;
+	}
+
+	public Label getSellLabel() {
+		return sellLabel;
+	}
+
+	public Label getResourceEquipmentSelect() {
+		return resourceEquipmentSelect;
+	}
+
+	public Label getChangeTextArea() {
+		return changeTextArea;
+	}
+
+	public ComboBox<String> getSelectResource() {
+		return selectResource;
+	}
+
+	public ComboBox<String> getSelectEquipment() {
+		return selectEquipment;
+	}
+
 	public ComboBox<String> getAssignEmployed() {
 		return assignEmployed;
 	}
 
 	public Label getFireEmployee() {
 		return fireEmployee;
+	}
+
+	public TextField getAmountBuySell() {
+		return amountBuySell;
+	}
+
+	public TextArea getEquipmentAll() {
+		return equipmentAll;
+	}
+
+	public TextArea getResourceAll() {
+		return resourceAll;
+	}
+
+	public Label getAmountLabel() {
+		return amountLabel;
+	}
+
+	public void changeEquipmentText(String text) {
+		equipmentAll.setText(text);
+	}
+
+	public void changeResourceText(String text) {
+		resourceAll.setText(text);
 	}
 }
