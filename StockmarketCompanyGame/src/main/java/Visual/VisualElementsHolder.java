@@ -242,7 +242,19 @@ public class VisualElementsHolder {
 	} 
 
 	public void subSelectProduce() {
+		subAmount = 0;
+		CSSBoxSubSelect(availableEmployees);
+		CSSBoxSubSelect(selectProduct);
 		
+		CSSLabelSubSelect(employeesAvailable);
+		CSSLabelSubSelect(selectProductLabel);
+		CSSLabelSubSelect(startProduction);
+		CSSLabelSubSelect(productLabel);
+		CSSLabelSubSelect(amountLabel);
+		
+		//For TextArea:
+		subAmount += 1;
+		System.out.println(subAmount);
 	}
 	
 	public void subSelectEmployed() {

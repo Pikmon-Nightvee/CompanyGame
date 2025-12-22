@@ -291,6 +291,10 @@ public class ButtonManager {
 		vBox.getChildren().addAll(visual.getAmountLabel(),visual.getAmountToProduce());
 		vBox.getChildren().addAll(changeOutput);
 		vBox.getChildren().addAll(visual.getProductLabel(),visual.getProductAll());
+		
+		visual.subSelectProduce();
+		CSSSubSelect(changeOutput);
+		CSSSubSelect(produceProduct);
 	}
 	
 	private void resourceEquipmentUI(boolean isResource, VBox vBox, VisualElementsHolder visual) {
