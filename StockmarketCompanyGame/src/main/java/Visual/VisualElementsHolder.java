@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import FileLogic.ReadCSVFiles;
 import GameLogic.Employee;
+import GameLogic.Machine;
+import GameLogic.Resource;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -177,7 +179,7 @@ public class VisualElementsHolder {
 		area.setPrefSize(5, 1);
 	}
 	
-	public void start() {
+	public void start(ReadCSVFiles reader) {
 		insertUnemployed();
 		insertEmployed();
 		
@@ -199,11 +201,25 @@ public class VisualElementsHolder {
 		CSSTextArea(employedStats);
 		unemployedStats.setEditable(false);
 		employedStats.setEditable(false);
+
+		StringBuilder builder = new StringBuilder();
+		builder.append("On stock:" + "\n");
 		
-		equipmentAll.setText("On stock:" + "\n");
+		ArrayList<Machine> machines = reader.readMachines("MachineNotBought.csv");
+		for(Machine m : machines) {
+			builder.append(m.toString());
+		}
 		equipmentAll.setEditable(false);
-		resourceAll.setText("On stock:" + "\n");
+
+		builder = new StringBuilder();
+		builder.append("On stock:" + "\n");
+		
+		ArrayList<Resource> resources = reader.readResource("ResourcesBought.csv");
+		for(Resource r : resources) {
+			builder.append(r.toString());
+		}
 		resourceAll.setEditable(false);
+		
 		productAll.setText("On stock:" + "\n");
 		productAll.setEditable(false);
 		

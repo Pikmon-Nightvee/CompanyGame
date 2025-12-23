@@ -1,8 +1,13 @@
 package Visual;
 
+import java.util.ArrayList;
+
+import FileLogic.ReadCSVFiles;
 import FileLogic.WriteCSVFiles;
 import GameLogic.Company;
 import GameLogic.ErrorMessageHandler;
+import GameLogic.Machine;
+import GameLogic.Resource;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
@@ -81,6 +86,7 @@ public class ButtonManager {
 	
 	public void action(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company) {
 		WriteCSVFiles writer = new WriteCSVFiles();
+		ReadCSVFiles reader = new ReadCSVFiles();
 		
 		startButton.setOnAction(event -> {
 			boolean errorOccured = false;
@@ -145,17 +151,53 @@ public class ButtonManager {
 			if(!isProduce) {
 				if(changeTextRes) {
 					changeTextRes = false;
-					visual.changeResourceText("On stock:" + "\n");
+					
+					StringBuilder builder = new StringBuilder();
+					builder.append("On stock:" + "\n");
+					
+					ArrayList<Resource> resources = reader.readResource("ResourcesBought.csv");
+					for(Resource r : resources) {
+						builder.append(r.toString());
+					}
+					
+					visual.changeResourceText(builder.toString());
 				}else{
 					changeTextRes = true;
-					visual.changeResourceText("On sell:" + "\n");
+					
+					StringBuilder builder = new StringBuilder();
+					builder.append("On sell:" + "\n");
+					
+					ArrayList<Resource> resources = reader.readResource("ResourcesOnSell.csv");
+					for(Resource r : resources) {
+						builder.append(r.toString());
+					}
+					
+					visual.changeResourceText(builder.toString());
 				}
 				if(changeTextEqu) {
 					changeTextEqu = false;
-					visual.changeEquipmentText("On stock:" + "\n");
+					
+					StringBuilder builder = new StringBuilder();
+					builder.append("On stock:" + "\n");
+					
+					ArrayList<Machine> machines = reader.readMachines("MachineBought.csv");
+					for(Machine m : machines) {
+						builder.append(m.toString());
+					}
+					
+					visual.changeEquipmentText(builder.toString());
 				}else {
 					changeTextEqu = true;
-					visual.changeEquipmentText("On sell:" + "\n");
+					
+					StringBuilder builder = new StringBuilder();
+					builder.append("On sell:" + "\n");
+					
+					ArrayList<Machine> machines = reader.readMachines("MachineNotBought.csv");
+					for(Machine m : machines) {
+						builder.append(m.toString());
+					}
+					
+					visual.changeEquipmentText(builder.toString());
 				}
 				
 			}else {

@@ -53,7 +53,7 @@ public class App extends Application {
     	Scene scene = new Scene(gamePane, width, height);
     	
     	gameVBox.getChildren().addAll(visualElementsHolder.getEnterName(),visualElementsHolder.getInsertName());
-    	visualElementsHolder.start();
+    	visualElementsHolder.start(readCSV);
     	buttonManager.start(gameVBox, visualElementsHolder,warningCanvas,gameCanvas,company);
     	
     	visualElementsHolder.getSelectDifficulty().setValue("Easy");

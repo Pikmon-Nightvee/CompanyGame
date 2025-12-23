@@ -24,6 +24,6 @@ public class Resource {
 
 	@Override
 	public String toString() {
-		return "Resource [name=" + name + ", amount=" + amount + ", cost=" + cost + "]";
+		return "Resource [name=" + name + ", amount=" + amount + ", cost=" + cost + "]" + "\n";
 	}
 }
