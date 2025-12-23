@@ -6,6 +6,8 @@ import java.util.Scanner;
 
 import GameLogic.Company;
 import GameLogic.Employee;
+import GameLogic.Machine;
+import GameLogic.Resource;
 
 public class ReadCSVFiles {
 	public Company gameAlreadyPlayedCompanyData() {
@@ -68,10 +70,6 @@ public class ReadCSVFiles {
 			e.printStackTrace();
 		}
 		
-		for(Employee e : employees) {
-			System.out.println(e.toString());
-		}
-		
 		return employees;
 	}
 	
@@ -96,9 +94,6 @@ public class ReadCSVFiles {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		for(Employee e : employees) {
-			System.out.println(e.toString());
-		}
 		
 		return employees;
 	}
@@ -116,10 +111,63 @@ public class ReadCSVFiles {
 			e.printStackTrace();
 		}
 		
-		for(String e : unEmployed) {
-			System.out.println(e);
+		return unEmployed;
+	}
+	
+	public ArrayList<Machine> readMachines(String path){
+		String filePath = "DataCSV/EquipmentData/"  + path;
+		File file = new File(filePath);
+		ArrayList<Machine> machines= new ArrayList<>();
+		
+		try(Scanner reader = new Scanner(file)){
+			while(reader.hasNext()) {
+				String readLine = reader.nextLine();
+				String[] dataInLine = readLine.split(",");
+				
+				String name = dataInLine[0];
+				int amount = Integer.parseInt(dataInLine[1]);
+				int cost = Integer.parseInt(dataInLine[2]);
+				int reliability = Integer.parseInt(dataInLine[3]);
+				
+				Machine newMachine = new Machine(name,amount,cost,reliability);
+				machines.add(newMachine);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
 		
-		return unEmployed;
+		for(Machine m : machines) {
+			System.out.println(m.toString());
+		}
+		
+		return machines;
+	}
+	
+	public ArrayList<Resource> readResource(String path){
+		String filePath = "DataCSV/ResourceData/"  + path;
+		File file = new File(filePath);
+		ArrayList<Resource> resources= new ArrayList<>();
+		
+		try(Scanner reader = new Scanner(file)){
+			while(reader.hasNext()) {
+				String readLine = reader.nextLine();
+				String[] dataInLine = readLine.split(",");
+				
+				String name = dataInLine[0];
+				int amount = Integer.parseInt(dataInLine[1]);
+				int cost = Integer.parseInt(dataInLine[2]);
+				
+				Resource newResource = new Resource(name,amount,cost);
+				resources.add(newResource);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		for(Resource r : resources) {
+			System.out.println(r.toString());
+		}
+		
+		return resources;
 	}
 }
