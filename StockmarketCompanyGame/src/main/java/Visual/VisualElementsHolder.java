@@ -194,7 +194,7 @@ public class VisualElementsHolder {
 		CSSLabelNoAddAmount(difficulty);
 		CSSLabelNoAddAmount(chooseCompanyType);
 		CSSLabelNoAddAmount(chooseCompanyWork);
-		
+		//Test
 		CSSTextField(insertName);
 
 		CSSTextArea(unemployedStats);
