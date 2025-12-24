@@ -67,6 +67,10 @@ public class WriteCSVFiles {
 		
 	}
 	
+	public void buySellEquipmentRes() {
+		
+	}
+	
 	public void gameWasPlayed() {
 		try {
 			File file = new File("DataCSV/GameStartUp/GameAlreadyStarted.csv");

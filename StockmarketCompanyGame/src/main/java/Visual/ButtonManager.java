@@ -53,6 +53,7 @@ public class ButtonManager {
 	private boolean changeTextEqu = false;
 	private boolean changeTextPro = false;
 	private boolean isProduce = false;
+	private boolean isResource = false;
 	
 	private void CSS(Button button) {
 		amount += 1;
@@ -144,16 +145,28 @@ public class ButtonManager {
 			vBox.getChildren().clear();
 			vBox.getChildren().addAll(goBack);
 			
-			resourceEquipmentUI(true,vBox,visual);
+			resourceEquipmentUI(true,vBox,visual,changeTextRes);
+			isResource = true;
+			
+			String resourcePath = "";
+			if(changeTextRes) {
+				resourcePath = "ResourcesOnSell.csv";
+			}else {
+				resourcePath = "ResourcesBought.csv";
+			}
+			
+			visual.insertResource(resourcePath);
 		});
 		
 		changeOutput.setOnAction(event->{
 			if(!isProduce) {
+				changeBuySell(vBox,changeTextRes,visual);
 				if(changeTextRes) {
 					changeTextRes = false;
 					
 					StringBuilder builder = new StringBuilder();
-					builder.append("On stock:" + "\n");
+					builder.append("Bought:" + "\n");
+					visual.insertResource("ResourcesBought.csv");
 					
 					ArrayList<Resource> resources = reader.readResource("ResourcesBought.csv");
 					for(Resource r : resources) {
@@ -166,6 +179,7 @@ public class ButtonManager {
 					
 					StringBuilder builder = new StringBuilder();
 					builder.append("On sell:" + "\n");
+					visual.insertResource("ResourcesOnSell.csv");
 					
 					ArrayList<Resource> resources = reader.readResource("ResourcesOnSell.csv");
 					for(Resource r : resources) {
@@ -178,7 +192,8 @@ public class ButtonManager {
 					changeTextEqu = false;
 					
 					StringBuilder builder = new StringBuilder();
-					builder.append("On stock:" + "\n");
+					builder.append("Bought:" + "\n");
+					visual.insertEquipment("MachineBought.csv");
 					
 					ArrayList<Machine> machines = reader.readMachines("MachineBought.csv");
 					for(Machine m : machines) {
@@ -191,6 +206,7 @@ public class ButtonManager {
 					
 					StringBuilder builder = new StringBuilder();
 					builder.append("On sell:" + "\n");
+					visual.insertEquipment("MachineNotBought.csv");
 					
 					ArrayList<Machine> machines = reader.readMachines("MachineNotBought.csv");
 					for(Machine m : machines) {
@@ -199,11 +215,10 @@ public class ButtonManager {
 					
 					visual.changeEquipmentText(builder.toString());
 				}
-				
 			}else {
 				if(changeTextPro) {
 					changeTextPro = false;
-					visual.setProductAllText("On stock:" + "\n");
+					visual.setProductAllText("Bought:" + "\n");
 				}else {
 					changeTextPro = true;
 					visual.setProductAllText("On sell:" + "\n");
@@ -250,7 +265,12 @@ public class ButtonManager {
 			vBox.getChildren().clear();
 			vBox.getChildren().addAll(goBack);
 			
-			resourceEquipmentUI(false,vBox,visual);
+			resourceEquipmentUI(false,vBox,visual,changeTextRes);
+			if(changeTextEqu) {
+				visual.insertEquipment("MachineNotBought.csv");
+			}else{
+				visual.insertEquipment("MachineBought.csv");
+			}
 		});
 		
 		employSelectedEmployee.setOnAction(event->{
@@ -290,16 +310,66 @@ public class ButtonManager {
 		
 		goBack.setOnAction(event->{
 			vBox.getChildren().clear();
+			visual.clearTextFields();
 			
 			inUnemployedManager = true;
 			inEmployeeManager = true;
 			isProduce = false;
+			isResource = false;
 			subSelect = 1;
-			
+
+			visual.getAmountBuySell().setStyle("-fx-font-size:15px;");	
 			startUpMain(vBox,visual);
 			startUpCompany(vBox,visual,warningCanvas);
 		});
 		
+		buy.setOnAction(event->{
+			boolean errorOccured = false;
+			if(visual.getAmountBuySell().getText().isBlank()){
+				errorMessage.errorMessageText(visual.getAmountBuySell(), vBox);
+				errorOccured = true;
+			}
+			if(isResource) {
+				if(visual.getSelectResource().getValue() == null){
+					errorMessage.errorMessageComboBox(visual.getSelectResource(), vBox);
+					errorOccured = true;
+				}
+			}else {
+				if(visual.getSelectEquipment().getValue() == null){
+					errorMessage.errorMessageComboBox(visual.getSelectEquipment(), vBox);
+					errorOccured = true;
+				}
+			}
+			if(errorOccured) {
+				return;
+			}
+		});
+		
+		sell.setOnAction(event->{
+			boolean errorOccured = false;
+			if(visual.getAmountBuySell().getText().isBlank()){
+				errorMessage.errorMessageText(visual.getAmountBuySell(), vBox);
+				errorOccured = true;
+			}
+			if(isResource) {
+				if(visual.getSelectResource().getValue() == null){
+					errorMessage.errorMessageComboBox(visual.getSelectResource(), vBox);
+					errorOccured = true;
+				}
+			}else {
+				if(visual.getSelectEquipment().getValue() == null){
+					errorMessage.errorMessageComboBox(visual.getSelectEquipment(), vBox);
+					errorOccured = true;
+				}
+			}
+			if(errorOccured) {
+				return;
+			}
+		});
+		
+		visual.getAmountBuySell().setOnMouseClicked(event ->{
+			errorMessage.errorMessageHandlerText(visual.getAmountBuySell(), vBox);
+		});
 		visual.getInsertName().setOnMouseClicked(event ->{
 			errorMessage.errorMessageHandlerText(visual.getInsertName(), vBox);
 		});
@@ -315,6 +385,24 @@ public class ButtonManager {
 		visual.getAssignEmployed().setOnMouseClicked(event ->{
 			errorMessage.errorMessageHandlerComboBox(visual.getAssignEmployed(), vBox);
 		});
+		visual.getSelectResource().setOnMouseClicked(event ->{
+			errorMessage.errorMessageHandlerComboBox(visual.getSelectResource(), vBox);
+		});
+		visual.getSelectEquipment().setOnMouseClicked(event ->{
+			errorMessage.errorMessageHandlerComboBox(visual.getSelectEquipment(), vBox);
+		});
+	}
+	
+	private void changeBuySell(VBox vBox, boolean boughtButton, VisualElementsHolder visual) {
+		if(!boughtButton) {
+			int index = vBox.getChildren().indexOf(buy);
+			vBox.getChildren().set(index, sell);
+			vBox.getChildren().set(index-1,visual.getSellLabel());
+		}else {
+			int index = vBox.getChildren().indexOf(sell);
+			vBox.getChildren().set(index, buy);
+			vBox.getChildren().set(index-1,visual.getBuyLabel());
+		}
 	}
 	
 	private void unemployedEmployees(VBox vBox, VisualElementsHolder visual, Canvas gameCanvas) {
@@ -339,13 +427,17 @@ public class ButtonManager {
 		CSSSubSelect(produceProduct);
 	}
 	
-	private void resourceEquipmentUI(boolean isResource, VBox vBox, VisualElementsHolder visual) {
+	private void resourceEquipmentUI(boolean isResource, VBox vBox, VisualElementsHolder visual, boolean isNotBuy) {
 		CSSSubSelect(buy);
 		CSSSubSelect(sell);
 		CSSSubSelect(changeOutput);
 		visual.subSelectResourceEquipment();
 		
-		vBox.getChildren().addAll(visual.getBuyLabel(),buy,visual.getSellLabel(),sell);
+		if(!isNotBuy) {
+			vBox.getChildren().addAll(visual.getBuyLabel(),buy);
+		}else {
+			vBox.getChildren().addAll(visual.getSellLabel(),sell);
+		}
 		vBox.getChildren().addAll(visual.getAmountLabel(),visual.getAmountBuySell());
 		if(isResource) {
 			vBox.getChildren().addAll(visual.getResourceSelect(),visual.getSelectResource());	

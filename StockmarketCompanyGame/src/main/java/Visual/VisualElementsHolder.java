@@ -156,6 +156,24 @@ public class VisualElementsHolder {
 		}
 	}
 	
+	public void insertResource(String resourceSelected) {
+		selectResource.getItems().clear();
+		ArrayList<Resource> resources = new ArrayList<>();
+		resources = readerCSV.readResource(resourceSelected);
+		for(Resource r : resources) {
+			selectResource.getItems().add(r.getName());
+		}
+	}
+	
+	public void insertEquipment(String equipmentSelected) {
+		selectEquipment.getItems().clear();
+		ArrayList<Machine> equipments = new ArrayList<>();
+		equipments = readerCSV.readMachines(equipmentSelected);
+		for(Machine m : equipments) {
+			selectEquipment.getItems().add(m.getName());
+		}
+	}
+	
 	private void CSSBox(ComboBox<String> comboBox) {
 		amount += 1;
 		comboBox.setPrefSize(200, 20);
@@ -203,24 +221,26 @@ public class VisualElementsHolder {
 		employedStats.setEditable(false);
 
 		StringBuilder builder = new StringBuilder();
-		builder.append("On stock:" + "\n");
+		builder.append("Bought:" + "\n");
 		
-		ArrayList<Machine> machines = reader.readMachines("MachineNotBought.csv");
+		ArrayList<Machine> machines = reader.readMachines("MachineBought.csv");
 		for(Machine m : machines) {
 			builder.append(m.toString());
 		}
+		equipmentAll.setText(builder.toString());
 		equipmentAll.setEditable(false);
 
 		builder = new StringBuilder();
-		builder.append("On stock:" + "\n");
+		builder.append("Bought:" + "\n");
 		
 		ArrayList<Resource> resources = reader.readResource("ResourcesBought.csv");
 		for(Resource r : resources) {
 			builder.append(r.toString());
 		}
+		resourceAll.setText(builder.toString());
 		resourceAll.setEditable(false);
 		
-		productAll.setText("On stock:" + "\n");
+		productAll.setText("Bought:" + "\n");
 		productAll.setEditable(false);
 		
 		unemployedTextArea();
@@ -295,6 +315,12 @@ public class VisualElementsHolder {
 	public void CSSLabelSubSelect(Label label) {
 		subAmount += 1;
 		label.setStyle("-fx-font-size: 20px;-fx-font-weight: bold;");
+	}
+	
+	public void clearTextFields() {
+		insertName.clear();
+		amountBuySell.clear();
+		amountToProduce.clear();
 	}
 	
 	//Getters and Setters
