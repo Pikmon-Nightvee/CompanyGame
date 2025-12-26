@@ -49,8 +49,7 @@ public class ButtonManager {
 	
 	private boolean inEmployeeManager = false;
 	private boolean inUnemployedManager = false;
-	private boolean changeTextRes = false;
-	private boolean changeTextEqu = false;
+	private boolean changeTextResEqu = false;
 	private boolean changeTextPro = false;
 	private boolean isProduce = false;
 	private boolean isResource = false;
@@ -145,11 +144,11 @@ public class ButtonManager {
 			vBox.getChildren().clear();
 			vBox.getChildren().addAll(goBack);
 			
-			resourceEquipmentUI(true,vBox,visual,changeTextRes);
+			resourceEquipmentUI(true,vBox,visual,changeTextResEqu);
 			isResource = true;
 			
 			String resourcePath = "";
-			if(changeTextRes) {
+			if(changeTextResEqu) {
 				resourcePath = "ResourcesOnSell.csv";
 			}else {
 				resourcePath = "ResourcesBought.csv";
@@ -160,61 +159,13 @@ public class ButtonManager {
 		
 		changeOutput.setOnAction(event->{
 			if(!isProduce) {
-				changeBuySell(vBox,changeTextRes,visual);
-				if(changeTextRes) {
-					changeTextRes = false;
-					
-					StringBuilder builder = new StringBuilder();
-					builder.append("Bought:" + "\n");
-					visual.insertResource("ResourcesBought.csv");
-					
-					ArrayList<Resource> resources = reader.readResource("ResourcesBought.csv");
-					for(Resource r : resources) {
-						builder.append(r.toString());
-					}
-					
-					visual.changeResourceText(builder.toString());
+				changeBuySell(vBox,changeTextResEqu,visual);
+				if(changeTextResEqu) {
+					changeTextResEqu = false;
 				}else{
-					changeTextRes = true;
-					
-					StringBuilder builder = new StringBuilder();
-					builder.append("On sell:" + "\n");
-					visual.insertResource("ResourcesOnSell.csv");
-					
-					ArrayList<Resource> resources = reader.readResource("ResourcesOnSell.csv");
-					for(Resource r : resources) {
-						builder.append(r.toString());
-					}
-					
-					visual.changeResourceText(builder.toString());
+					changeTextResEqu = true;
 				}
-				if(changeTextEqu) {
-					changeTextEqu = false;
-					
-					StringBuilder builder = new StringBuilder();
-					builder.append("Bought:" + "\n");
-					visual.insertEquipment("MachineBought.csv");
-					
-					ArrayList<Machine> machines = reader.readMachines("MachineBought.csv");
-					for(Machine m : machines) {
-						builder.append(m.toString());
-					}
-					
-					visual.changeEquipmentText(builder.toString());
-				}else {
-					changeTextEqu = true;
-					
-					StringBuilder builder = new StringBuilder();
-					builder.append("On sell:" + "\n");
-					visual.insertEquipment("MachineNotBought.csv");
-					
-					ArrayList<Machine> machines = reader.readMachines("MachineNotBought.csv");
-					for(Machine m : machines) {
-						builder.append(m.toString());
-					}
-					
-					visual.changeEquipmentText(builder.toString());
-				}
+				visual.updateResourceEquipment(reader,changeTextResEqu);
 			}else {
 				if(changeTextPro) {
 					changeTextPro = false;
@@ -265,8 +216,8 @@ public class ButtonManager {
 			vBox.getChildren().clear();
 			vBox.getChildren().addAll(goBack);
 			
-			resourceEquipmentUI(false,vBox,visual,changeTextRes);
-			if(changeTextEqu) {
+			resourceEquipmentUI(false,vBox,visual,changeTextResEqu);
+			if(changeTextResEqu) {
 				visual.insertEquipment("MachineNotBought.csv");
 			}else{
 				visual.insertEquipment("MachineBought.csv");
@@ -319,16 +270,37 @@ public class ButtonManager {
 			subSelect = 1;
 
 			visual.getAmountBuySell().setStyle("-fx-font-size:15px;");	
+			
+			Label money = new Label();
+			visual.CSSLabel(money);
+			money.setText(String.valueOf(company.getMoneyOfCompany()));
+			visual.setMoneyOfCompany(money);
+			
 			startUpMain(vBox,visual);
 			startUpCompany(vBox,visual,warningCanvas);
+			System.out.println("Money of company:"+company.getMoneyOfCompany());
 		});
 		
 		buy.setOnAction(event->{
 			boolean errorOccured = false;
+			
 			if(visual.getAmountBuySell().getText().isBlank()){
 				errorMessage.errorMessageText(visual.getAmountBuySell(), vBox);
 				errorOccured = true;
 			}
+			int buyAmount = 0;
+			try {
+				buyAmount = Integer.parseInt(visual.getAmountBuySell().getText());
+			}catch(Exception e) {
+				errorMessage.errorMessageText(visual.getAmountBuySell(), vBox);
+				errorOccured = true;
+				System.out.println(e.getMessage());
+			}
+			if(buyAmount <= 0){
+				errorMessage.errorMessageText(visual.getAmountBuySell(), vBox);
+				errorOccured = true;
+			}
+			
 			if(isResource) {
 				if(visual.getSelectResource().getValue() == null){
 					errorMessage.errorMessageComboBox(visual.getSelectResource(), vBox);
@@ -343,6 +315,16 @@ public class ButtonManager {
 			if(errorOccured) {
 				return;
 			}
+			
+			if(isResource) {
+				writer.buySellResources(visual.getSelectResource().getValue(), "Bought", company, buyAmount);
+				visual.getSelectResource().setValue(null);
+			}else {
+				writer.buySellMachines(visual.getSelectEquipment().getValue(), "Bought", company, buyAmount);
+				visual.getSelectEquipment().setValue(null);
+			}
+			
+			visual.updateResourceEquipment(reader,changeTextResEqu);
 		});
 		
 		sell.setOnAction(event->{
@@ -351,6 +333,20 @@ public class ButtonManager {
 				errorMessage.errorMessageText(visual.getAmountBuySell(), vBox);
 				errorOccured = true;
 			}
+			
+			int sellAmount = 0;
+			try {
+				sellAmount = Integer.parseInt(visual.getAmountBuySell().getText());
+			}catch(Exception e) {
+				errorMessage.errorMessageText(visual.getAmountBuySell(), vBox);
+				errorOccured = true;
+				System.out.println(e.getMessage());
+			}
+			if(sellAmount <= 0){
+				errorMessage.errorMessageText(visual.getAmountBuySell(), vBox);
+				errorOccured = true;
+			}
+			
 			if(isResource) {
 				if(visual.getSelectResource().getValue() == null){
 					errorMessage.errorMessageComboBox(visual.getSelectResource(), vBox);
@@ -365,6 +361,16 @@ public class ButtonManager {
 			if(errorOccured) {
 				return;
 			}
+			
+			if(isResource) {
+				writer.buySellResources(visual.getSelectResource().getValue(), "Sold", company, sellAmount);
+				visual.getSelectResource().setValue(null);
+			}else {
+				writer.buySellMachines(visual.getSelectEquipment().getValue(), "Sold", company, sellAmount);
+				visual.getSelectEquipment().setValue(null);
+			}
+			
+			visual.updateResourceEquipment(reader,changeTextResEqu);
 		});
 		
 		visual.getAmountBuySell().setOnMouseClicked(event ->{
@@ -394,7 +400,7 @@ public class ButtonManager {
 	}
 	
 	private void changeBuySell(VBox vBox, boolean boughtButton, VisualElementsHolder visual) {
-		if(!boughtButton) {
+		if(boughtButton) {
 			int index = vBox.getChildren().indexOf(buy);
 			vBox.getChildren().set(index, sell);
 			vBox.getChildren().set(index-1,visual.getSellLabel());
@@ -433,7 +439,7 @@ public class ButtonManager {
 		CSSSubSelect(changeOutput);
 		visual.subSelectResourceEquipment();
 		
-		if(!isNotBuy) {
+		if(isNotBuy) {
 			vBox.getChildren().addAll(visual.getBuyLabel(),buy);
 		}else {
 			vBox.getChildren().addAll(visual.getSellLabel(),sell);
@@ -478,6 +484,26 @@ public class ButtonManager {
 		hBox.getChildren().addAll(name,visual.getNameOfCompany(),money,visual.getMoneyOfCompany(),companyType,companySpecification);
 		vBox.setAlignment(Pos.TOP_LEFT);
 		vBox.getChildren().add(hBox);
+	}
+	
+	public void updateMoney(VBox vBox, VisualElementsHolder visual, Company company) {
+		Label money = new Label();
+		money.setText(String.valueOf(company.getMoneyOfCompany()));
+		visual.setMoneyOfCompany(money);
+		
+		HBox hBox = new HBox();
+		Label name = new Label("Name of Company: ");
+		money = new Label(" | Money of the Company (€): ");
+		Label companyType = new Label(" | Company Type: ");
+		Label companySpecification = new Label(visual.getSelectCompanySpecification().getValue());
+		visual.CSSLabel(money);
+		visual.CSSLabelNoAddAmount(name);
+		visual.CSSLabelNoAddAmount(companyType);
+		visual.CSSLabelNoAddAmount(companySpecification);
+		
+		hBox.getChildren().addAll(name,visual.getNameOfCompany(),money,visual.getMoneyOfCompany(),companyType,companySpecification);
+		vBox.setAlignment(Pos.TOP_LEFT);
+		vBox.getChildren().set(0,hBox);
 	}
 	
 	public void startUpCompany(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas) {

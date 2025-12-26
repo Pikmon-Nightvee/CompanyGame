@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import GameLogic.Company;
 import GameLogic.Employee;
+import GameLogic.Machine;
+import GameLogic.Resource;
 
 public class WriteCSVFiles {
 	public void manageEmployeeInFiles(String id, String toWhere) {
@@ -67,8 +70,164 @@ public class WriteCSVFiles {
 		
 	}
 	
-	public void buySellEquipmentRes() {
+	public void buySellResources(String id, String toWhere, Company company, int amount) {
+		//TODO: Fill this function out, then this is done.
+		ArrayList<Resource> resources = new ArrayList<>();
+		ArrayList<Resource> resourceCheck = new ArrayList<>();
+		ReadCSVFiles reader = new ReadCSVFiles();
 		
+		String path1 = "";
+		String path2 = "";
+		
+		boolean sell = false;
+		
+		switch(toWhere){
+		case "Sold": resources = reader.readResource("ResourcesBought.csv"); resourceCheck = reader.readResource("ResourcesOnSell.csv"); path1 = "ResourcesOnSell.csv"; path2 = "ResourcesBought.csv"; sell = true; break;
+		case "Bought": resources = reader.readResource("ResourcesOnSell.csv"); resourceCheck = reader.readResource("ResourcesBought.csv"); path1 = "ResourcesBought.csv"; path2 = "ResourcesOnSell.csv"; break;
+		}
+		
+		boolean nothingFound = true;
+		Resource holder = null;
+		System.out.println(id);
+		
+		for(Resource resourceCurrent : resources) {
+			if(resourceCurrent.getName().contains(id)) {
+				nothingFound = false;
+				Resource resourceToInsert = new Resource(resourceCurrent.getName(),resourceCurrent.getAmount(),resourceCurrent.getCost());
+				holder=resourceToInsert;
+			}
+		}
+		
+		if(nothingFound) {
+			System.out.println("No Resource was found!");
+			return;
+		}
+		File file = new File("DataCSV/ResourceData/" + path1);
+
+		if(holder.getAmount() < amount) {
+			amount = holder.getAmount();
+		}
+		
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),false))){
+			boolean resourceNotAlreadyThere = true;
+			for(Resource toAdd : resourceCheck) {
+				if(!toAdd.getName().equals(id)) {
+					writer.write(toAdd.getName() + "," + toAdd.getAmount() + "," + toAdd.getCost());
+					writer.write("\n");
+				}else {
+					int amountInsert = amount + toAdd.getAmount();
+					writer.write(toAdd.getName() + "," + amountInsert + "," + toAdd.getCost());
+					writer.write("\n");
+					resourceNotAlreadyThere = false;
+				}
+			}
+			if(resourceNotAlreadyThere) {
+				writer.write(holder.getName() + "," + amount + "," + holder.getCost());
+				writer.write("\n");
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		file = new File("DataCSV/ResourceData/" + path2);
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),false))){
+			for(Resource toAdd : resources) {
+				if(!toAdd.getName().equals(id)) {
+					writer.write(toAdd.getName() + "," + toAdd.getAmount() + "," + toAdd.getCost());
+					writer.write("\n");
+				}else {
+					if(toAdd.getAmount() > amount) {
+						writer.write(toAdd.getName() + "," + (toAdd.getAmount()-amount) + "," + toAdd.getCost());
+						writer.write("\n");
+					}
+				}
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		double costToCompany = amount * holder.getCost();
+		double money = company.getMoneyOfCompany()-costToCompany;
+		if(sell) {
+			money = company.getMoneyOfCompany()+costToCompany;
+		}
+		company.setMoneyOfCompany(money);
+	}
+	
+	public void buySellMachines(String id, String toWhere, Company company, int amount) {
+		//TODO: Fill this function out, then this is done.
+		ArrayList<Machine> machines = new ArrayList<>();
+		ArrayList<Machine> machineCheck = new ArrayList<>();
+		ReadCSVFiles reader = new ReadCSVFiles();
+		
+		String path1 = "";
+		String path2 = "";
+		
+		boolean sell = false;
+		
+		switch(toWhere){
+		case "Sold": machines = reader.readMachines("MachineBought.csv"); machineCheck = reader.readMachines("MachineNotBought.csv"); path1 = "MachineNotBought.csv"; path2 = "MachineBought.csv"; sell = true; break;
+		case "Bought": machines = reader.readMachines("MachineNotBought.csv"); machineCheck = reader.readMachines("MachineBought.csv"); path1 = "MachineBought.csv"; path2 = "MachineNotBought.csv"; break;
+		}
+		
+		boolean nothingFound = true;
+		Machine holder = null;
+		System.out.println(id);
+		
+		for(Machine machineCurrent : machines) {
+			if(machineCurrent.getName().contains(id)) {
+				nothingFound = false;
+				Machine machineToInsert = new Machine(machineCurrent.getName(),machineCurrent.getAmount(),machineCurrent.getCost(),machineCurrent.getCondition());
+				holder=machineToInsert;
+			}
+		}
+		
+		if(nothingFound) {
+			System.out.println("No Machine was found!");
+			return;
+		}
+		File file = new File("DataCSV/EquipmentData/" + path1);
+
+		if(holder.getAmount() < amount) {
+			amount = holder.getAmount();
+		}
+		
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),true))){
+			int amountInsert = amount;
+			for(Machine machineCurrent : machineCheck) {
+				if(machineCurrent.getName().contains(id)) {
+					amount += machineCurrent.getAmount();
+				}
+			}
+			writer.write(holder.getName() + "," + amountInsert + "," + holder.getCost() + "," + holder.getCondition());
+			writer.write("\n");
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		file = new File("DataCSV/EquipmentData/" + path2);
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),false))){
+			for(Machine toAdd : machines) {
+				if(!toAdd.getName().equals(id)) {
+					writer.write(toAdd.getName() + "," + toAdd.getAmount() + "," + toAdd.getCost() + "," + toAdd.getCondition());
+					writer.write("\n");
+				}else {
+					if(toAdd.getAmount() > amount) {
+						writer.write(toAdd.getName() + "," + (toAdd.getAmount()-amount) + "," + toAdd.getCost() + "," + toAdd.getCondition());
+						writer.write("\n");
+					}
+				}
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		double costToCompany = amount * holder.getCost();
+		double money = company.getMoneyOfCompany()-costToCompany;
+		if(sell) {
+			money = company.getMoneyOfCompany()+costToCompany;
+		}
+		company.setMoneyOfCompany(money);
 	}
 	
 	public void gameWasPlayed() {

@@ -174,6 +174,53 @@ public class VisualElementsHolder {
 		}
 	}
 	
+	private void updateEquipmentText(ReadCSVFiles reader, String path, String startText) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(startText + "\n");
+		ArrayList<Machine> machines = reader.readMachines(path);
+		
+		for(Machine m : machines) {
+			builder.append(m.toString());
+		}
+		
+		changeEquipmentText(builder.toString());
+	}
+	
+	private void updateResourceText(ReadCSVFiles reader, String path, String startText) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(startText + "\n");
+		
+		ArrayList<Resource> resources = reader.readResource(path);
+		for(Resource r : resources) {
+			builder.append(r.toString());
+		}
+		
+		changeResourceText(builder.toString());
+	}
+	
+	public void updateResourceEquipment(ReadCSVFiles reader,boolean isBought) {
+		if(isBought) {
+			String beginningText = "On sell:";
+			System.out.println(beginningText);
+			
+			insertEquipment("MachineNotBought.csv");
+			updateEquipmentText(reader,"MachineNotBought.csv",beginningText);
+
+			insertResource("ResourcesOnSell.csv");
+			updateResourceText(reader,"ResourcesOnSell.csv",beginningText);
+		}else {
+			String beginningText = "Bought:";
+			System.out.println(beginningText);
+			
+			insertEquipment("MachineBought.csv");
+			updateEquipmentText(reader,"MachineBought.csv",beginningText);
+			
+			insertResource("ResourcesBought.csv");
+			updateResourceText(reader,"ResourcesBought.csv",beginningText);
+		}
+		amountBuySell.clear();
+	}
+	
 	private void CSSBox(ComboBox<String> comboBox) {
 		amount += 1;
 		comboBox.setPrefSize(200, 20);
