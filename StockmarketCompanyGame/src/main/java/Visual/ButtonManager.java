@@ -158,7 +158,7 @@ public class ButtonManager {
 				resourcePath = "ResourcesBought.csv";
 			}
 			
-			visual.insertResource(resourcePath);
+			visual.insertResource(resourcePath,company);
 		});
 		
 		changeOutput.setOnAction(event->{
@@ -169,7 +169,7 @@ public class ButtonManager {
 				}else{
 					changeTextResEqu = true;
 				}
-				visual.updateResourceEquipment(reader,changeTextResEqu);
+				visual.updateResourceEquipment(reader,changeTextResEqu,company);
 			}else {
 				if(changeTextPro) {
 					changeTextPro = false;
@@ -222,9 +222,9 @@ public class ButtonManager {
 			
 			resourceEquipmentUI(false,vBox,visual,changeTextResEqu);
 			if(changeTextResEqu) {
-				visual.insertEquipment("MachineNotBought.csv");
+				visual.insertEquipment("MachineNotBought.csv",company);
 			}else{
-				visual.insertEquipment("MachineBought.csv");
+				visual.insertEquipment("MachineBought.csv",company);
 			}
 		});
 		
@@ -328,7 +328,7 @@ public class ButtonManager {
 				visual.getSelectEquipment().setValue(null);
 			}
 			
-			visual.updateResourceEquipment(reader,changeTextResEqu);
+			visual.updateResourceEquipment(reader,changeTextResEqu,company);
 			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
 		});
 		
@@ -375,7 +375,7 @@ public class ButtonManager {
 				visual.getSelectEquipment().setValue(null);
 			}
 			
-			visual.updateResourceEquipment(reader,changeTextResEqu);
+			visual.updateResourceEquipment(reader,changeTextResEqu,company);
 			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
 		});
 		
@@ -539,22 +539,22 @@ public class ButtonManager {
 		vBox.getChildren().addAll(hBox,warningCanvas);
 	}
 	
-	private void startMaster(VisualElementsHolder visual, ReadCSVFiles reader) {
+	private void startMaster(VisualElementsHolder visual, ReadCSVFiles reader, Company company) {
 		visual.insertDifficulty();
 		visual.insertCycleDates();
 		visual.insertSpecifications();
 		visual.insertTypes();
 		visual.getSelectDifficulty().setValue("Easy");
 		visual.getSelectCycleAmount().setValue("Day");
-		visual.start(reader);
+		visual.start(reader,company);
 	}
 	
-	public void addStartUpScreen(VisualElementsHolder visual, VBox vBox, ReadCSVFiles reader) {
+	public void addStartUpScreen(VisualElementsHolder visual, VBox vBox, ReadCSVFiles reader, Company company) {
 		vBox.getChildren().addAll(visual.getEnterName(),visual.getInsertName());
 		vBox.getChildren().addAll(visual.getDifficulty(),visual.getSelectDifficulty());
 		vBox.getChildren().addAll(visual.getChooseCompanyType(), visual.getSelectCompanyType(), visual.getChooseCompanyWork(), visual.getSelectCompanySpecification());
 		vBox.getChildren().addAll(startButton);
-		startMaster(visual,reader);
+		startMaster(visual,reader,company);
 	}
 	
 	public void loadGame(VisualElementsHolder visual, VBox vBox, Company company, Canvas warningCanvas, ReadCSVFiles reader){
@@ -566,7 +566,7 @@ public class ButtonManager {
 		startUpMain(vBox,visual,company);
 		startUpCompany(vBox,visual,warningCanvas);
 		System.out.println("Money of company:"+company.getMoneyOfCompany());
-		startMaster(visual,reader);
+		startMaster(visual,reader,company);
 	}
 
 	public int getHeight() {

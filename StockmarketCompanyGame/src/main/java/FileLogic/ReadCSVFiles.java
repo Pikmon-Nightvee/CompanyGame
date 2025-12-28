@@ -120,7 +120,7 @@ public class ReadCSVFiles {
 		return unEmployed;
 	}
 	
-	public ArrayList<Machine> readMachines(String path){
+	public ArrayList<Machine> readMachines(String path,Company company){
 		String filePath = "DataCSV/EquipmentData/"  + path;
 		File file = new File(filePath);
 		ArrayList<Machine> machines= new ArrayList<>();
@@ -134,9 +134,12 @@ public class ReadCSVFiles {
 				int amount = Integer.parseInt(dataInLine[1]);
 				int cost = Integer.parseInt(dataInLine[2]);
 				int reliability = Integer.parseInt(dataInLine[3]);
+				System.out.println(dataInLine[4]);
 				
-				Machine newMachine = new Machine(name,amount,cost,reliability);
-				machines.add(newMachine);
+				if(company.getCompanyType().equals(dataInLine[4]) || dataInLine[4].equals("All")) {
+					Machine newMachine = new Machine(name,amount,cost,reliability);
+					machines.add(newMachine);
+				}
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -149,7 +152,7 @@ public class ReadCSVFiles {
 		return machines;
 	}
 	
-	public ArrayList<Resource> readResource(String path){
+	public ArrayList<Resource> readResource(String path,Company company){
 		String filePath = "DataCSV/ResourceData/"  + path;
 		File file = new File(filePath);
 		ArrayList<Resource> resources= new ArrayList<>();
@@ -162,9 +165,12 @@ public class ReadCSVFiles {
 				String name = dataInLine[0];
 				int amount = Integer.parseInt(dataInLine[1]);
 				int cost = Integer.parseInt(dataInLine[2]);
+				System.out.println(dataInLine[3]);
 				
-				Resource newResource = new Resource(name,amount,cost);
-				resources.add(newResource);
+				if(company.getCompanyType().equals(dataInLine[3]) || dataInLine[3].equals("All")) {
+					Resource newResource = new Resource(name,amount,cost);
+					resources.add(newResource);
+				}
 			}
 		}catch(Exception e) {
 			e.printStackTrace();

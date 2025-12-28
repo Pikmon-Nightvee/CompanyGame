@@ -3,6 +3,7 @@ package Visual;
 import java.util.ArrayList;
 
 import FileLogic.ReadCSVFiles;
+import GameLogic.Company;
 import GameLogic.Employee;
 import GameLogic.Machine;
 import GameLogic.Resource;
@@ -156,28 +157,28 @@ public class VisualElementsHolder {
 		}
 	}
 	
-	public void insertResource(String resourceSelected) {
+	public void insertResource(String resourceSelected,Company company) {
 		selectResource.getItems().clear();
 		ArrayList<Resource> resources = new ArrayList<>();
-		resources = readerCSV.readResource(resourceSelected);
+		resources = readerCSV.readResource(resourceSelected,company);
 		for(Resource r : resources) {
 			selectResource.getItems().add(r.getName());
 		}
 	}
 	
-	public void insertEquipment(String equipmentSelected) {
+	public void insertEquipment(String equipmentSelected,Company company) {
 		selectEquipment.getItems().clear();
 		ArrayList<Machine> equipments = new ArrayList<>();
-		equipments = readerCSV.readMachines(equipmentSelected);
+		equipments = readerCSV.readMachines(equipmentSelected,company);
 		for(Machine m : equipments) {
 			selectEquipment.getItems().add(m.getName());
 		}
 	}
 	
-	private void updateEquipmentText(ReadCSVFiles reader, String path, String startText) {
+	private void updateEquipmentText(ReadCSVFiles reader, String path, String startText, Company company) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(startText + "\n");
-		ArrayList<Machine> machines = reader.readMachines(path);
+		ArrayList<Machine> machines = reader.readMachines(path,company);
 		
 		for(Machine m : machines) {
 			builder.append(m.toString());
@@ -186,11 +187,11 @@ public class VisualElementsHolder {
 		changeEquipmentText(builder.toString());
 	}
 	
-	private void updateResourceText(ReadCSVFiles reader, String path, String startText) {
+	private void updateResourceText(ReadCSVFiles reader, String path, String startText, Company company) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(startText + "\n");
 		
-		ArrayList<Resource> resources = reader.readResource(path);
+		ArrayList<Resource> resources = reader.readResource(path,company);
 		for(Resource r : resources) {
 			builder.append(r.toString());
 		}
@@ -198,25 +199,25 @@ public class VisualElementsHolder {
 		changeResourceText(builder.toString());
 	}
 	
-	public void updateResourceEquipment(ReadCSVFiles reader,boolean isBought) {
+	public void updateResourceEquipment(ReadCSVFiles reader,boolean isBought, Company company) {
 		if(isBought) {
 			String beginningText = "On sell:";
 			System.out.println(beginningText);
 			
-			insertEquipment("MachineNotBought.csv");
-			updateEquipmentText(reader,"MachineNotBought.csv",beginningText);
+			insertEquipment("MachineNotBought.csv",company);
+			updateEquipmentText(reader,"MachineNotBought.csv",beginningText,company);
 
-			insertResource("ResourcesOnSell.csv");
-			updateResourceText(reader,"ResourcesOnSell.csv",beginningText);
+			insertResource("ResourcesOnSell.csv",company);
+			updateResourceText(reader,"ResourcesOnSell.csv",beginningText,company);
 		}else {
 			String beginningText = "Bought:";
 			System.out.println(beginningText);
 			
-			insertEquipment("MachineBought.csv");
-			updateEquipmentText(reader,"MachineBought.csv",beginningText);
+			insertEquipment("MachineBought.csv",company);
+			updateEquipmentText(reader,"MachineBought.csv",beginningText,company);
 			
-			insertResource("ResourcesBought.csv");
-			updateResourceText(reader,"ResourcesBought.csv",beginningText);
+			insertResource("ResourcesBought.csv",company);
+			updateResourceText(reader,"ResourcesBought.csv",beginningText,company);
 		}
 		amountBuySell.clear();
 	}
@@ -244,7 +245,7 @@ public class VisualElementsHolder {
 		area.setPrefSize(5, 1);
 	}
 	
-	public void start(ReadCSVFiles reader) {
+	public void start(ReadCSVFiles reader, Company company) {
 		insertUnemployed();
 		insertEmployed();
 		
@@ -270,7 +271,7 @@ public class VisualElementsHolder {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Bought:" + "\n");
 		
-		ArrayList<Machine> machines = reader.readMachines("MachineBought.csv");
+		ArrayList<Machine> machines = reader.readMachines("MachineBought.csv",company);
 		for(Machine m : machines) {
 			builder.append(m.toString());
 		}
@@ -280,7 +281,7 @@ public class VisualElementsHolder {
 		builder = new StringBuilder();
 		builder.append("Bought:" + "\n");
 		
-		ArrayList<Resource> resources = reader.readResource("ResourcesBought.csv");
+		ArrayList<Resource> resources = reader.readResource("ResourcesBought.csv",company);
 		for(Resource r : resources) {
 			builder.append(r.toString());
 		}

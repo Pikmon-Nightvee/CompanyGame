@@ -48,7 +48,7 @@ public class UIMenuManager {
 			this.vBox.getChildren().clear();
 			vBox.getChildren().clear();
 			writer.resetData(reader);
-			buttonManager.addStartUpScreen(visual, vBox,reader);
+			buttonManager.addStartUpScreen(visual, vBox,reader,company);
 		});
 		load.setOnAction(event->{
 			this.vBox.getChildren().clear();

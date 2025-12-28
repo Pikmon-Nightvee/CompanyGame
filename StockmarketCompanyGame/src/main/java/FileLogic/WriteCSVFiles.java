@@ -78,8 +78,8 @@ public class WriteCSVFiles {
 		boolean sell = false;
 		
 		switch(toWhere){
-		case "Sold": resources = reader.readResource("ResourcesBought.csv"); resourceCheck = reader.readResource("ResourcesOnSell.csv"); path1 = "ResourcesOnSell.csv"; path2 = "ResourcesBought.csv"; sell = true; break;
-		case "Bought": resources = reader.readResource("ResourcesOnSell.csv"); resourceCheck = reader.readResource("ResourcesBought.csv"); path1 = "ResourcesBought.csv"; path2 = "ResourcesOnSell.csv"; break;
+		case "Sold": resources = reader.readResource("ResourcesBought.csv",company); resourceCheck = reader.readResource("ResourcesOnSell.csv",company); path1 = "ResourcesOnSell.csv"; path2 = "ResourcesBought.csv"; sell = true; break;
+		case "Bought": resources = reader.readResource("ResourcesOnSell.csv",company); resourceCheck = reader.readResource("ResourcesBought.csv",company); path1 = "ResourcesBought.csv"; path2 = "ResourcesOnSell.csv"; break;
 		}
 		
 		boolean nothingFound = true;
@@ -162,8 +162,8 @@ public class WriteCSVFiles {
 		boolean sell = false;
 		
 		switch(toWhere){
-		case "Sold": machines = reader.readMachines("MachineBought.csv"); machineCheck = reader.readMachines("MachineNotBought.csv"); path1 = "MachineNotBought.csv"; path2 = "MachineBought.csv"; sell = true; break;
-		case "Bought": machines = reader.readMachines("MachineNotBought.csv"); machineCheck = reader.readMachines("MachineBought.csv"); path1 = "MachineBought.csv"; path2 = "MachineNotBought.csv"; break;
+		case "Sold": machines = reader.readMachines("MachineBought.csv",company); machineCheck = reader.readMachines("MachineNotBought.csv",company); path1 = "MachineNotBought.csv"; path2 = "MachineBought.csv"; sell = true; break;
+		case "Bought": machines = reader.readMachines("MachineNotBought.csv",company); machineCheck = reader.readMachines("MachineBought.csv",company); path1 = "MachineBought.csv"; path2 = "MachineNotBought.csv"; break;
 		}
 		
 		boolean nothingFound = true;
