@@ -45,13 +45,11 @@ public class App extends Application {
     	createCSV.createImportantGameStateFiles(readCSV,writeCSV);
     	createCSV.createFilesEmployees(readCSV,writeCSV);
     	
-    	gamePane.getChildren().addAll(gameVBox);
-    	
     	Scene scene = new Scene(gamePane, width, height);
     	
     	buttonManager.start(gameVBox, visualElementsHolder,warningCanvas,gameCanvas,company);
     	
-    	uiMenuManager.startUp(gameVBox,buttonManager,visualElementsHolder,writeCSV,readCSV,stage,company,warningCanvas);
+    	uiMenuManager.startUp(gameVBox,buttonManager,visualElementsHolder,writeCSV,readCSV,stage,company,warningCanvas,gamePane);
     	
     	gameVBox.setAlignment(Pos.CENTER);
     	
