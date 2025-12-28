@@ -12,7 +12,7 @@ import GameLogic.Resource;
 public class ReadCSVFiles {
 	public Company gameAlreadyPlayedCompanyData() {
 		File file = new File("DataCSV/GameStartUp/CompanyData.csv");
-		Company company = new Company("",0.0);
+		Company company = new Company("",0.0,"");
 		
 		try(Scanner reader = new Scanner(file)){
 			String dataLine = reader.nextLine();
@@ -21,10 +21,12 @@ public class ReadCSVFiles {
 			String name = data[0];
 			double money = Double.parseDouble(data[1]);
 			int reputation = Integer.parseInt(data[2]);
+			String companyType = data[3];
 			
 			company.setName(name);
 			company.setMoneyOfCompany(money);
 			company.setReputation(reputation);
+			company.setCompanyType(companyType);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -82,14 +84,18 @@ public class ReadCSVFiles {
 				String dataLine = reader.nextLine();
 				String[] data = dataLine.split(",");
 				
-				String name = data[0];
-				int cost = Integer.parseInt(data[1]);
-				int accuracy = Integer.parseInt(data[2]);
-				int speed = Integer.parseInt(data[3]);
-				int reliability = Integer.parseInt(data[4]);
-				
-				Employee employeeToAdd = new Employee(name,accuracy,speed,reliability,cost);
-				employees.add(employeeToAdd);
+				try {
+					String name = data[0];
+					int cost = Integer.parseInt(data[1]);
+					int accuracy = Integer.parseInt(data[2]);
+					int speed = Integer.parseInt(data[3]);
+					int reliability = Integer.parseInt(data[4]);
+					
+					Employee employeeToAdd = new Employee(name,accuracy,speed,reliability,cost);
+					employees.add(employeeToAdd);
+				}catch(Exception e) {
+					System.out.println(e.getMessage());
+				}
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -169,5 +175,37 @@ public class ReadCSVFiles {
 		}
 		
 		return resources;
+	}
+	
+	public ArrayList<String> readResourceAsString(String path){
+		String filePath = "DataCSV/ResourceData/"  + path;
+		File file = new File(filePath);
+		ArrayList<String> resources= new ArrayList<>();
+		
+		try(Scanner reader = new Scanner(file)){
+			while(reader.hasNext()) {
+				resources.add(reader.nextLine());
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return resources;
+	}
+	
+	public ArrayList<String> readMachineAsString(String path){
+		String filePath = "DataCSV/EquipmentData/"  + path;
+		File file = new File(filePath);
+		ArrayList<String> machines = new ArrayList<>();
+		
+		try(Scanner reader = new Scanner(file)){
+			while(reader.hasNext()) {
+				machines.add(reader.nextLine());
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return machines;
 	}
 }

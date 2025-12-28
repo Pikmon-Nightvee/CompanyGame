@@ -66,10 +66,6 @@ public class WriteCSVFiles {
 		}
 	}
 	
-	public void companyDataLastPlayed(String name, String money, String reputation) {
-		
-	}
-	
 	public void buySellResources(String id, String toWhere, Company company, int amount) {
 		//TODO: Fill this function out, then this is done.
 		ArrayList<Resource> resources = new ArrayList<>();
@@ -244,6 +240,19 @@ public class WriteCSVFiles {
 		}
 	}
 	
+	public void companyDataSave(String name, double money, int reputation, String companyType) {
+		try {
+			File file = new File("DataCSV/GameStartUp/CompanyData.csv");
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),false))){
+				writer.write(name + "," + money + "," + reputation + "," + companyType);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void resetData(ReadCSVFiles readCSV) {
 		try {
 			//Game State Reset:
@@ -281,6 +290,39 @@ public class WriteCSVFiles {
 				e.printStackTrace();
 			}
 			
+			file = new File("DataCSV/EquipmentData/MachineBought.csv");
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+				writer.write("");
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+			file = new File("DataCSV/EquipmentData/MachineNotBought.csv");
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+				for(String toInsert : readCSV.readMachineAsString("MachinesData.csv")) {
+					writer.write(toInsert);
+					writer.write("\n");
+				}
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+			file = new File("DataCSV/ResourceData/ResourcesBought.csv");
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+				writer.write("");
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+			file = new File("DataCSV/ResourceData/ResourcesOnSell.csv");
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+				for(String toInsert : readCSV.readResourceAsString("ResourceData.csv")) {
+					writer.write(toInsert);
+					writer.write("\n");
+				}
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

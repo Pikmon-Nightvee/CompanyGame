@@ -23,6 +23,7 @@ public class App extends Application {
 	private int height = 480;
 	
 	private ButtonManager buttonManager = new ButtonManager();
+	private UIMenuManager uiMenuManager = new UIMenuManager();
 	private VisualElementsHolder visualElementsHolder = new VisualElementsHolder();
 	private GameManager gameManager = new GameManager();
 	
@@ -33,7 +34,7 @@ public class App extends Application {
 	private StackPane gamePane = new StackPane(gameCanvas);
 	private VBox gameVBox = new VBox();
 	
-	private Company company = new Company(null, 0.0);
+	private Company company = new Company("", 0.0,"");
 	
 	private CreateImportantCSVFiles createCSV = new CreateImportantCSVFiles();
 	private ReadCSVFiles readCSV = new ReadCSVFiles();
@@ -45,24 +46,12 @@ public class App extends Application {
     	createCSV.createFilesEmployees(readCSV,writeCSV);
     	
     	gamePane.getChildren().addAll(gameVBox);
-    	visualElementsHolder.insertDifficulty();
-    	visualElementsHolder.insertCycleDates();
-    	visualElementsHolder.insertSpecifications();
-    	visualElementsHolder.insertTypes();
     	
     	Scene scene = new Scene(gamePane, width, height);
     	
-    	gameVBox.getChildren().addAll(visualElementsHolder.getEnterName(),visualElementsHolder.getInsertName());
-    	visualElementsHolder.start(readCSV);
     	buttonManager.start(gameVBox, visualElementsHolder,warningCanvas,gameCanvas,company);
     	
-    	visualElementsHolder.getSelectDifficulty().setValue("Easy");
-    	visualElementsHolder.getSelectCycleAmount().setValue("Day");
-    	gameVBox.getChildren().addAll(visualElementsHolder.getDifficulty(),visualElementsHolder.getSelectDifficulty());
-    	
-    	gameVBox.getChildren().addAll(visualElementsHolder.getChooseCompanyType(), visualElementsHolder.getSelectCompanyType(), visualElementsHolder.getChooseCompanyWork(), visualElementsHolder.getSelectCompanySpecification());
-    	
-    	buttonManager.addButtonsStart(gameVBox);
+    	uiMenuManager.startUp(gameVBox,buttonManager,visualElementsHolder,writeCSV,readCSV,stage,company,warningCanvas);
     	
     	gameVBox.setAlignment(Pos.CENTER);
     	

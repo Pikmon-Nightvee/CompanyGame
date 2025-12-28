@@ -126,13 +126,17 @@ public class ButtonManager {
 
 			company.setMoneyOfCompany(moneyStart);
 			company.setName(companyNameSet);
+			company.setCompanyType(visual.getSelectCompanySpecification().getValue());
+			
+			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
+			writer.gameWasPlayed();
 			
 			Label money = new Label();
 			visual.CSSLabel(money);
 			money.setText(String.valueOf(company.getMoneyOfCompany()));
 			visual.setMoneyOfCompany(money);
 			
-			startUpMain(vBox,visual);
+			startUpMain(vBox,visual,company);
 			startUpCompany(vBox,visual,warningCanvas);
 			System.out.println(companyNameSet);
 			height = (amount + visual.getAmount()) * 20 + 10;
@@ -276,7 +280,7 @@ public class ButtonManager {
 			money.setText(String.valueOf(company.getMoneyOfCompany()));
 			visual.setMoneyOfCompany(money);
 			
-			startUpMain(vBox,visual);
+			startUpMain(vBox,visual,company);
 			startUpCompany(vBox,visual,warningCanvas);
 			System.out.println("Money of company:"+company.getMoneyOfCompany());
 		});
@@ -325,6 +329,7 @@ public class ButtonManager {
 			}
 			
 			visual.updateResourceEquipment(reader,changeTextResEqu);
+			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
 		});
 		
 		sell.setOnAction(event->{
@@ -371,6 +376,7 @@ public class ButtonManager {
 			}
 			
 			visual.updateResourceEquipment(reader,changeTextResEqu);
+			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
 		});
 		
 		visual.getAmountBuySell().setOnMouseClicked(event ->{
@@ -470,16 +476,18 @@ public class ButtonManager {
 		visual.setTextAreaSize(textArea, subHeight, gameCanvas);
 	}
 	
-	public void startUpMain(VBox vBox, VisualElementsHolder visual) {
+	public void startUpMain(VBox vBox, VisualElementsHolder visual, Company company) {
 		HBox hBox = new HBox();
 		Label name = new Label("Name of Company: ");
 		Label money = new Label(" | Money of the Company (€): ");
 		Label companyType = new Label(" | Company Type: ");
-		Label companySpecification = new Label(visual.getSelectCompanySpecification().getValue());
+		Label companySpecification = new Label(company.getCompanyType());
 		visual.CSSLabel(money);
 		visual.CSSLabelNoAddAmount(name);
 		visual.CSSLabelNoAddAmount(companyType);
 		visual.CSSLabelNoAddAmount(companySpecification);
+		
+		visual.getNameOfCompany().setText(company.getName());
 		
 		hBox.getChildren().addAll(name,visual.getNameOfCompany(),money,visual.getMoneyOfCompany(),companyType,companySpecification);
 		vBox.setAlignment(Pos.TOP_LEFT);
@@ -531,8 +539,34 @@ public class ButtonManager {
 		vBox.getChildren().addAll(hBox,warningCanvas);
 	}
 	
-	public void addButtonsStart(VBox vBox) {
+	private void startMaster(VisualElementsHolder visual, ReadCSVFiles reader) {
+		visual.insertDifficulty();
+		visual.insertCycleDates();
+		visual.insertSpecifications();
+		visual.insertTypes();
+		visual.getSelectDifficulty().setValue("Easy");
+		visual.getSelectCycleAmount().setValue("Day");
+		visual.start(reader);
+	}
+	
+	public void addStartUpScreen(VisualElementsHolder visual, VBox vBox, ReadCSVFiles reader) {
+		vBox.getChildren().addAll(visual.getEnterName(),visual.getInsertName());
+		vBox.getChildren().addAll(visual.getDifficulty(),visual.getSelectDifficulty());
+		vBox.getChildren().addAll(visual.getChooseCompanyType(), visual.getSelectCompanyType(), visual.getChooseCompanyWork(), visual.getSelectCompanySpecification());
 		vBox.getChildren().addAll(startButton);
+		startMaster(visual,reader);
+	}
+	
+	public void loadGame(VisualElementsHolder visual, VBox vBox, Company company, Canvas warningCanvas, ReadCSVFiles reader){
+		Label money = new Label();
+		visual.CSSLabel(money);
+		money.setText(String.valueOf(company.getMoneyOfCompany()));
+		visual.setMoneyOfCompany(money);
+		
+		startUpMain(vBox,visual,company);
+		startUpCompany(vBox,visual,warningCanvas);
+		System.out.println("Money of company:"+company.getMoneyOfCompany());
+		startMaster(visual,reader);
 	}
 
 	public int getHeight() {
