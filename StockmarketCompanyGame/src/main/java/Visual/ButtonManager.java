@@ -45,12 +45,12 @@ public class ButtonManager {
 	
 	private int subSelect = 0;
 	private int subHeight = 0;
+	private int changePro = 2;
 	private double moneyStart = 0.0;
 	
 	private boolean inEmployeeManager = false;
 	private boolean inUnemployedManager = false;
 	private boolean changeTextResEqu = false;
-	private boolean changeTextPro = false;
 	private boolean isProduce = false;
 	private boolean isResource = false;
 	
@@ -171,13 +171,13 @@ public class ButtonManager {
 				}
 				visual.updateResourceEquipment(reader, changeTextResEqu, company);
 			}else {
-				if(changeTextPro) {
-					changeTextPro = false;
-					visual.setProductAllText("Bought:" + "\n");
-				}else {
-					changeTextPro = true;
-					visual.setProductAllText("On sell:" + "\n");
+				String currentCase = "";
+				switch(changePro) {
+				case 1: currentCase = "Produceable:"; changePro++; break;
+				case 2: currentCase = "In Production:"; changePro++; break;
+				case 3: currentCase = "On stock:"; changePro=1; break;
 				}
+				visual.productText(currentCase,company);
 			}
 		});
 		
@@ -187,6 +187,7 @@ public class ButtonManager {
 			
 			produceUI(vBox,visual);
 			isProduce = true;
+			visual.insertIntoProduct(company);
 		});
 		
 		employeeManager.setOnAction(event->{
@@ -385,12 +386,53 @@ public class ButtonManager {
 			visual.updateResourceEquipment(reader,changeTextResEqu,company);
 			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
 		});
+		produceProduct.setOnAction(event->{
+			boolean errorOccured = false;
+			if(visual.getAmountToProduce().getText().isBlank()){
+				errorMessage.errorMessageText(visual.getAmountToProduce(), vBox);
+				errorOccured = true;
+			}
+			try {
+				if(Integer.parseInt(visual.getAmountToProduce().getText()) < 1){
+					errorMessage.errorMessageText(visual.getAmountToProduce(), vBox);
+					errorOccured = true;
+				}
+			}catch(Exception e) {
+				errorMessage.errorMessageText(visual.getAmountToProduce(), vBox);
+				errorOccured = true;
+			}
+			
+			if(visual.getAvailableEmployees().getValue() == null){
+				errorMessage.errorMessageComboBox(visual.getAvailableEmployees(), vBox);
+				errorOccured = true;
+			}
+			if(visual.getSelectProduct().getValue() == null){
+				errorMessage.errorMessageComboBox(visual.getSelectProduct(), vBox);
+				errorOccured = true;
+			}
+			if(errorOccured) {
+				return;
+			}
+			
+		});
+		visual.getSelectProduct().setOnAction(event ->{
+			visual.insertAvailableEmployees(company, visual.getSelectProduct().getValue());
+		});
 		
 		visual.getAmountBuySell().setOnMouseClicked(event ->{
 			errorMessage.errorMessageHandlerText(visual.getAmountBuySell(), vBox);
 		});
 		visual.getInsertName().setOnMouseClicked(event ->{
 			errorMessage.errorMessageHandlerText(visual.getInsertName(), vBox);
+		});
+		visual.getAmountToProduce().setOnMouseClicked(event ->{
+			errorMessage.errorMessageHandlerText(visual.getAmountToProduce(), vBox);
+		});
+		visual.getSelectProduct().setOnMouseClicked(event ->{
+			errorMessage.errorMessageHandlerComboBox(visual.getSelectProduct(), vBox);
+		});
+		visual.getAvailableEmployees().setOnMouseClicked(event ->{
+			errorMessage.errorMessageHandlerComboBox(visual.getAvailableEmployees(), vBox);
 		});
 		visual.getSelectCompanyType().setOnMouseClicked(event ->{
 			errorMessage.errorMessageHandlerComboBox(visual.getSelectCompanyType(), vBox);

@@ -6,6 +6,7 @@ import FileLogic.ReadCSVFiles;
 import GameLogic.Company;
 import GameLogic.Employee;
 import GameLogic.Machine;
+import GameLogic.Product;
 import GameLogic.Resource;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ComboBox;
@@ -105,6 +106,14 @@ public class VisualElementsHolder {
 		selectCycleAmount.getItems().add("Year");
 	}
 	
+	public void insertIntoProduct(Company company) {
+		selectProduct.getItems().clear();
+		ArrayList<Product> products = readerCSV.readProducts("Produceable.csv",company);
+		for(Product product : products) {
+			selectProduct.getItems().add(product.getName());
+		}
+	}
+	
 	public void unemployedTextArea() {
 		String text = "";
 		StringBuilder builder = new StringBuilder();
@@ -155,6 +164,14 @@ public class VisualElementsHolder {
 		unemployed = readerCSV.employedEmployees();
 		for(Employee employedEmployee : unemployed) {
 			assignEmployed.getItems().add(employedEmployee.getName());
+		}
+	}
+
+	public void insertAvailableEmployees(Company company,String selected) {
+		availableEmployees.getItems().clear();
+		ArrayList<Employee> employeesAvailable = readerCSV.employeeAbleToProduce(company, readerCSV, selected);
+		for(Employee available : employeesAvailable) {
+			availableEmployees.getItems().add(available.getName());
 		}
 	}
 	
@@ -223,6 +240,44 @@ public class VisualElementsHolder {
 		amountBuySell.clear();
 	}
 	
+	public void productText(String inputText,Company company) {
+		switch(inputText) {
+		case "Produceable:": produceProduct(inputText,company);break;
+		case "In Production:": inProduction(inputText,company);break;
+		case "On stock:": onStock(inputText,company);break;
+		}
+	}
+	
+	private void produceProduct(String inputText,Company company) {
+		ArrayList<Product> products = readerCSV.readProducts("Produceable.csv", company);
+		StringBuilder builder = new StringBuilder();
+		builder.append(inputText + "\n");
+		for(Product product : products) {
+			builder.append(product.toString() + "\n");
+		}
+		setProductAllText(builder.toString());
+	}
+	
+	private void inProduction(String inputText,Company company) {
+		ArrayList<Product> products = readerCSV.readProducts("InProduction.csv", company);
+		StringBuilder builder = new StringBuilder();
+		builder.append(inputText + "\n");
+		for(Product product : products) {
+			builder.append(product.toString() + "\n");
+		}
+		setProductAllText(builder.toString());
+	}
+	
+	private void onStock(String inputText,Company company) {
+		ArrayList<Product> products = readerCSV.readProducts("OnStock.csv", company);
+		StringBuilder builder = new StringBuilder();
+		builder.append(inputText + "\n");
+		for(Product product : products) {
+			builder.append(product.toString() + "\n");
+		}
+		setProductAllText(builder.toString());
+	}
+	
 	private void CSSBox(ComboBox<String> comboBox) {
 		amount += 1;
 		comboBox.setPrefSize(200, 20);
@@ -289,7 +344,7 @@ public class VisualElementsHolder {
 		resourceAll.setText(builder.toString());
 		resourceAll.setEditable(false);
 		
-		productAll.setText("Bought:" + "\n");
+		productText("Produceable:",company);
 		productAll.setEditable(false);
 		
 		unemployedTextArea();

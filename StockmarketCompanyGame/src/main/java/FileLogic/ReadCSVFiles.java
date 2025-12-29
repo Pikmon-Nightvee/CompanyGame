@@ -7,6 +7,7 @@ import java.util.Scanner;
 import GameLogic.Company;
 import GameLogic.Employee;
 import GameLogic.Machine;
+import GameLogic.Product;
 import GameLogic.Resource;
 
 public class ReadCSVFiles {
@@ -215,5 +216,65 @@ public class ReadCSVFiles {
 		}
 		
 		return machines;
+	}
+	
+	public ArrayList<Product> readProducts(String path, Company company){
+		String filePath = "DataCSV/ProductsData/"  + path;
+		File file = new File(filePath);
+		ArrayList<Product> products = new ArrayList<>();
+		
+		try(Scanner reader = new Scanner(file)){
+			while(reader.hasNext()) {
+				String data = reader.nextLine();
+				String[] dataInLine = data.split(",");
+				
+				String name = dataInLine[0];
+				int amount = Integer.parseInt(dataInLine[1]);
+				int cost = Integer.parseInt(dataInLine[2]);
+				int timePerUnit = Integer.parseInt(dataInLine[3]);
+				String quality = dataInLine[4];
+				String machineNeeded = dataInLine[5];
+				String asignedEmployee = dataInLine[6];
+				String companyType = dataInLine[7];
+				
+				if(company.getCompanyType().equals(companyType)) {
+					StringBuilder builder = new StringBuilder();
+					for(int i = 8; i < dataInLine.length; i++) {
+						builder.append(dataInLine[i]);
+						if(i + 1 < dataInLine.length) {
+							builder.append(",");
+						}
+					}
+					System.out.println(builder.toString());
+					
+					String toSplit = builder.toString();
+					String[] resources = toSplit.split(",");
+					
+					Product toAdd = new Product(name,amount,cost,timePerUnit,quality,machineNeeded,asignedEmployee,resources);
+					products.add(toAdd);
+				}
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return products;
+	}
+	
+	public ArrayList<Employee> employeeAbleToProduce(Company company, ReadCSVFiles reader, String selected){
+		ArrayList<Employee> employees = reader.employedEmployees();
+		ArrayList<Product> products = reader.readProducts("Produceable.csv",company);
+		ArrayList<Employee> employeesToAdd = new ArrayList<>();
+		for(Employee employee : employees) {
+			for(Product product : products) {
+				if(product.getName().equals(selected)) {
+					if(product.getMachineNeeded().equals(employee.getMachine())) {
+						employeesToAdd.add(employee);
+					}
+				}
+			}
+		}
+		
+		return employeesToAdd;
 	}
 }
