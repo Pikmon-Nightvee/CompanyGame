@@ -64,8 +64,9 @@ public class ReadCSVFiles {
 				int accuracy = Integer.parseInt(data[2]);
 				int speed = Integer.parseInt(data[3]);
 				int reliability = Integer.parseInt(data[4]);
+				String machine = data[5];
 				
-				Employee employeeToAdd = new Employee(name,accuracy,speed,reliability,cost);
+				Employee employeeToAdd = new Employee(name,accuracy,speed,reliability,cost,machine);
 				employees.add(employeeToAdd);
 			}
 		}catch(Exception e) {
@@ -90,8 +91,9 @@ public class ReadCSVFiles {
 					int accuracy = Integer.parseInt(data[2]);
 					int speed = Integer.parseInt(data[3]);
 					int reliability = Integer.parseInt(data[4]);
+					String machine = data[5];
 					
-					Employee employeeToAdd = new Employee(name,accuracy,speed,reliability,cost);
+					Employee employeeToAdd = new Employee(name,accuracy,speed,reliability,cost,machine);
 					employees.add(employeeToAdd);
 				}catch(Exception e) {
 					System.out.println(e.getMessage());

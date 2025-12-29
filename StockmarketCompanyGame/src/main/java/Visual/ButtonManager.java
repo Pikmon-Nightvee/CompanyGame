@@ -169,7 +169,7 @@ public class ButtonManager {
 				}else{
 					changeTextResEqu = true;
 				}
-				visual.updateResourceEquipment(reader,changeTextResEqu,company);
+				visual.updateResourceEquipment(reader, changeTextResEqu, company);
 			}else {
 				if(changeTextPro) {
 					changeTextPro = false;
@@ -194,14 +194,17 @@ public class ButtonManager {
 			vBox.getChildren().addAll(goBack);
 			inEmployeeManager = true;
 			
-			vBox.getChildren().addAll(visual.getFireEmployee(),fireEmployee);
-			vBox.getChildren().addAll(visual.getAssignedEmployee(),assignTo);
+			HBox hBox = new HBox();
+			hBox.getChildren().addAll(assignTo, visual.getAssignToMachine());
+
 			vBox.getChildren().addAll(visual.getAssignEmployeeTo(),visual.getAssignEmployed());
+			vBox.getChildren().addAll(visual.getAssignedEmployee(),hBox);
+			vBox.getChildren().addAll(visual.getFireEmployee(),fireEmployee);
 			vBox.getChildren().addAll(visual.getHiredEmployees(),visual.getEmployedStats());
 			
 			CSSSubSelect(assignTo);
 			CSSSubSelect(fireEmployee);
-			visual.subSelectEmployed();
+			visual.subSelectEmployed(company);
 			changeTextAreaSize(gameCanvas,visual,"Employed");
 		});
 		
@@ -222,9 +225,9 @@ public class ButtonManager {
 			
 			resourceEquipmentUI(false,vBox,visual,changeTextResEqu);
 			if(changeTextResEqu) {
-				visual.insertEquipment("MachineNotBought.csv",company);
+				visual.insertEquipment("MachineNotBought.csv",company,visual.getSelectEquipment());
 			}else{
-				visual.insertEquipment("MachineBought.csv",company);
+				visual.insertEquipment("MachineBought.csv",company,visual.getSelectEquipment());
 			}
 		});
 		
@@ -247,6 +250,10 @@ public class ButtonManager {
 				errorMessage.errorMessageComboBox(visual.getAssignEmployed(), vBox);
 				return;
 			}
+			
+			writer.setEmployeeMachine(visual.getAssignEmployed().getValue(), visual.getAssignToMachine().getValue());
+			visual.getAssignEmployed().setValue(null);
+			visual.employedTextArea();
 		});
 		
 		fireEmployee.setOnAction(event->{
@@ -427,10 +434,10 @@ public class ButtonManager {
 	}
 	
 	private void produceUI(VBox vBox, VisualElementsHolder visual) {
-		vBox.getChildren().addAll(visual.getEmployeesAvailable(),visual.getAvailableEmployees());
 		vBox.getChildren().addAll(visual.getSelectProductLabel(),visual.getSelectProduct());
-		vBox.getChildren().addAll(visual.getStartProduction(),produceProduct);
 		vBox.getChildren().addAll(visual.getAmountLabel(),visual.getAmountToProduce());
+		vBox.getChildren().addAll(visual.getStartProduction(),produceProduct);
+		vBox.getChildren().addAll(visual.getEmployeesAvailable(),visual.getAvailableEmployees());
 		vBox.getChildren().addAll(changeOutput);
 		vBox.getChildren().addAll(visual.getProductLabel(),visual.getProductAll());
 		
@@ -466,12 +473,12 @@ public class ButtonManager {
 	}
 	
 	public void changeTextAreaSize(Canvas gameCanvas,VisualElementsHolder visual,String textArea) {
-		int accountForGapsInbetweenElements = 10;
+		int accountForGapsInbetweenElements = 20;
 		subHeight = visual.getSubAmount() + subSelect;
 		subHeight *= 20;
 		subHeight += accountForGapsInbetweenElements;
 		subHeight = (int)gameCanvas.getHeight() - subHeight;
-		System.out.println("Elements: " + subSelect + " Height: " + subHeight); 
+		System.out.println("Elements: " + (visual.getSubAmount() + subSelect) + " Height: " + subHeight + " HeightCanvas: " + gameCanvas.getHeight()); 
 		
 		visual.setTextAreaSize(textArea, subHeight, gameCanvas);
 	}

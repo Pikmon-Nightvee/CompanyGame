@@ -29,7 +29,7 @@ public class VisualElementsHolder {
 	private Label statsOfUnemployed = new Label("Unemployed stats:");
 	
 	private Label assignEmployeeTo = new Label("Select Employee to asign");
-	private Label assignedEmployee = new Label("Asign employee to");
+	private Label assignedEmployee = new Label("Asign employee to Machine");
 	private Label hiredEmployees = new Label("Hired:");
 	private Label fireEmployee = new Label("Fire");
 	
@@ -69,6 +69,7 @@ public class VisualElementsHolder {
 	private ComboBox <String>selectUnemployed = new ComboBox<>();
 
 	private ComboBox <String>assignEmployed = new ComboBox<>();
+	private ComboBox <String>assignToMachine = new ComboBox<>();
 
 	private ComboBox <String>selectResource = new ComboBox<>();
 	private ComboBox <String>selectEquipment = new ComboBox<>();
@@ -166,12 +167,12 @@ public class VisualElementsHolder {
 		}
 	}
 	
-	public void insertEquipment(String equipmentSelected,Company company) {
-		selectEquipment.getItems().clear();
+	public void insertEquipment(String equipmentSelected,Company company, ComboBox comboBox) {
+		comboBox.getItems().clear();
 		ArrayList<Machine> equipments = new ArrayList<>();
 		equipments = readerCSV.readMachines(equipmentSelected,company);
 		for(Machine m : equipments) {
-			selectEquipment.getItems().add(m.getName());
+			comboBox.getItems().add(m.getName());
 		}
 	}
 	
@@ -204,7 +205,7 @@ public class VisualElementsHolder {
 			String beginningText = "On sell:";
 			System.out.println(beginningText);
 			
-			insertEquipment("MachineNotBought.csv",company);
+			insertEquipment("MachineNotBought.csv",company,selectEquipment);
 			updateEquipmentText(reader,"MachineNotBought.csv",beginningText,company);
 
 			insertResource("ResourcesOnSell.csv",company);
@@ -213,7 +214,7 @@ public class VisualElementsHolder {
 			String beginningText = "Bought:";
 			System.out.println(beginningText);
 			
-			insertEquipment("MachineBought.csv",company);
+			insertEquipment("MachineBought.csv",company,selectEquipment);
 			updateEquipmentText(reader,"MachineBought.csv",beginningText,company);
 			
 			insertResource("ResourcesBought.csv",company);
@@ -341,9 +342,13 @@ public class VisualElementsHolder {
 		System.out.println(subAmount);
 	}
 	
-	public void subSelectEmployed() {
+	public void subSelectEmployed(Company company) {
 		subAmount = 0;
 		CSSBoxSubSelect(assignEmployed);
+		CSSBoxSubSelect(assignToMachine);
+		insertEquipment("MachineBought.csv",company,assignToMachine);
+		assignToMachine.getItems().add("none");
+		assignToMachine.setValue("none");
 		
 		CSSLabelSubSelect(assignEmployeeTo);
 		CSSLabelSubSelect(assignedEmployee);
@@ -565,5 +570,9 @@ public class VisualElementsHolder {
 
 	public ComboBox<String> getSelectProduct() {
 		return selectProduct;
+	}
+
+	public ComboBox<String> getAssignToMachine() {
+		return assignToMachine;
 	}
 }

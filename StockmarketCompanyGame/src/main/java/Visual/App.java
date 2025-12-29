@@ -19,6 +19,7 @@ import javafx.stage.Stage;
  */
 public class App extends Application {
 	//TODO: Fix TextArea height math, sth is wrong there.
+	//TODO: Add the asignment of employees to machines in the asign to (also fixing sth broken) and also adding products
 	private int width = 1000;
 	private int height = 480;
 	
@@ -36,7 +37,7 @@ public class App extends Application {
 	
 	private Company company = new Company("", 0.0,"");
 	
-	private CreateImportantCSVFiles createCSV = new CreateImportantCSVFiles();
+	private CreateImportantCSVFiles createCSV = new CreateImportantCSVFiles(); //TODO: Extend if you find time, should function as a basic safety net.
 	private ReadCSVFiles readCSV = new ReadCSVFiles();
 	private WriteCSVFiles writeCSV = new WriteCSVFiles();
 	

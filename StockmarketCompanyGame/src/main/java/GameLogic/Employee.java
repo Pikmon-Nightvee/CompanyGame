@@ -6,14 +6,16 @@ public class Employee {
 	private int speed;
 	private int reliability;
 	private int cost;
+	private String machine;
 	
-	public Employee(String name, int accuracy, int speed, int reliability, int cost) {
+	public Employee(String name, int accuracy, int speed, int reliability, int cost, String machine) {
 		super();
 		this.name = name;
 		this.accuracy = accuracy;
 		this.speed = speed;
 		this.reliability = reliability;
 		this.cost = cost;
+		this.machine = machine;
 	}
 
 	public String getName() {
@@ -31,10 +33,14 @@ public class Employee {
 	public int getCost() {
 		return cost;
 	}
-	
+
+	public String getMachine() {
+		return machine;
+	}
+
 	@Override
 	public String toString() {
 		return "Employee [name=" + name + ", accuracy=" + accuracy + ", speed=" + speed + ", reliability=" + reliability
-				+ ", cost=" + cost + "]" + "\n";
+				+ ", cost=" + cost + ", machine=" + machine + "]" + "\n";
 	}
 }

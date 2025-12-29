@@ -33,7 +33,7 @@ public class WriteCSVFiles {
 			System.out.println(employeeCurrent.getName());
 			if(employeeCurrent.getName().equals(id)) {
 				nothingFound = false;
-				Employee employeeToInsert = new Employee(employeeCurrent.getName(), employeeCurrent.getAccuracy(), employeeCurrent.getSpeed(), employeeCurrent.getReliability(), employeeCurrent.getCost());
+				Employee employeeToInsert = new Employee(employeeCurrent.getName(), employeeCurrent.getAccuracy(), employeeCurrent.getSpeed(), employeeCurrent.getReliability(), employeeCurrent.getCost(), employeeCurrent.getMachine());
 				holder.add(employeeToInsert);
 			}
 		}
@@ -46,7 +46,7 @@ public class WriteCSVFiles {
 		
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),true))){
 			for(Employee toAdd : holder) {
-				writer.write(toAdd.getName() + "," + toAdd.getCost() + "," + toAdd.getAccuracy() + "," + toAdd.getSpeed()+ "," +toAdd.getReliability());
+				writer.write(toAdd.getName() + "," + toAdd.getCost() + "," + toAdd.getAccuracy() + "," + toAdd.getSpeed()+ "," +toAdd.getReliability() + "," + toAdd.getMachine());
 				writer.write("\n");
 			}
 		}catch(Exception e) {
@@ -57,7 +57,31 @@ public class WriteCSVFiles {
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),false))){
 			for(Employee toAdd : employees) {
 				if(!toAdd.getName().equals(id)) {
-					writer.write(toAdd.getName() + "," + toAdd.getCost() + "," + toAdd.getAccuracy() + "," + toAdd.getSpeed()+ "," +toAdd.getReliability());
+					writer.write(toAdd.getName() + "," + toAdd.getCost() + "," + toAdd.getAccuracy() + "," + toAdd.getSpeed()+ "," +toAdd.getReliability() + "," + toAdd.getMachine());
+					writer.write("\n");
+				}
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void setEmployeeMachine(String id, String machine) {
+		ArrayList<Employee> employees = new ArrayList<>();
+		ReadCSVFiles reader = new ReadCSVFiles();
+		employees = reader.employedEmployees();		
+		
+		System.out.println(id);
+		
+		File file = new File("DataCSV/EmployeeData/EmployedEmployees.csv");
+		
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),false))){
+			for(Employee check : employees) {
+				if(!id.equals(check.getName())) {
+					writer.write(check.getName() + "," + check.getCost() + "," + check.getAccuracy() + "," + check.getSpeed()+ "," + check.getReliability() + "," + check.getMachine());
+					writer.write("\n");
+				}else {
+					writer.write(id + "," + check.getCost() + "," + check.getAccuracy() + "," + check.getSpeed()+ "," + check.getReliability() + "," + machine);
 					writer.write("\n");
 				}
 			}
@@ -108,17 +132,17 @@ public class WriteCSVFiles {
 			boolean resourceNotAlreadyThere = true;
 			for(Resource toAdd : resourceCheck) {
 				if(!toAdd.getName().equals(id)) {
-					writer.write(toAdd.getName() + "," + toAdd.getAmount() + "," + toAdd.getCost());
+					writer.write(toAdd.getName() + "," + toAdd.getAmount() + "," + toAdd.getCost() + "," + company.getCompanyType());
 					writer.write("\n");
 				}else {
 					int amountInsert = amount + toAdd.getAmount();
-					writer.write(toAdd.getName() + "," + amountInsert + "," + toAdd.getCost());
+					writer.write(toAdd.getName() + "," + amountInsert + "," + toAdd.getCost() + "," + company.getCompanyType());
 					writer.write("\n");
 					resourceNotAlreadyThere = false;
 				}
 			}
 			if(resourceNotAlreadyThere) {
-				writer.write(holder.getName() + "," + amount + "," + holder.getCost());
+				writer.write(holder.getName() + "," + amount + "," + holder.getCost() + "," + company.getCompanyType());
 				writer.write("\n");
 			}
 		}catch(Exception e) {
@@ -129,11 +153,11 @@ public class WriteCSVFiles {
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),false))){
 			for(Resource toAdd : resources) {
 				if(!toAdd.getName().equals(id)) {
-					writer.write(toAdd.getName() + "," + toAdd.getAmount() + "," + toAdd.getCost());
+					writer.write(toAdd.getName() + "," + toAdd.getAmount() + "," + toAdd.getCost() + "," + company.getCompanyType());
 					writer.write("\n");
 				}else {
 					if(toAdd.getAmount() > amount) {
-						writer.write(toAdd.getName() + "," + (toAdd.getAmount()-amount) + "," + toAdd.getCost());
+						writer.write(toAdd.getName() + "," + (toAdd.getAmount()-amount) + "," + toAdd.getCost() + "," + company.getCompanyType());
 						writer.write("\n");
 					}
 				}
@@ -188,15 +212,23 @@ public class WriteCSVFiles {
 			amount = holder.getAmount();
 		}
 		
-		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),true))){
-			int amountInsert = amount;
-			for(Machine machineCurrent : machineCheck) {
-				if(machineCurrent.getName().contains(id)) {
-					amount += machineCurrent.getAmount();
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),false))){
+			boolean resourceNotAlreadyThere = true;
+			for(Machine toAdd : machineCheck) {
+				if(!toAdd.getName().equals(id)) {
+					writer.write(toAdd.getName() + "," + toAdd.getAmount() + "," + toAdd.getCost() + "," + toAdd.getCondition() + "," + company.getCompanyType());
+					writer.write("\n");
+				}else {
+					int amountInsert = amount + toAdd.getAmount();
+					writer.write(toAdd.getName() + "," + amountInsert + "," + toAdd.getCost() + "," + toAdd.getCondition() + "," + company.getCompanyType());
+					writer.write("\n");
+					resourceNotAlreadyThere = false;
 				}
 			}
-			writer.write(holder.getName() + "," + amountInsert + "," + holder.getCost() + "," + holder.getCondition());
-			writer.write("\n");
+			if(resourceNotAlreadyThere) {
+				writer.write(holder.getName() + "," + amount + "," + holder.getCost() + "," + holder.getCondition() + "," + company.getCompanyType());
+				writer.write("\n");
+			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -205,11 +237,11 @@ public class WriteCSVFiles {
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),false))){
 			for(Machine toAdd : machines) {
 				if(!toAdd.getName().equals(id)) {
-					writer.write(toAdd.getName() + "," + toAdd.getAmount() + "," + toAdd.getCost() + "," + toAdd.getCondition());
+					writer.write(toAdd.getName() + "," + toAdd.getAmount() + "," + toAdd.getCost() + "," + toAdd.getCondition() + "," + company.getCompanyType());
 					writer.write("\n");
 				}else {
 					if(toAdd.getAmount() > amount) {
-						writer.write(toAdd.getName() + "," + (toAdd.getAmount()-amount) + "," + toAdd.getCost() + "," + toAdd.getCondition());
+						writer.write(toAdd.getName() + "," + (toAdd.getAmount()-amount) + "," + toAdd.getCost() + "," + toAdd.getCondition() + "," + company.getCompanyType());
 						writer.write("\n");
 					}
 				}

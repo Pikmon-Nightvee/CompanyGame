@@ -1,0 +1,11 @@
+Holzbrett,1,25,Standard,Kreissäge,none,Holz
+Holzbalken,1,40,Gut,Kreissäge,none,Holz
+Metallplatte,1,80,Gut,Fräsmaschine,none,Metall
+Eisenstange,1,120,Hoch,Fräsmaschine,none,Eisen
+Kupferdraht,1,180,Hoch,PC,none,Kupfer
+Metallschrauben,10,60,Standard,Bohrmaschine,none,Metall
+Eisentopf,1,200,Hoch,Drehmaschine,none,Eisen
+Kupferpfanne,1,250,Hoch,Drehmaschine,none,Kupfer
+Holzschüssel,1,35,Standard,Fräsmaschine,none,Holz
+Gekochte Mahlzeit,1,50,Gut,Herd,none,Essen+Utensilienzumessen
+Gebackenes Essen,1,60,Gut,Ofen,none,Essen
