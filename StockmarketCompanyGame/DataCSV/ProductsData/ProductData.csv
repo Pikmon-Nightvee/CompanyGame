@@ -1,11 +1,11 @@
-Holzbrett,1,25,5,Standard,Kreissäge,none,Craft Buisness,Holz,10
-Holzbalken,1,40,5,Gut,Kreissäge,none,Craft Buisness,Holz
-Metallplatte,1,80,10,Gut,Fräsmaschine,none,Craft Buisness,Metall
-Eisenstange,1,120,10,Hoch,Fräsmaschine,none,Craft Buisness,Eisen
-Kupferdraht,1,180,1,Hoch,PC,none,EDV-Manager,Kupfer
-Metallschrauben,10,2,60,Standard,Bohrmaschine,none,Craft Buisness,Metall
-Eisentopf,1,200,15,Hoch,Drehmaschine,none,Craft Buisness,Eisen
-Kupferpfanne,1,250,10,Hoch,Drehmaschine,none,Craft Buisness,Kupfer
-Holzschüssel,1,35,5,Standard,Fräsmaschine,none,Craft Buisness,Holz
-Gekochte Mahlzeit,1,50,5,Gut,Herd,none,Foodtruck,Fleisch,5,Utensilienzumessen,2
-Gebackenes Essen,1,60,5,Gut,Ofen,none,Foodtruck,Gemuese,10,Obst,10
+Holzbrett,1,25,5,0,Standard,Kreissäge,none,Craft Buisness,Holz,10
+Holzbalken,1,40,5,0,Gut,Kreissäge,none,Craft Buisness,Holz,10
+Metallplatte,1,80,10,0,Gut,Fräsmaschine,none,Craft Buisness,Metall,10
+Eisenstange,1,120,10,0,Hoch,Fräsmaschine,none,Craft Buisness,Eisen,10
+Kupferdraht,1,180,1,0,Hoch,PC,none,EDV-Manager,Kupfer,10
+Metallschrauben,10,2,60,0,Standard,Bohrmaschine,none,Craft Buisness,Metall,10
+Eisentopf,1,200,15,0,Hoch,Drehmaschine,none,Craft Buisness,Eisen,10
+Kupferpfanne,1,250,10,0,Hoch,Drehmaschine,none,Craft Buisness,Kupfer,10
+Holzschüssel,1,35,5,0,Standard,Fräsmaschine,none,Craft Buisness,Holz,10
+Gekochte Mahlzeit,1,50,5,0,Gut,Herd,none,Foodtruck,Fleisch,Utensilienzumessen,5,2
+Gebackenes Essen,1,60,5,0,Gut,Ofen,none,Foodtruck,Gemuese,Obst,10,10

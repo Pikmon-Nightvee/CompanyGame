@@ -414,6 +414,15 @@ public class ButtonManager {
 				return;
 			}
 			
+			writer.startProduction(visual.getSelectProduct().getValue(), visual.getAvailableEmployees().getValue(), Integer.parseInt(visual.getAmountToProduce().getText()), company, reader);String currentCase = "";
+			
+			switch(changePro-1) {
+			case 1: currentCase = "Produceable:"; break;
+			case 2: currentCase = "In Production:"; break;
+			case 3: currentCase = "On stock:"; break;
+			}
+			visual.productText(currentCase,company);
+			visual.insertAvailableEmployees(company, visual.getSelectProduct().getValue());
 		});
 		visual.getSelectProduct().setOnAction(event ->{
 			visual.insertAvailableEmployees(company, visual.getSelectProduct().getValue());

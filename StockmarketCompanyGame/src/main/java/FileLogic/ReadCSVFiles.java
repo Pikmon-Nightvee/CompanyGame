@@ -232,25 +232,49 @@ public class ReadCSVFiles {
 				int amount = Integer.parseInt(dataInLine[1]);
 				int cost = Integer.parseInt(dataInLine[2]);
 				int timePerUnit = Integer.parseInt(dataInLine[3]);
-				String quality = dataInLine[4];
-				String machineNeeded = dataInLine[5];
-				String asignedEmployee = dataInLine[6];
-				String companyType = dataInLine[7];
+				int time = Integer.parseInt(dataInLine[4]);
+				String quality = dataInLine[5];
+				String machineNeeded = dataInLine[6];
+				String asignedEmployee = dataInLine[7];
+				String companyType = dataInLine[8];
 				
 				if(company.getCompanyType().equals(companyType)) {
+					int i = 9;
+					boolean loop = true;
 					StringBuilder builder = new StringBuilder();
-					for(int i = 8; i < dataInLine.length; i++) {
-						builder.append(dataInLine[i]);
-						if(i + 1 < dataInLine.length) {
+					
+					while(loop) {
+						if(dataInLine[i].contains("1") || dataInLine[i].contains("2") || dataInLine[i].contains("3") || dataInLine[i].contains("4") || dataInLine[i].contains("5") || dataInLine[i].contains("6") || dataInLine[i].contains("7") || dataInLine[i].contains("8") || dataInLine[i].contains("9") || dataInLine[i].contains("0")) {
+							loop = false;
+						}else {
+							builder.append(dataInLine[i]);
 							builder.append(",");
+							i++;
 						}
 					}
 					System.out.println(builder.toString());
 					
 					String toSplit = builder.toString();
 					String[] resources = toSplit.split(",");
+
+					System.out.println(i);
+					StringBuilder builderTwo = new StringBuilder();
+					for(int j = i; j < dataInLine.length; j++) {
+						builderTwo.append(dataInLine[j]);
+						if(j + 1 < dataInLine.length) {
+							builderTwo.append(",");
+						}
+					}
+
+					toSplit = builderTwo.toString();
+					String[] resourceAmountHolder = toSplit.split(",");
+					int[] resourceAmount = new int[resourceAmountHolder.length];
+					for(int j = 0; j < resourceAmount.length; j++) {
+						resourceAmount[j] = Integer.parseInt(resourceAmountHolder[j]);
+						System.out.println(j);
+					}
 					
-					Product toAdd = new Product(name,amount,cost,timePerUnit,quality,machineNeeded,asignedEmployee,resources);
+					Product toAdd = new Product(name,amount,cost,timePerUnit,time,quality,machineNeeded,asignedEmployee,companyType,resources,resourceAmount);
 					products.add(toAdd);
 				}
 			}
@@ -261,20 +285,35 @@ public class ReadCSVFiles {
 		return products;
 	}
 	
-	public ArrayList<Employee> employeeAbleToProduce(Company company, ReadCSVFiles reader, String selected){
-		ArrayList<Employee> employees = reader.employedEmployees();
-		ArrayList<Product> products = reader.readProducts("Produceable.csv",company);
+	public ArrayList<Employee> employeeAbleToProduce(Company company, String selected){
+		ArrayList<Employee> employees = employedEmployees();
+		ArrayList<Product> products = readProducts("Produceable.csv",company);
 		ArrayList<Employee> employeesToAdd = new ArrayList<>();
 		for(Employee employee : employees) {
 			for(Product product : products) {
 				if(product.getName().equals(selected)) {
-					if(product.getMachineNeeded().equals(employee.getMachine())) {
-						employeesToAdd.add(employee);
+					if(notAlreadyAsigned(company,employee.getName())) {
+						if(product.getMachineNeeded().equals(employee.getMachine())) {
+							employeesToAdd.add(employee);
+						}
 					}
 				}
 			}
 		}
 		
 		return employeesToAdd;
+	}
+	
+	public boolean notAlreadyAsigned(Company company,String employeeName) {
+		boolean returnValue = true;
+		ArrayList<Product> products = readProducts("InProduction.csv",company);
+		for(Product p : products) {
+			System.out.println(employeeName);
+			System.out.println(p.getAsignedEmployee());
+			if(p.getAsignedEmployee().equals(employeeName)) {
+				returnValue = false;
+			}
+		}
+		return returnValue;
 	}
 }

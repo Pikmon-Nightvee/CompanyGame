@@ -10,6 +10,7 @@ import java.util.Scanner;
 import GameLogic.Company;
 import GameLogic.Employee;
 import GameLogic.Machine;
+import GameLogic.Product;
 import GameLogic.Resource;
 
 public class WriteCSVFiles {
@@ -279,6 +280,62 @@ public class WriteCSVFiles {
 				writer.write(name + "," + money + "," + reputation + "," + companyType);
 			}catch(Exception e) {
 				e.printStackTrace();
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void startProduction(String selectedProduct, String asignedEmployee, int selectedAmount, Company company, ReadCSVFiles reader) {
+		ArrayList<Product> products = reader.readProducts("Produceable.csv", company);
+		ArrayList<Employee> employees = reader.employeeAbleToProduce(company, asignedEmployee);
+		
+		ArrayList<Product> product = new ArrayList<>();
+		for(Product p : products) {
+			if(p.getName().equals(selectedProduct)) {
+				if(p.getAmount() < selectedAmount) {
+					selectedAmount = p.getAmount();
+				}
+				int cost = p.getCost() * selectedAmount;
+				int time = p.getTimePerUnit() * selectedAmount;
+				Product toAdd = new Product(p.getName(),selectedAmount,cost,p.getTimePerUnit(),time,p.getQuality(),p.getMachineNeeded(),asignedEmployee,p.getAsignedCompanyType(),p.getResourcesNeeded(),p.getResourcesAmount());
+				System.out.println(toAdd.toString());
+				product.add(toAdd);
+			}
+		}
+		
+		File file = new File("DataCSV/ProductsData/InProduction.csv");
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),true))){
+			for(Product p : product) {
+				writer.write(p.getName()+","+selectedAmount+","+p.getCost()+","+p.getTimePerUnit()+","+p.getTime()+","+p.getQuality()+","+p.getMachineNeeded()+","+asignedEmployee+","+p.getAsignedCompanyType());
+				for(int i = 0; i < p.getResourcesNeeded().length; i++) {
+					writer.write(","+p.getResourcesNeeded()[i]);
+				}
+				for(int i = 0; i < p.getResourcesAmount().length; i++) {
+					writer.write(","+p.getResourcesAmount()[i]);
+				}
+				writer.write("\n");
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		file = new File("DataCSV/ProductsData/Produceable.csv");
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),false))){
+			for(Product p : products) {
+				if(!p.getName().equals(selectedProduct) || (p.getAmount() - selectedAmount > 0)) {
+					if(p.getName().equals(selectedProduct)) {
+						p.setAmount(p.getAmount()-selectedAmount);
+					}
+					writer.write(p.getName()+","+p.getAmount()+","+p.getCost()+","+p.getTimePerUnit()+","+p.getTime()+","+p.getQuality()+","+p.getMachineNeeded()+","+p.getAsignedEmployee()+","+p.getAsignedCompanyType());
+					for(int i = 0; i < p.getResourcesNeeded().length; i++) {
+						writer.write(","+p.getResourcesNeeded()[i]);
+					}
+					for(int i = 0; i < p.getResourcesAmount().length; i++) {
+						writer.write(","+p.getResourcesAmount()[i]);
+					}
+					writer.write("\n");
+				}
 			}
 		}catch(Exception e) {
 			e.printStackTrace();

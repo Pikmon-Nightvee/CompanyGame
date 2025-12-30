@@ -169,7 +169,7 @@ public class VisualElementsHolder {
 
 	public void insertAvailableEmployees(Company company,String selected) {
 		availableEmployees.getItems().clear();
-		ArrayList<Employee> employeesAvailable = readerCSV.employeeAbleToProduce(company, readerCSV, selected);
+		ArrayList<Employee> employeesAvailable = readerCSV.employeeAbleToProduce(company, selected);
 		for(Employee available : employeesAvailable) {
 			availableEmployees.getItems().add(available.getName());
 		}
@@ -253,7 +253,7 @@ public class VisualElementsHolder {
 		StringBuilder builder = new StringBuilder();
 		builder.append(inputText + "\n");
 		for(Product product : products) {
-			builder.append(product.toString() + "\n");
+			builder.append(product.toStringProduceable() + "\n");
 		}
 		setProductAllText(builder.toString());
 	}
@@ -263,7 +263,7 @@ public class VisualElementsHolder {
 		StringBuilder builder = new StringBuilder();
 		builder.append(inputText + "\n");
 		for(Product product : products) {
-			builder.append(product.toString() + "\n");
+			builder.append(product.toStringInProduction() + "\n");
 		}
 		setProductAllText(builder.toString());
 	}
@@ -273,7 +273,7 @@ public class VisualElementsHolder {
 		StringBuilder builder = new StringBuilder();
 		builder.append(inputText + "\n");
 		for(Product product : products) {
-			builder.append(product.toString() + "\n");
+			builder.append(product.toStringOnStock() + "\n");
 		}
 		setProductAllText(builder.toString());
 	}
