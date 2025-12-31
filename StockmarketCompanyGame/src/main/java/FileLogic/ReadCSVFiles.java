@@ -282,6 +282,23 @@ public class ReadCSVFiles {
 		return products;
 	}
 	
+	public ArrayList<String> readProductsAsString(String path){
+		String filePath = "DataCSV/ProductsData/"  + path;
+		File file = new File(filePath);
+		ArrayList<String> products = new ArrayList<>();
+		
+		try(Scanner reader = new Scanner(file)){
+			while(reader.hasNext()) {
+				String data = reader.nextLine();
+				products.add(data);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return products;
+	}
+	
 	public ArrayList<Employee> employeeAbleToProduce(Company company, String selected){
 		ArrayList<Employee> employees = employedEmployees();
 		ArrayList<Product> products = readProducts("Produceable.csv",company);

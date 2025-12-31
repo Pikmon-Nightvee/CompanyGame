@@ -635,6 +635,30 @@ public class WriteCSVFiles {
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
+			
+			file = new File("DataCSV/ProductsData/OnStock.csv");
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+				writer.write("");
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+			file = new File("DataCSV/ProductsData/InProduction.csv");
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+				writer.write("");
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+			file = new File("DataCSV/ProductsData/Produceable.csv");
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+				for(String toInsert : readCSV.readProductsAsString("ProductData.csv")) {
+					writer.write(toInsert);
+					writer.write("\n");
+				}
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

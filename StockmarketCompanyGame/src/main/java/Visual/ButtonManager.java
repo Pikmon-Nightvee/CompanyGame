@@ -188,6 +188,14 @@ public class ButtonManager {
 			produceUI(vBox,visual);
 			isProduce = true;
 			visual.insertIntoProduct(company);
+			String currentCase = "";
+			
+			switch(changePro-1) {
+			case 1: currentCase = "Produceable:"; break;
+			case 2: currentCase = "In Production:"; break;
+			case 3: currentCase = "On stock:"; break;
+			}
+			visual.productText(currentCase,company);
 		});
 		
 		employeeManager.setOnAction(event->{
