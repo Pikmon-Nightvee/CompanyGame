@@ -132,9 +132,9 @@ public class VisualElementsHolder {
 		String text = "";
 		StringBuilder builder = new StringBuilder();
 		
-		ArrayList<Employee> unemployed = new ArrayList<>();
-		unemployed = readerCSV.employedEmployees();
-		for(Employee employedEmployee : unemployed) {
+		ArrayList<Employee> employed = new ArrayList<>();
+		employed = readerCSV.employedEmployees();
+		for(Employee employedEmployee : employed) {
 			builder.append(employedEmployee.toString());
 		}
 		text = builder.toString();
@@ -184,12 +184,26 @@ public class VisualElementsHolder {
 		}
 	}
 	
-	public void insertEquipment(String equipmentSelected,Company company, ComboBox comboBox) {
+	public void insertEquipment(String equipmentSelected,Company company, ComboBox comboBox, boolean isEmployeeManager) {
 		comboBox.getItems().clear();
 		ArrayList<Machine> equipments = new ArrayList<>();
+		ArrayList<Employee> employees = readerCSV.employedEmployees();
 		equipments = readerCSV.readMachines(equipmentSelected,company);
+		
+		boolean isMachineBought = isEmployeeManager;
+		
 		for(Machine m : equipments) {
-			comboBox.getItems().add(m.getName());
+			int amount = 0;
+			if(isMachineBought) {
+				for(Employee e : employees) {
+					if(e.getMachine().equals(m.getName())) {
+						amount++;
+					}
+				}
+			}
+			if(m.getAmount() > amount || !isMachineBought) {
+				comboBox.getItems().add(m.getName());
+			}
 		}
 	}
 	
@@ -217,12 +231,12 @@ public class VisualElementsHolder {
 		changeResourceText(builder.toString());
 	}
 	
-	public void updateResourceEquipment(ReadCSVFiles reader,boolean isBought, Company company) {
+	public void updateResourceEquipment(ReadCSVFiles reader,boolean isBought, Company company, boolean isEmployeeManager) {
 		if(isBought) {
 			String beginningText = "On sell:";
 			System.out.println(beginningText);
 			
-			insertEquipment("MachineNotBought.csv",company,selectEquipment);
+			insertEquipment("MachineNotBought.csv",company,selectEquipment,isEmployeeManager);
 			updateEquipmentText(reader,"MachineNotBought.csv",beginningText,company);
 
 			insertResource("ResourcesOnSell.csv",company);
@@ -231,7 +245,7 @@ public class VisualElementsHolder {
 			String beginningText = "Bought:";
 			System.out.println(beginningText);
 			
-			insertEquipment("MachineBought.csv",company,selectEquipment);
+			insertEquipment("MachineBought.csv",company,selectEquipment,isEmployeeManager);
 			updateEquipmentText(reader,"MachineBought.csv",beginningText,company);
 			
 			insertResource("ResourcesBought.csv",company);
@@ -401,7 +415,7 @@ public class VisualElementsHolder {
 		subAmount = 0;
 		CSSBoxSubSelect(assignEmployed);
 		CSSBoxSubSelect(assignToMachine);
-		insertEquipment("MachineBought.csv",company,assignToMachine);
+		insertEquipment("MachineBought.csv",company,assignToMachine,true);
 		assignToMachine.getItems().add("none");
 		assignToMachine.setValue("none");
 		

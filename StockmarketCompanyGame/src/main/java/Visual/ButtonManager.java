@@ -169,7 +169,7 @@ public class ButtonManager {
 				}else{
 					changeTextResEqu = true;
 				}
-				visual.updateResourceEquipment(reader, changeTextResEqu, company);
+				visual.updateResourceEquipment(reader, changeTextResEqu, company,false);
 			}else {
 				String currentCase = "";
 				switch(changePro) {
@@ -206,6 +206,7 @@ public class ButtonManager {
 			CSSSubSelect(assignTo);
 			CSSSubSelect(fireEmployee);
 			visual.subSelectEmployed(company);
+			visual.employedTextArea();
 			changeTextAreaSize(gameCanvas,visual,"Employed");
 		});
 		
@@ -226,9 +227,9 @@ public class ButtonManager {
 			
 			resourceEquipmentUI(false,vBox,visual,changeTextResEqu);
 			if(changeTextResEqu) {
-				visual.insertEquipment("MachineNotBought.csv",company,visual.getSelectEquipment());
+				visual.insertEquipment("MachineNotBought.csv",company,visual.getSelectEquipment(),false);
 			}else{
-				visual.insertEquipment("MachineBought.csv",company,visual.getSelectEquipment());
+				visual.insertEquipment("MachineBought.csv",company,visual.getSelectEquipment(),false);
 			}
 		});
 		
@@ -256,6 +257,9 @@ public class ButtonManager {
 			writer.deleteProduction(visual.getAssignEmployed().getValue(), company, reader);
 			
 			visual.getAssignEmployed().setValue(null);
+			visual.insertEquipment("MachineBought.csv", company, visual.getAssignToMachine(),true);
+			visual.getAssignToMachine().getItems().add("none");
+			visual.getAssignToMachine().setValue("none");
 			visual.employedTextArea();
 		});
 		
@@ -339,7 +343,7 @@ public class ButtonManager {
 				visual.getSelectEquipment().setValue(null);
 			}
 			
-			visual.updateResourceEquipment(reader,changeTextResEqu,company);
+			visual.updateResourceEquipment(reader,changeTextResEqu,company,false);
 			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
 		});
 		
@@ -386,7 +390,7 @@ public class ButtonManager {
 				visual.getSelectEquipment().setValue(null);
 			}
 			
-			visual.updateResourceEquipment(reader,changeTextResEqu,company);
+			visual.updateResourceEquipment(reader,changeTextResEqu,company,false);
 			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
 		});
 		produceProduct.setOnAction(event->{
@@ -440,7 +444,7 @@ public class ButtonManager {
 			}
 			visual.productText(currentCase,company);
 			visual.insertAvailableEmployees(company, visual.getSelectProduct().getValue());
-			visual.updateResourceEquipment(reader, changeTextResEqu, company);
+			visual.updateResourceEquipment(reader, changeTextResEqu, company,false);
 		});
 		visual.getSelectProduct().setOnAction(event ->{
 			visual.insertAvailableEmployees(company, visual.getSelectProduct().getValue());

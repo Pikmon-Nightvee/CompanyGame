@@ -92,7 +92,6 @@ public class WriteCSVFiles {
 	}
 	
 	public void buySellResources(String id, String toWhere, Company company, int amount) {
-		//TODO: Fill this function out, then this is done.
 		ArrayList<Resource> resources = new ArrayList<>();
 		ArrayList<Resource> resourceCheck = new ArrayList<>();
 		ReadCSVFiles reader = new ReadCSVFiles();
@@ -176,7 +175,6 @@ public class WriteCSVFiles {
 	}
 	
 	public void buySellMachines(String id, String toWhere, Company company, int amount) {
-		//TODO: Fill this function out, then this is done.
 		ArrayList<Machine> machines = new ArrayList<>();
 		ArrayList<Machine> machineCheck = new ArrayList<>();
 		ReadCSVFiles reader = new ReadCSVFiles();
@@ -257,6 +255,67 @@ public class WriteCSVFiles {
 			money = company.getMoneyOfCompany()+costToCompany;
 		}
 		company.setMoneyOfCompany(money);
+		
+		if(toWhere.equals("Sold")) {
+			employeeNoMachine(id,amount,company,reader,machines);
+		}
+	}
+	
+	private void employeeNoMachine(String machineName, int amountSold, Company company, ReadCSVFiles reader, ArrayList<Machine> machines) {
+		ArrayList<String> employeesName = new ArrayList<>();
+		ArrayList<Employee> employees = reader.employedEmployees();
+
+		File file = new File("DataCSV/EmployeeData/EmployedEmployees.csv");
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),false))){
+			int amountTotalM = 0;
+			for(Machine m : machines) {
+				if(m.getName().equals(machineName)) {
+					amountTotalM = m.getAmount();
+				}
+			}
+			int amountTotalE = 0;
+			for(Employee e : employees) {
+				if(e.getMachine().equals(machineName)) {
+					amountTotalE++;
+				}
+			}
+
+			int amountEmployeeSell = amountTotalM - amountSold - amountTotalE;
+			System.out.println("AmountEmployeeSell: " + amountEmployeeSell + " amountTotalMachines: " + amountTotalM + " amountTotalSold: " + amountSold + " amountTotalEmplyoees: " + amountTotalE);
+			boolean sellEmployeeMachines = false;
+			if(amountEmployeeSell < 0) {
+				amountEmployeeSell *= -1;
+				sellEmployeeMachines = true;
+			}
+			
+			if(sellEmployeeMachines) {
+				int amount = 0;
+				for(Employee e : employees) {
+					String machine = e.getMachine();
+					if(e.getMachine().equals(machineName)) {
+						if(amount < amountEmployeeSell) {
+							employeesName.add(e.getName());
+							machine = "none";
+							amount++;
+						}
+					}
+					System.out.println(e.toString());
+					writer.write(e.getName() + "," + e.getCost() + "," + e.getAccuracy() + "," + e.getSpeed()+ "," + e.getReliability() + "," + machine);
+					writer.write("\n");
+				}
+			}else {
+				for(Employee e : employees) {
+					writer.write(e.getName() + "," + e.getCost() + "," + e.getAccuracy() + "," + e.getSpeed()+ "," + e.getReliability() + "," + e.getMachine());
+					writer.write("\n");
+				}
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		for(String e : employeesName) {
+			deleteProduction(e,company,reader);
+		}
 	}
 	
 	public void gameWasPlayed() {
