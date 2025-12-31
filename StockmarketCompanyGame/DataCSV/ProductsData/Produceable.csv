@@ -7,5 +7,5 @@ Metallschrauben,10,2,60,0,Standard,Bohrmaschine,none,Craft Buisness,Metall,10
 Eisentopf,1,200,15,0,Hoch,Drehmaschine,none,Craft Buisness,Eisen,10
 Kupferpfanne,1,250,10,0,Hoch,Drehmaschine,none,Craft Buisness,Kupfer,10
 Holzschüssel,1,35,5,0,Standard,Fräsmaschine,none,Craft Buisness,Holz,10
-Gekochte Mahlzeit,1,50,5,0,Gut,Herd,none,Foodtruck,Fleisch,Utensilienzumessen,5,2
-Gebackenes Essen,1,60,5,0,Gut,Ofen,none,Foodtruck,Gemuese,Obst,10,10
+Gekochte Mahlzeit,1,10,5,0,Gut,Herd,none,Foodtruck,Fleisch,Utensilienzumessen,5,2
+Gebackenes Essen,1,15,5,0,Gut,Ofen,none,Foodtruck,Gemuese,Obst,10,10

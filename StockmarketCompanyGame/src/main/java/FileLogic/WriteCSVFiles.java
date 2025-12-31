@@ -34,7 +34,7 @@ public class WriteCSVFiles {
 			System.out.println(employeeCurrent.getName());
 			if(employeeCurrent.getName().equals(id)) {
 				nothingFound = false;
-				Employee employeeToInsert = new Employee(employeeCurrent.getName(), employeeCurrent.getAccuracy(), employeeCurrent.getSpeed(), employeeCurrent.getReliability(), employeeCurrent.getCost(), employeeCurrent.getMachine());
+				Employee employeeToInsert = new Employee(employeeCurrent.getName(), employeeCurrent.getAccuracy(), employeeCurrent.getSpeed(), employeeCurrent.getReliability(), employeeCurrent.getCost(), "none");
 				holder.add(employeeToInsert);
 			}
 		}
@@ -288,14 +288,10 @@ public class WriteCSVFiles {
 	
 	public void startProduction(String selectedProduct, String asignedEmployee, int selectedAmount, Company company, ReadCSVFiles reader) {
 		ArrayList<Product> products = reader.readProducts("Produceable.csv", company);
-		ArrayList<Employee> employees = reader.employeeAbleToProduce(company, asignedEmployee);
 		
 		ArrayList<Product> product = new ArrayList<>();
 		for(Product p : products) {
 			if(p.getName().equals(selectedProduct)) {
-				if(p.getAmount() < selectedAmount) {
-					selectedAmount = p.getAmount();
-				}
 				int cost = p.getCost() * selectedAmount;
 				int time = p.getTimePerUnit() * selectedAmount;
 				Product toAdd = new Product(p.getName(),selectedAmount,cost,p.getTimePerUnit(),time,p.getQuality(),p.getMachineNeeded(),asignedEmployee,p.getAsignedCompanyType(),p.getResourcesNeeded(),p.getResourcesAmount());
@@ -304,7 +300,54 @@ public class WriteCSVFiles {
 			}
 		}
 		
-		File file = new File("DataCSV/ProductsData/InProduction.csv");
+		File file = new File("DataCSV/ResourceData/ResourcesBought.csv");
+		ArrayList<Resource> resources = reader.readResource("ResourcesBought.csv", company);
+		
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),false))){
+			for(Product p : product) {
+				for(Resource r : resources) {
+					for(int i = 0; i < p.getResourcesAmount().length; i++) {
+						if(p.getResourcesNeeded()[i].equals(r.getName())) {
+							if(!(r.getAmount() - (p.getResourcesAmount()[i]*selectedAmount) >= 0)) {
+								int amountCounted = -1;
+								for(int j = 0; j <= r.getAmount(); j += p.getResourcesAmount()[i]) {
+									amountCounted++;
+								}
+								selectedAmount = amountCounted;
+							}
+						}
+					}
+					for(int i = 0; i < p.getResourcesAmount().length; i++) {
+						if(p.getResourcesNeeded()[i].equals(r.getName())) {
+							for(Product ps : products) {
+								if(ps.getName().equals(selectedProduct)) {
+									p.setCost(ps.getCost()*selectedAmount);
+									p.setTime(ps.getTimePerUnit()*selectedAmount);
+								}
+							}
+							int amountToAdd = r.getAmount()-(p.getResourcesAmount()[i]*selectedAmount);
+							if(amountToAdd > 0) {
+								writer.write(r.getName()+","+amountToAdd+","+r.getCost()+","+company.getCompanyType());
+								writer.write("\n");
+							}
+						}
+					}
+					
+					StringBuilder builder = new StringBuilder();
+					for(int i = 0; i < p.getResourcesAmount().length; i++) {
+						builder.append(p.getResourcesNeeded()[i]);
+					}
+					if(!builder.toString().contains(r.getName())) {
+						writer.write(r.getName()+","+r.getAmount()+","+r.getCost()+","+company.getCompanyType());
+						writer.write("\n");
+					}
+				}
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		file = new File("DataCSV/ProductsData/InProduction.csv");
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),true))){
 			for(Product p : product) {
 				writer.write(p.getName()+","+selectedAmount+","+p.getCost()+","+p.getTimePerUnit()+","+p.getTime()+","+p.getQuality()+","+p.getMachineNeeded()+","+asignedEmployee+","+p.getAsignedCompanyType());
@@ -319,14 +362,22 @@ public class WriteCSVFiles {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void deleteProduction(String employeeName, Company company, ReadCSVFiles reader) {
+		String path = "InProduction.csv";
+		String pathR = "ResourcesBought.csv";
 		
-		file = new File("DataCSV/ProductsData/Produceable.csv");
+		ArrayList<Product> products = reader.readProducts(path, company);
+		ArrayList<Product> product = new ArrayList<>();
+		ArrayList<Resource> resources = reader.readResource(pathR, company);
+		ArrayList<Resource> resourcesAll = reader.readResource("ResourceData.csv", company);
+		boolean productDeleted = false;
+		
+		File file = new File("DataCSV/ProductsData/"+path);
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),false))){
 			for(Product p : products) {
-				if(!p.getName().equals(selectedProduct) || (p.getAmount() - selectedAmount > 0)) {
-					if(p.getName().equals(selectedProduct)) {
-						p.setAmount(p.getAmount()-selectedAmount);
-					}
+				if(!p.getAsignedEmployee().equals(employeeName)) {
 					writer.write(p.getName()+","+p.getAmount()+","+p.getCost()+","+p.getTimePerUnit()+","+p.getTime()+","+p.getQuality()+","+p.getMachineNeeded()+","+p.getAsignedEmployee()+","+p.getAsignedCompanyType());
 					for(int i = 0; i < p.getResourcesNeeded().length; i++) {
 						writer.write(","+p.getResourcesNeeded()[i]);
@@ -335,11 +386,124 @@ public class WriteCSVFiles {
 						writer.write(","+p.getResourcesAmount()[i]);
 					}
 					writer.write("\n");
+				}else {
+					product.add(p);
+					productDeleted = true;
+					System.out.println("Removed: " + p.toString());
 				}
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+		
+		if(productDeleted) {
+			file = new File("DataCSV/ResourceData/"+pathR);
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),false))){
+				for(Product p : product) {
+					for(int i = 0; i < p.getResourcesNeeded().length;i++) {
+						boolean resourceNotAlreadyThere = true;
+						for(Resource r : resources) {
+							int amount = r.getAmount();
+							if(r.getName().equals(p.getResourcesNeeded()[i])) {
+								System.out.println("Test:"+p.getResourcesNeeded()[i]);
+								int amountInsert = amount + p.getResourcesAmount()[i]*p.getAmount();
+								writer.write(r.getName() + "," + amountInsert + "," + r.getCost() + "," + company.getCompanyType());
+								writer.write("\n");
+								resourceNotAlreadyThere = false;
+							}
+						}
+						if(resourceNotAlreadyThere) {
+							for(Resource rA : resourcesAll) {
+								if(rA.getName().equals(p.getResourcesNeeded()[i])) {
+									writer.write(rA.getName() + "," + (p.getResourcesAmount()[i]*p.getAmount()) + "," + rA.getCost() + "," + company.getCompanyType());
+									writer.write("\n");
+								}
+							}
+						}
+					}
+					for(Resource r : resources) {
+						StringBuilder builder = new StringBuilder();
+						for(int i = 0; i < p.getResourcesNeeded().length;i++) {
+							builder.append(p.getResourcesNeeded()[i]);
+						}
+						if(!builder.toString().contains(r.getName())) {
+							writer.write(r.getName()+","+r.getAmount()+","+r.getCost()+","+company.getCompanyType());
+							writer.write("\n");
+						}
+					}
+				}
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public boolean resourcesNotAvailable(String selectedProduct, String asignedEmployee, int selectedAmount, Company company, ReadCSVFiles reader) {		
+		ArrayList<Product> products = reader.readProducts("Produceable.csv", company);
+		
+		ArrayList<Product> product = new ArrayList<>();
+		for(Product p : products) {
+			if(p.getName().equals(selectedProduct)) {
+				int cost = p.getCost() * selectedAmount;
+				int time = p.getTimePerUnit() * selectedAmount;
+				Product toAdd = new Product(p.getName(),selectedAmount,cost,p.getTimePerUnit(),time,p.getQuality(),p.getMachineNeeded(),asignedEmployee,p.getAsignedCompanyType(),p.getResourcesNeeded(),p.getResourcesAmount());
+				System.out.println(toAdd.toString());
+				product.add(toAdd);
+			}
+		}
+		
+		ArrayList<Resource> resources = reader.readResource("ResourcesBought.csv", company);
+		
+		boolean missingResource = false;
+		for(Product p : product) {
+			for(int i = 0; i < p.getResourcesNeeded().length; i++) {
+				boolean resourceNotThere = true;
+				for(Resource r : resources) {
+					if(r.getName().equals(p.getResourcesNeeded()[i])) {
+						resourceNotThere = false;
+					}
+				}
+				if(resourceNotThere) {
+					missingResource = true;
+				}
+			}
+		}
+		
+		if(resources.isEmpty() || missingResource) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public boolean notEnoughResources(String selectedProduct, String asignedEmployee, int selectedAmount, Company company, ReadCSVFiles reader) {
+		ArrayList<Product> products = reader.readProducts("Produceable.csv", company);
+		
+		ArrayList<Product> product = new ArrayList<>();
+		for(Product p : products) {
+			if(p.getName().equals(selectedProduct)) {
+				int cost = p.getCost() * selectedAmount;
+				int time = p.getTimePerUnit() * selectedAmount;
+				Product toAdd = new Product(p.getName(),selectedAmount,cost,p.getTimePerUnit(),time,p.getQuality(),p.getMachineNeeded(),asignedEmployee,p.getAsignedCompanyType(),p.getResourcesNeeded(),p.getResourcesAmount());
+				System.out.println(toAdd.toString());
+				product.add(toAdd);
+			}
+		}
+
+		ArrayList<Resource> resources = reader.readResource("ResourcesBought.csv", company);
+		for(Product p : product) {
+			for(int i = 0; i < p.getResourcesAmount().length;i++) {
+				for(Resource r : resources) {
+					if(r.getName().equals(p.getResourcesNeeded()[i])) {
+						if(p.getResourcesAmount()[i] > r.getAmount()) {
+							System.out.println("Failed");
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
 	}
 	
 	public void resetData(ReadCSVFiles readCSV) {

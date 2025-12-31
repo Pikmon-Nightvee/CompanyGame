@@ -40,7 +40,7 @@ public class Product {
 	}
 
 	public String toStringProduceable() {
-		return "Product [name=" + name + ", amount=" + amount + ", cost=" + cost + ", timePerUnit=" + timePerUnit + ", machineNeeded=" + 
+		return "Product [name=" + name + ", cost=" + cost + ", timePerUnit=" + timePerUnit + ", machineNeeded=" + 
 				machineNeeded + ", resourcesNeeded=" + Arrays.toString(resourcesNeeded) + ", resourcesAmount="
 				+ Arrays.toString(resourcesAmount) + "]";
 	}
@@ -68,6 +68,9 @@ public class Product {
 	}
 	public void setAmount(int amount) {
 		this.amount = amount;
+	}
+	public void setTime(int time) {
+		this.time = time;
 	}
 	public String getName() {
 		return name;

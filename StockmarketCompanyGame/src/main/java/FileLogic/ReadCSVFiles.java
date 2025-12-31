@@ -237,26 +237,23 @@ public class ReadCSVFiles {
 				String machineNeeded = dataInLine[6];
 				String asignedEmployee = dataInLine[7];
 				String companyType = dataInLine[8];
-				
+					
 				if(company.getCompanyType().equals(companyType)) {
 					int i = 9;
-					boolean loop = true;
 					StringBuilder builder = new StringBuilder();
 					
-					while(loop) {
-						if(dataInLine[i].contains("1") || dataInLine[i].contains("2") || dataInLine[i].contains("3") || dataInLine[i].contains("4") || dataInLine[i].contains("5") || dataInLine[i].contains("6") || dataInLine[i].contains("7") || dataInLine[i].contains("8") || dataInLine[i].contains("9") || dataInLine[i].contains("0")) {
-							loop = false;
-						}else {
-							builder.append(dataInLine[i]);
+					for(int j = i; j < dataInLine.length; j++) {
+						if(!dataInLine[j].contains("1") && !dataInLine[j].contains("2") && !dataInLine[j].contains("3") && !dataInLine[j].contains("4") && !dataInLine[j].contains("5") && !dataInLine[j].contains("6") && !dataInLine[j].contains("7") && !dataInLine[j].contains("8") && !dataInLine[j].contains("9") && !dataInLine[j].contains("0")) {
+							builder.append(dataInLine[j]);
 							builder.append(",");
 							i++;
 						}
 					}
 					System.out.println(builder.toString());
-					
+						
 					String toSplit = builder.toString();
 					String[] resources = toSplit.split(",");
-
+	
 					System.out.println(i);
 					StringBuilder builderTwo = new StringBuilder();
 					for(int j = i; j < dataInLine.length; j++) {
@@ -265,7 +262,7 @@ public class ReadCSVFiles {
 							builderTwo.append(",");
 						}
 					}
-
+	
 					toSplit = builderTwo.toString();
 					String[] resourceAmountHolder = toSplit.split(",");
 					int[] resourceAmount = new int[resourceAmountHolder.length];
@@ -273,7 +270,7 @@ public class ReadCSVFiles {
 						resourceAmount[j] = Integer.parseInt(resourceAmountHolder[j]);
 						System.out.println(j);
 					}
-					
+						
 					Product toAdd = new Product(name,amount,cost,timePerUnit,time,quality,machineNeeded,asignedEmployee,companyType,resources,resourceAmount);
 					products.add(toAdd);
 				}

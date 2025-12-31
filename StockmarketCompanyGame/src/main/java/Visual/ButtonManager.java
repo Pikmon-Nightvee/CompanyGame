@@ -253,6 +253,8 @@ public class ButtonManager {
 			}
 			
 			writer.setEmployeeMachine(visual.getAssignEmployed().getValue(), visual.getAssignToMachine().getValue());
+			writer.deleteProduction(visual.getAssignEmployed().getValue(), company, reader);
+			
 			visual.getAssignEmployed().setValue(null);
 			visual.employedTextArea();
 		});
@@ -263,6 +265,7 @@ public class ButtonManager {
 				return;
 			}
 			writer.manageEmployeeInFiles(visual.getAssignEmployed().getValue(), "toUnemployed");
+			writer.deleteProduction(visual.getAssignEmployed().getValue(), company, reader);
 			
 			visual.getAssignEmployed().setValue(null);
 			visual.employedTextArea();
@@ -413,8 +416,22 @@ public class ButtonManager {
 			if(errorOccured) {
 				return;
 			}
+			if(writer.resourcesNotAvailable(visual.getSelectProduct().getValue(), visual.getAvailableEmployees().getValue(), Integer.parseInt(visual.getAmountToProduce().getText()), company, reader)){
+				errorMessage.errorMessageButton(produceProduct, vBox);
+				errorOccured = true;
+			}
+			if(writer.notEnoughResources(visual.getSelectProduct().getValue(), visual.getAvailableEmployees().getValue(), Integer.parseInt(visual.getAmountToProduce().getText()), company, reader)){
+				errorMessage.errorMessageButton(produceProduct, vBox);
+				errorOccured = true;
+			}
+			if(errorOccured) {
+				return;
+			}
 			
-			writer.startProduction(visual.getSelectProduct().getValue(), visual.getAvailableEmployees().getValue(), Integer.parseInt(visual.getAmountToProduce().getText()), company, reader);String currentCase = "";
+			errorMessage.errorMessageHandlerButton(produceProduct, vBox);
+			
+			writer.startProduction(visual.getSelectProduct().getValue(), visual.getAvailableEmployees().getValue(), Integer.parseInt(visual.getAmountToProduce().getText()), company, reader);
+			String currentCase = "";
 			
 			switch(changePro-1) {
 			case 1: currentCase = "Produceable:"; break;
@@ -423,6 +440,7 @@ public class ButtonManager {
 			}
 			visual.productText(currentCase,company);
 			visual.insertAvailableEmployees(company, visual.getSelectProduct().getValue());
+			visual.updateResourceEquipment(reader, changeTextResEqu, company);
 		});
 		visual.getSelectProduct().setOnAction(event ->{
 			visual.insertAvailableEmployees(company, visual.getSelectProduct().getValue());

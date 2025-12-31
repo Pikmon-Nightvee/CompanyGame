@@ -2,6 +2,7 @@ package GameLogic;
 
 import java.util.ArrayList;
 
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -123,6 +124,59 @@ public class ErrorMessageHandler {
 				errorRecieved.remove(0);
 				vBox.getChildren().remove(index);
 				text.setStyle("-fx-font-size:15px;");	
+			}
+		}
+	}
+	//Does the same, now only for a Button.
+	private boolean alreadyExistsButton(VBox vBox, Button button) {
+		boolean doesNotExist = true;
+		
+		try {
+			int index = vBox.getChildren().indexOf(button) - 1;
+			Label textBox = (Label)vBox.getChildren().get(index);
+			System.out.println(textBox);		
+			if(textBox.getText().contains("Error")) {
+					doesNotExist = false;
+			}
+		}catch(Exception e){
+			System.out.println("Cannot Cast Button to Label!");
+		}
+		System.out.println("existance Status: " + doesNotExist);
+		return doesNotExist;
+	}
+	
+	public void errorMessageButton(Button button, VBox vBox) {
+		if(alreadyExistsButton(vBox, button)) {
+			Label error = new Label("Error");
+			int index = 0;
+			
+			if(vBox.getChildren().contains(error)) {
+				index = vBox.getChildren().indexOf(error);
+				vBox.getChildren().remove(index);
+			}
+			
+			index = vBox.getChildren().indexOf(button);
+			System.out.println("index: " + index);
+	
+			error.setStyle("-fx-text-fill: red;");
+	
+			error.setStyle("-fx-text-fill: red;-fx-font-weight: bold;");
+			button.setStyle("-fx-border-color: red; -fx-border-width: 2px;-fx-font-weight: bold;");
+			vBox.getChildren().add(index, error);
+	
+			errorRecieved.add(true);
+		}
+	}
+	
+	public void errorMessageHandlerButton(Button button, VBox vBox) {
+		if(check()) {
+			int index = vBox.getChildren().indexOf(button) - 1;
+			Label textBox = (Label)vBox.getChildren().get(index);
+			System.out.println(textBox);		
+			if(textBox.getText().contains("Error")) {
+				errorRecieved.remove(0);
+				vBox.getChildren().remove(index);
+				button.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");	
 			}
 		}
 	}
