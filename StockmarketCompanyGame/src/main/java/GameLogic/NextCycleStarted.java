@@ -13,17 +13,25 @@ public class NextCycleStarted {
 		}
 		for(int i = 0; i < days; i++) {
 			timePassed++;
-			if(timePassed%7==0) {
-				payEmployeeWages();
+			
+			productsProduced();
+			sellProduction();
+			if(timePassed%5==0) {
+				newResources();
 			}
 			if(timePassed%25==0) {
-				newResources();
+				payEmployeeWages();
+			}
+			if(timePassed%300==0) {
+				newMachine();
 			}
 		}
 	}
 	//TODO: Production in Produce, Sell Production
-	//TODO:pay Employee Wages
+	//TODO: pay Employee Wages
 	//TODO: New Resources
+	//TODO: New Machines
+	//TODO: Black base to show what changed.
 	private void productsProduced() {
 		
 	}
@@ -34,6 +42,9 @@ public class NextCycleStarted {
 		
 	}
 	private void newResources() {
+		
+	}
+	private void newMachine() {
 		
 	}
 }

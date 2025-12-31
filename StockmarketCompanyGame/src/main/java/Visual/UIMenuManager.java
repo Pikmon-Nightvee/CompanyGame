@@ -27,7 +27,7 @@ public class UIMenuManager {
 		label.setStyle("-fx-font-size: 100px;-fx-font-weight: bold;");
 	}
 	
-	public void startUp(VBox vBox, ButtonManager buttonManager, VisualElementsHolder visual, WriteCSVFiles writer, ReadCSVFiles reader, Stage stage, Company company, Canvas warningCanvas, StackPane gamePane) {
+	public void startUp(VBox vBox, ButtonManager buttonManager, VisualElementsHolder visual, WriteCSVFiles writer, ReadCSVFiles reader, Stage stage, Company company, Canvas warningCanvas, StackPane gamePane, Canvas gameCanvas) {
 		vBox.getChildren().add(start);
 		if(reader.gameAlreadyStarted()) {
 			vBox.getChildren().add(load);
@@ -49,6 +49,7 @@ public class UIMenuManager {
 			vBox.getChildren().clear();
 			writer.resetData(reader);
 			buttonManager.addStartUpScreen(visual, vBox,reader,company);
+			buttonManager.changeTextAreaSize(gameCanvas, visual, vBox);
 		});
 		load.setOnAction(event->{
 			this.vBox.getChildren().clear();
@@ -58,6 +59,7 @@ public class UIMenuManager {
 			company.setReputation(reader.gameAlreadyPlayedCompanyData().getReputation());
 			company.setCompanyType(reader.gameAlreadyPlayedCompanyData().getCompanyType());
 			buttonManager.loadGame(visual, vBox, company, warningCanvas, reader);
+			buttonManager.changeTextAreaSize(gameCanvas, visual, vBox);
 		});
 		quit.setOnAction(event->{
 			stage.close();

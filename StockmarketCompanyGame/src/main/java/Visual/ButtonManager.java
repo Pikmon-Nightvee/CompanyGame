@@ -48,8 +48,6 @@ public class ButtonManager {
 	private int changePro = 2;
 	private double moneyStart = 0.0;
 	
-	private boolean inEmployeeManager = false;
-	private boolean inUnemployedManager = false;
 	private boolean changeTextResEqu = false;
 	private boolean isProduce = false;
 	private boolean isResource = false;
@@ -201,7 +199,6 @@ public class ButtonManager {
 		employeeManager.setOnAction(event->{
 			vBox.getChildren().clear();
 			vBox.getChildren().addAll(goBack);
-			inEmployeeManager = true;
 			
 			HBox hBox = new HBox();
 			hBox.getChildren().addAll(assignTo, visual.getAssignToMachine());
@@ -211,17 +208,15 @@ public class ButtonManager {
 			vBox.getChildren().addAll(visual.getFireEmployee(),fireEmployee);
 			vBox.getChildren().addAll(visual.getHiredEmployees(),visual.getEmployedStats());
 			
-			CSSSubSelect(assignTo);
+			CSSNoAddAmount(assignTo);
 			CSSSubSelect(fireEmployee);
 			visual.subSelectEmployed(company);
 			visual.employedTextArea();
-			changeTextAreaSize(gameCanvas,visual,"Employed");
 		});
 		
 		employ.setOnAction(event->{
 			vBox.getChildren().clear();
 			vBox.getChildren().addAll(goBack);
-			inUnemployedManager = true;
 			
 			CSSSubSelect(employSelectedEmployee);
 			visual.subSelectUnemployed();
@@ -290,8 +285,6 @@ public class ButtonManager {
 			vBox.getChildren().clear();
 			visual.clearTextFields();
 			
-			inUnemployedManager = true;
-			inEmployeeManager = true;
 			isProduce = false;
 			isResource = false;
 			subSelect = 1;
@@ -509,7 +502,6 @@ public class ButtonManager {
 		vBox.getChildren().addAll(visual.getEmploy(),employSelectedEmployee);
 		vBox.getChildren().addAll(visual.getEmployUnemployed(),visual.getSelectUnemployed(),visual.getStatsOfUnemployed());
 
-		changeTextAreaSize(gameCanvas,visual,"Unemployed");
 		
 		vBox.getChildren().add(visual.getUnemployedStats());
 	}
@@ -553,15 +545,12 @@ public class ButtonManager {
 		}
 	}
 	
-	public void changeTextAreaSize(Canvas gameCanvas,VisualElementsHolder visual,String textArea) {
-		int accountForGapsInbetweenElements = 20;
-		subHeight = visual.getSubAmount() + subSelect;
-		subHeight *= 20;
-		subHeight += accountForGapsInbetweenElements;
-		subHeight = (int)gameCanvas.getHeight() - subHeight;
-		System.out.println("Elements: " + (visual.getSubAmount() + subSelect) + " Height: " + subHeight + " HeightCanvas: " + gameCanvas.getHeight()); 
+	public void changeTextAreaSize(Canvas gameCanvas,VisualElementsHolder visual, VBox vBox) {
+		int setAboveCanvasEdge = 20;
+		subHeight = (int) (gameCanvas.getHeight());
+		System.out.println("Height: " + vBox.prefHeight(-1) + " HeightCanvas: " + gameCanvas.getHeight()); 
 		
-		visual.setTextAreaSize(textArea, subHeight, gameCanvas);
+		visual.setTextAreaSize(subHeight, gameCanvas);
 	}
 	
 	public void startUpMain(VBox vBox, VisualElementsHolder visual, Company company) {
@@ -657,10 +646,6 @@ public class ButtonManager {
 		startMaster(visual,reader,company);
 	}
 
-	public int getHeight() {
-		return height;
-	}
-
 	public double getMoneyStart() {
 		return moneyStart;
 	}
@@ -669,11 +654,7 @@ public class ButtonManager {
 		return subHeight;
 	}
 
-	public boolean isInEmployeeManager() {
-		return inEmployeeManager;
-	}
-
-	public boolean isInUnemployedManager() {
-		return inUnemployedManager;
+	public int getHeight() {
+		return height;
 	}
 }

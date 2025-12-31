@@ -142,11 +142,12 @@ public class VisualElementsHolder {
 		employedStats.setText(text);
 	}
 	
-	public void setTextAreaSize(String select,int size, Canvas canvas) {
-		switch(select){
-		case "Unemployed": unemployedStats.setPrefSize(canvas.getWidth(), size); System.out.println(size);break;
-		case"Employed":employedStats.setPrefSize(canvas.getWidth(), size); System.out.println(size);break;
-		}
+	public void setTextAreaSize(int size, Canvas canvas) {
+		unemployedStats.setPrefSize(canvas.getWidth(), size);
+		employedStats.setPrefSize(canvas.getWidth(), size); 
+		equipmentAll.setPrefSize(canvas.getWidth(), size); 
+		resourceAll.setPrefSize(canvas.getWidth(), size); 
+		productAll.setPrefSize(canvas.getWidth(), size); 
 	}
 	
 	public void insertUnemployed() {

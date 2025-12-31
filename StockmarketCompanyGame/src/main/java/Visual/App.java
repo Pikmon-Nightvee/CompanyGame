@@ -43,14 +43,27 @@ public class App extends Application {
 	
     @Override
     public void start(Stage stage) {
-    	createCSV.createImportantGameStateFiles(readCSV,writeCSV);
-    	createCSV.createFilesEmployees(readCSV,writeCSV);
+    	boolean error = false;
+    	
+    	error = createCSV.createDirectories();
+    	error = createCSV.createImportantGameStateFiles(readCSV,writeCSV);
+    	error = createCSV.createFilesEmployees(readCSV,writeCSV);
+    	error = createCSV.createFilesMachine(readCSV, writeCSV);
+    	error = createCSV.createFilesProduct(readCSV, writeCSV);
+    	error = createCSV.createFilesResource(readCSV, writeCSV);
+    	
+    	if(error) {
+    		System.out.println("Important Files and Directorys missing");
+    		writeCSV.resetData(readCSV);
+    	}else {
+    		System.out.println("All Important Files and Directorys there");
+    	}
     	
     	Scene scene = new Scene(gamePane, width, height);
     	
     	buttonManager.start(gameVBox, visualElementsHolder,warningCanvas,gameCanvas,company);
     	
-    	uiMenuManager.startUp(gameVBox,buttonManager,visualElementsHolder,writeCSV,readCSV,stage,company,warningCanvas,gamePane);
+    	uiMenuManager.startUp(gameVBox,buttonManager,visualElementsHolder,writeCSV,readCSV,stage,company,warningCanvas,gamePane,gameCanvas);
     	
     	gameVBox.setAlignment(Pos.CENTER);
     	
@@ -60,17 +73,10 @@ public class App extends Application {
     	});
     	gamePane.heightProperty().addListener((obs, oldVal, newVal) -> {
     		gameCanvas.setHeight(newVal.doubleValue());
-    		warningCanvas.setHeight((newVal.doubleValue()- buttonManager.getHeight()));
+    		warningCanvas.setHeight((newVal.doubleValue()- buttonManager.getHeight()-20));
     		System.out.println(newVal.doubleValue());
-    		String text = "";
-    		
-    		if(buttonManager.isInEmployeeManager()) {
-    			text = "Employed";
-    		}else if(buttonManager.isInUnemployedManager()) {
-    			text = "Unemployed";
-    		}
-    		
-    		buttonManager.changeTextAreaSize(gameCanvas, visualElementsHolder,text);
+
+    		buttonManager.changeTextAreaSize(gameCanvas, visualElementsHolder, gameVBox);
     	});
     	
         gameManager.loop(gameCanvas,gamePencil,gamePane,warningCanvas,warningPencil);
