@@ -9,6 +9,7 @@ import GameLogic.Employee;
 import GameLogic.ErrorMessageHandler;
 import GameLogic.Machine;
 import GameLogic.NextCycleStarted;
+import GameLogic.Product;
 import GameLogic.Resource;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
@@ -112,8 +113,8 @@ public class ButtonManager {
 			String difficulty = visual.getSelectDifficulty().getValue();
 			switch(difficulty) {
 			case "Easy": moneyStart = 15000.00; break;
-			case "Normal": moneyStart = 7500.00; break;
-			case "Hard": moneyStart = 3000.00; break;
+			case "Normal": moneyStart = 10000.00; break;
+			case "Hard": moneyStart = 5000.00; break;
 			}
 			
 			if(visual.getSelectCompanyType().getValue().equals("GmbH")) {
@@ -353,9 +354,34 @@ public class ButtonManager {
 			}
 			
 			if(isResource) {
+				ArrayList<Resource> resources = reader.readResource("ResourcesOnSell.csv", company);
+				for(Resource r : resources) {
+					System.out.println("Test: " + r.toString());
+					if(r.getName().equals(visual.getSelectResource().getValue())) {
+						int moneyToSpend = buyAmount * r.getCost();
+						System.out.println("Test Money: " + moneyToSpend);
+						System.out.println("Test Company: " + company.getMoneyOfCompany());
+						if(company.getMoneyOfCompany() <= moneyToSpend) {
+							errorMessage.errorMessageText(visual.getAmountBuySell(), vBox);
+							return;
+						}
+					}
+				}
+				
 				writer.buySellResources(visual.getSelectResource().getValue(), "Bought", company, buyAmount);
 				visual.getSelectResource().setValue(null);
 			}else {
+				ArrayList<Machine> machines = reader.readMachines("MachineNotBought.csv", company);
+				for(Machine m : machines) {
+					if(m.getName().equals(visual.getSelectEquipment().getValue())) {
+						int moneyToSpend = buyAmount * m.getCost();
+						if(company.getMoneyOfCompany() <= moneyToSpend) {
+							errorMessage.errorMessageText(visual.getAmountBuySell(), vBox);
+							return;
+						}
+					}
+				}
+				
 				writer.buySellMachines(visual.getSelectEquipment().getValue(), "Bought", company, buyAmount);
 				visual.getSelectEquipment().setValue(null);
 			}
@@ -449,6 +475,18 @@ public class ButtonManager {
 				return;
 			}
 			
+			int produceAmount = Integer.parseInt(visual.getAmountToProduce().getText());
+			ArrayList<Product> products = reader.readProducts("ProductData.csv", company);
+			for(Product p : products) {
+				if(p.getName().equals(visual.getSelectProduct().getValue())) {
+					int moneyToSpend = produceAmount * p.getCost();
+					if(company.getMoneyOfCompany() <= moneyToSpend) {
+						errorMessage.errorMessageText(visual.getAmountToProduce(), vBox);
+						return;
+					}
+				}
+			}
+			
 			errorMessage.errorMessageHandlerButton(produceProduct, vBox);
 			
 			writer.startProduction(visual.getSelectProduct().getValue(), visual.getAvailableEmployees().getValue(), Integer.parseInt(visual.getAmountToProduce().getText()), company, reader);
@@ -466,7 +504,7 @@ public class ButtonManager {
 		nextCycle.setOnAction(event->{
 			nextCycleStarted.nextDay(visual.getSelectCycleAmount().getValue(),reader,company);
 			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
-			
+			visual.updateResourceEquipment(reader, changeTextResEqu, company, false);
 			goBack.fire();
 		});
 		visual.getSelectProduct().setOnAction(event ->{

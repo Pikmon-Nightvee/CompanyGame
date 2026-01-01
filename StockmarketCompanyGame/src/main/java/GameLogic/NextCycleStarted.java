@@ -26,23 +26,23 @@ public class NextCycleStarted {
 			productsProduced(reader);
 			sellProduction(reader);
 			if(timePassed%5==0) {
-				newResources();
+				newResources(reader,company);
 			}
 			if(timePassed%25==0) {
 				payEmployeeWages(reader,company);
 			}
 			if(timePassed%300==0) {
-				newMachine();
+				newMachine(reader,company);
 			}
 		}
 		setTimeStart();
 	}
-	//TODO: Production in Produce, Sell Production (Tomorrow)
-	//TODO: New Resources (Today)
-	//TODO: New Machines (Today)
-	//TODO: Black base to show what changed. (Tomorrow or the day after that)
+	//TODO: Add a safety net to Machine, Products and Resources, so you can not overbuy and go bankrupt immediatly. (Today)
+	//TODO: Production in Produce (02.01.2026)
+	//TODO: Sell Production (02.01.2026)
+	//TODO: Black base to show what changed. (02.01.2026 or the day after that)
 	private void productsProduced(ReadCSVFiles reader) {
-		
+
 	}
 	private void sellProduction(ReadCSVFiles reader ) {
 		
@@ -55,11 +55,47 @@ public class NextCycleStarted {
 			company.setMoneyOfCompany(money);
 		}
 	}
-	private void newResources() {
+	private void newResources(ReadCSVFiles reader, Company company) {
 		System.out.println("New Resource");
+		
+		ArrayList<Resource> resourcesOG = reader.readResource("ResourceData.csv", company);
+		ArrayList<Resource> resources = reader.readResource("ResourcesOnSell.csv", company);
+		File file = new File("DataCSV/ResourceData/ResourcesOnSell.csv");
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))){
+			for(Resource r : resourcesOG) {
+				int resourceStockAdd = (int)(Math.random()*15)+1;
+				for(Resource rOnSell : resources) {
+					if(rOnSell.getName().equals(r.getName())) {
+						resourceStockAdd += rOnSell.getAmount();
+					}
+				}
+				writer.write(r.getName()+","+resourceStockAdd+","+r.getCost()+","+company.getCompanyType());
+				writer.write("\n");
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
-	private void newMachine() {
+	private void newMachine(ReadCSVFiles reader, Company company) {
 		System.out.println("New Machine");
+		
+		ArrayList<Machine> machinesOG = reader.readMachines("MachinesData.csv", company);
+		ArrayList<Machine> machines = reader.readMachines("MachineNotBought.csv", company);
+		File file = new File("DataCSV/EquipmentData/MachineNotBought.csv");
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))){
+			for(Machine m : machinesOG) {
+				int machineStockAdd = (int)(Math.random()*5)+1;
+				for(Machine mOnSell : machines) {
+					if(mOnSell.getName().equals(m.getName())) {
+						machineStockAdd += mOnSell.getAmount();
+					}
+				}
+				writer.write(m.getName()+","+machineStockAdd+","+m.getCost()+","+m.getCondition()+","+company.getCompanyType());
+				writer.write("\n");
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 	private void setTimeStart() {
 		File file = new File("DataCSV/GameStartUp/GameCycleData.csv");
