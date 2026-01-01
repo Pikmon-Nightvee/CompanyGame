@@ -28,6 +28,10 @@ public class UIMenuManager {
 	}
 	
 	public void startUp(VBox vBox, ButtonManager buttonManager, VisualElementsHolder visual, WriteCSVFiles writer, ReadCSVFiles reader, Stage stage, Company company, Canvas warningCanvas, StackPane gamePane, Canvas gameCanvas) {
+		vBox.getChildren().clear();
+		this.vBox.getChildren().clear();
+		gamePane.getChildren().clear();
+		
 		vBox.getChildren().add(start);
 		if(reader.gameAlreadyStarted()) {
 			vBox.getChildren().add(load);
@@ -40,7 +44,9 @@ public class UIMenuManager {
 		CSSLabelNoAddAmount(nameLabel);
 		
 		this.vBox.setAlignment(Pos.TOP_CENTER);
+		vBox.setAlignment(Pos.CENTER);
 		this.vBox.getChildren().add(nameLabel);
+		gamePane.getChildren().add(gameCanvas);
 		gamePane.getChildren().add(this.vBox);
 		gamePane.getChildren().add(vBox);
 		

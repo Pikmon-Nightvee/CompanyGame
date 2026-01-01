@@ -5,6 +5,7 @@ import FileLogic.ReadCSVFiles;
 import FileLogic.WriteCSVFiles;
 import GameLogic.Company;
 import GameLogic.GameManager;
+import GameLogic.NextCycleStarted;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -27,6 +28,7 @@ public class App extends Application {
 	private UIMenuManager uiMenuManager = new UIMenuManager();
 	private VisualElementsHolder visualElementsHolder = new VisualElementsHolder();
 	private GameManager gameManager = new GameManager();
+	private NextCycleStarted nextCycle = new NextCycleStarted();
 	
 	private Canvas gameCanvas = new Canvas(width,height);
 	private GraphicsContext gamePencil = gameCanvas.getGraphicsContext2D();
@@ -58,14 +60,13 @@ public class App extends Application {
     	}else {
     		System.out.println("All Important Files and Directorys there");
     	}
+    	nextCycle.readTimeStart();
     	
     	Scene scene = new Scene(gamePane, width, height);
     	
-    	buttonManager.start(gameVBox, visualElementsHolder,warningCanvas,gameCanvas,company);
+    	buttonManager.start(gameVBox, visualElementsHolder,warningCanvas,gameCanvas,company,nextCycle);
     	
     	uiMenuManager.startUp(gameVBox,buttonManager,visualElementsHolder,writeCSV,readCSV,stage,company,warningCanvas,gamePane,gameCanvas);
-    	
-    	gameVBox.setAlignment(Pos.CENTER);
     	
     	gamePane.widthProperty().addListener((obs, oldVal, newVal) -> {
     		gameCanvas.setWidth(newVal.doubleValue());
@@ -79,7 +80,7 @@ public class App extends Application {
     		buttonManager.changeTextAreaSize(gameCanvas, visualElementsHolder, gameVBox);
     	});
     	
-        gameManager.loop(gameCanvas,gamePencil,gamePane,warningCanvas,warningPencil);
+    	gameManager.loop(gameCanvas, gamePencil, gamePane, warningCanvas, warningPencil, readCSV, writeCSV, gameVBox, company, uiMenuManager, stage, buttonManager, visualElementsHolder);
         
         stage.setScene(scene);
         stage.setTitle("StarUp");

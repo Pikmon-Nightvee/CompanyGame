@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import FileLogic.ReadCSVFiles;
 import FileLogic.WriteCSVFiles;
 import GameLogic.Company;
+import GameLogic.Employee;
 import GameLogic.ErrorMessageHandler;
 import GameLogic.Machine;
+import GameLogic.NextCycleStarted;
 import GameLogic.Resource;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
@@ -39,6 +41,8 @@ public class ButtonManager {
 	private Button changeOutput = new Button("Change");
 
 	private Button produceProduct = new Button("Produce");
+
+	private Button bankrupt = new Button("Back to menu");
 	
 	private int amount = 0;
 	private int height = 270;
@@ -69,7 +73,7 @@ public class ButtonManager {
 		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
 	}
 	
-	public void start(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company) {
+	public void start(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted) {
 		CSS(resources);
 		CSS(employ);
 		CSS(nextCycle);
@@ -78,11 +82,12 @@ public class ButtonManager {
 		CSS(equipment);
 		CSSNoAddAmount(produce);
 		CSSSubSelect(goBack);
+		CSSSubSelect(bankrupt);
 		
-		action(vBox, visual, warningCanvas, gameCanvas, company);
+		action(vBox, visual, warningCanvas, gameCanvas, company, nextCycleStarted);
 	}
 	
-	public void action(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company) {
+	public void action(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted) {
 		WriteCSVFiles writer = new WriteCSVFiles();
 		ReadCSVFiles reader = new ReadCSVFiles();
 		
@@ -271,8 +276,19 @@ public class ButtonManager {
 				errorMessage.errorMessageComboBox(visual.getAssignEmployed(), vBox);
 				return;
 			}
+			
+			ArrayList<Employee> employeeToPay = reader.employedEmployees();
+			for(Employee e : employeeToPay) {
+				if(e.getName().equals(visual.getAssignEmployed().getValue())) {
+					double money = company.getMoneyOfCompany() - e.getCost();
+					company.setMoneyOfCompany(money);
+				}
+			}
+			
 			writer.manageEmployeeInFiles(visual.getAssignEmployed().getValue(), "toUnemployed");
 			writer.deleteProduction(visual.getAssignEmployed().getValue(), company, reader);
+			
+			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
 			
 			visual.getAssignEmployed().setValue(null);
 			visual.employedTextArea();
@@ -446,6 +462,12 @@ public class ButtonManager {
 			visual.productText(currentCase,company);
 			visual.insertAvailableEmployees(company, visual.getSelectProduct().getValue());
 			visual.updateResourceEquipment(reader, changeTextResEqu, company,false);
+		});
+		nextCycle.setOnAction(event->{
+			nextCycleStarted.nextDay(visual.getSelectCycleAmount().getValue(),reader,company);
+			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
+			
+			goBack.fire();
 		});
 		visual.getSelectProduct().setOnAction(event ->{
 			visual.insertAvailableEmployees(company, visual.getSelectProduct().getValue());
@@ -656,5 +678,9 @@ public class ButtonManager {
 
 	public int getHeight() {
 		return height;
+	}
+
+	public Button getBankrupt() {
+		return bankrupt;
 	}
 }

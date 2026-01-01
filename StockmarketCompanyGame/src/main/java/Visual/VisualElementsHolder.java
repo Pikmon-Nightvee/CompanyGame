@@ -45,6 +45,8 @@ public class VisualElementsHolder {
 	private Label selectProductLabel = new Label("Select Product:");
 	private Label startProduction = new Label("Produce:");
 	private Label productLabel = new Label("Producable Products:");
+
+	private Label bankrupt = new Label("You have gone bankrupt!");
 	
 	//TextFields:
 	private TextField insertName = new TextField();
@@ -309,6 +311,9 @@ public class VisualElementsHolder {
 	public void CSSLabelNoAddAmount(Label label) {
 		label.setStyle("-fx-font-size: 20px;-fx-font-weight: bold;");
 	}
+	private void CSSLabelNoAddAmountWhite(Label label) {
+		label.setStyle("-fx-font-size: 75;-fx-font-weight: bold;-fx-text-fill: white;");
+	}
 	private void CSSTextField(TextField field) {
 		field.setPrefSize(5, 1);
 	}
@@ -364,6 +369,8 @@ public class VisualElementsHolder {
 		
 		unemployedTextArea();
 		employedTextArea();
+		
+		CSSLabelNoAddAmountWhite(bankrupt);
 	}
 	
 	public void subSelectUnemployed() {
@@ -620,6 +627,10 @@ public class VisualElementsHolder {
 
 	public Label getStartProduction() {
 		return startProduction;
+	}
+
+	public Label getBankrupt() {
+		return bankrupt;
 	}
 
 	public TextField getAmountToProduce() {
