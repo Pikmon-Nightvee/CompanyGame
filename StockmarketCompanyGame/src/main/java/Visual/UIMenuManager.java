@@ -31,6 +31,10 @@ public class UIMenuManager {
 		vBox.getChildren().clear();
 		this.vBox.getChildren().clear();
 		gamePane.getChildren().clear();
+		visual.getSelectDifficulty().getItems().clear();
+		visual.getSelectCompanyType().getItems().clear();
+		visual.getSelectCompanySpecification().getItems().clear();
+		visual.getSelectCycleAmount().getItems().clear();
 		
 		vBox.getChildren().add(start);
 		if(reader.gameAlreadyStarted()) {

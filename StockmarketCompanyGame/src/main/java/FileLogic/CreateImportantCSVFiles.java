@@ -53,6 +53,13 @@ public class CreateImportantCSVFiles {
 			}else {
 				System.out.println("Important File: Company Data exists");
 			}
+			file = new File("DataCSV/GameStartUp/GameCycleData.csv");
+			if(file.createNewFile()) {
+				System.out.println("Important File: Game Cycle created");
+				error = true;
+			}else {
+				System.out.println("Important File: Game Cycle exists");
+			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

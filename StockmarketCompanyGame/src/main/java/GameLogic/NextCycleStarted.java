@@ -24,7 +24,7 @@ public class NextCycleStarted {
 			timePassed++;
 			
 			productsProduced(reader);
-			sellProduction(reader);
+			sellProduction(reader,company);
 			if(timePassed%5==0) {
 				newResources(reader,company);
 			}
@@ -37,15 +37,65 @@ public class NextCycleStarted {
 		}
 		setTimeStart();
 	}
-	//TODO: Add a safety net to Machine, Products and Resources, so you can not overbuy and go bankrupt immediatly. (Today)
 	//TODO: Production in Produce (02.01.2026)
-	//TODO: Sell Production (02.01.2026)
 	//TODO: Black base to show what changed. (02.01.2026 or the day after that)
 	private void productsProduced(ReadCSVFiles reader) {
 
 	}
-	private void sellProduction(ReadCSVFiles reader ) {
+	private void sellProduction(ReadCSVFiles reader, Company company) {
+		if(!reader.readProductsAsString("OnStock.csv").isEmpty()) {
+			ArrayList<Product> products = reader.readProducts("OnStock.csv", company);
+			File file = new File("DataCSV/ProductsData/OnStock.csv");
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+				for(Product p : products) {
+					System.out.println(p.toString());
+					int soldRange = 3;
+					
+					switch(p.getQuality()) {
+					case "Standard":soldRange=3;break;
+					case "Gut":soldRange=2;break;
+					case "Hoch":soldRange=1;break;
+					}
+					
+					int wasSold = (int)(Math.random()*5);
+					
+					if(company.getReputation()<=25) {
+						wasSold--;
+					}else if(50<company.getReputation()&&company.getReputation()<=75) {
+						wasSold++;
+					}else {
+						wasSold+=2;
+					}
+					
+					int amountLeft = p.getAmount();
+					
+					if(wasSold > soldRange) {
+						int amountSold = (int)(Math.random()*p.getAmount())+1;
+						amountLeft -= amountSold;
+						
+						int moneyMade = amountSold * p.getCost();
+						double moneyTotal = moneyMade + company.getMoneyOfCompany();
+						
+						p.setAmount(amountLeft);
+						company.setMoneyOfCompany(moneyTotal);
+					}
 		
+					if(amountLeft > 0) {
+						writer.write(p.getName()+","+amountLeft+","+p.getCost()+","+p.getTimePerUnit()+","+p.getTime()+","+p.getQuality()+","+p.getMachineNeeded()+","+p.getAsignedEmployee()+","+p.getAsignedCompanyType());
+						for(int i = 0; i < p.getResourcesNeeded().length; i++) {
+							writer.write(","+p.getResourcesNeeded()[i]);
+						}
+						for(int i = 0; i < p.getResourcesAmount().length; i++) {
+							writer.write(","+p.getResourcesAmount()[i]);
+						}
+						writer.write("\n");
+					}
+				}
+				System.out.println("Done");
+			}catch(IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	private void payEmployeeWages(ReadCSVFiles reader, Company company) {
 		System.out.println("Pay Salary");
