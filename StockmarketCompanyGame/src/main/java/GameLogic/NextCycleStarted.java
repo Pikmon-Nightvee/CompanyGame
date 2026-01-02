@@ -28,7 +28,7 @@ public class NextCycleStarted {
 			timePassed++;
 			
 			productsProduced(reader,company);
-			sellProduction(reader,company);
+			//sellProduction(reader,company);
 			if(timePassed%5==0) {
 				newResources(reader,company);
 			}
@@ -116,6 +116,9 @@ public class NextCycleStarted {
 										int newReliability = e.getReliability()-exhausted;
 										
 										e.setReliability(newReliability);
+										if(e.getReliability() < 0) {
+											e.setReliability(1);
+										}
 									}
 								}
 							}else {
@@ -165,11 +168,54 @@ public class NextCycleStarted {
 						boolean isThere = false;
 						producedProducts++;
 						
+						String quality = "Standard";
+						int prize = costPerUnit;
+						
+						for(Machine m : machines) {
+							for(Employee e : employees) {
+								if(e.getName().equals(p.getAsignedEmployee())) {
+									if(m.getName().equals(p.getMachineNeeded())) {
+										int qualityRandom = (int)(Math.random()*10)+1;
+										int qualityExtraMachine = (int)(Math.random()*m.getCondition())+1;
+										int qualityExtraEmployee = (int)(Math.random()*e.getAccuracy())+1;
+										int qualityResult = qualityRandom + qualityExtraMachine + qualityExtraEmployee;
+										
+										int companyRepChange = (int)(Math.random()*10)+1;
+										if(qualityResult > 20) {
+											quality = "Hoch";
+											prize += prize*1.5;
+											companyRepChange += 5;
+											
+										}else if(qualityResult > 10) {
+											quality = "Gut";
+											prize += prize*1.1;
+										}else {
+											companyRepChange += -2;
+										}
+										int newCompanyRep = companyRepChange + company.getReputation();
+										company.setReputation(newCompanyRep);
+										if(company.getReputation() > 100) {
+											company.setReputation(100);
+										}
+										if(company.getReputation() < 0) {
+											company.setReputation(0);
+										}
+										
+										int reduceConditionChance = (int)(Math.random()*4)+1;
+										if(reduceConditionChance > 3 && m.getCondition() > 1) {
+											int conditionNew = m.getCondition()-1;
+											m.setCondition(conditionNew);
+										}
+									}
+								}
+							}
+						}
+						
 						ArrayList<Product> produced = reader.readProducts("OnStock.csv", company);
 						file = new File("DataCSV/ProductsData/OnStock.csv");
 						
 						for(Product pN : produced) {
-							if(p.getName().equals(pN.getName())&&p.getQuality().equals(pN.getQuality())){
+							if(p.getName().equals(pN.getName())&&pN.getQuality().equals(quality)){
 								isThere = true;
 							}
 						}
@@ -177,7 +223,7 @@ public class NextCycleStarted {
 						if(isThere) {
 							try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
 								for(Product pN : produced) {
-									if(p.getName().equals(pN.getName())&&p.getQuality().equals(pN.getQuality())){
+									if(p.getName().equals(pN.getName())&&pN.getQuality().equals(quality)){
 										writer.write(pN.getName()+","+(amountToAdd+pN.getAmount())+","+pN.getCost()+","+pN.getTimePerUnit()+","+pN.getTime()+","+pN.getQuality()+","+pN.getMachineNeeded()+","+pN.getAsignedEmployee()+","+pN.getAsignedCompanyType());
 										for(int i = 0; i < pN.getResourcesNeeded().length; i++) {
 											writer.write(","+pN.getResourcesNeeded()[i]);
@@ -201,43 +247,6 @@ public class NextCycleStarted {
 								e.printStackTrace();
 							}
 						}else {
-							String quality = "Standard";
-							int prize = costPerUnit;
-							
-							for(Machine m : machines) {
-								for(Employee e : employees) {
-									if(e.getName().equals(p.getAsignedEmployee())) {
-										if(m.getName().equals(p.getMachineNeeded())) {
-											int qualityRandom = (int)(Math.random()*10)+1;
-											int qualityExtraMachine = (int)(Math.random()*m.getCondition())+1;
-											int qualityExtraEmployee = (int)(Math.random()*e.getAccuracy())+1;
-											int qualityResult = qualityRandom + qualityExtraMachine + qualityExtraEmployee;
-											
-											int companyRepChange = (int)(Math.random()*10)+1;
-											if(qualityResult > 20) {
-												quality = "Gut";
-												prize += prize*0.4;
-												
-											}else if(qualityResult > 25) {
-												quality = "Hoch";
-												prize += prize*0.8;
-												companyRepChange += 5;
-											}else {
-												companyRepChange += -1;
-											}
-											int newCompanyRep = companyRepChange + company.getReputation();
-											company.setReputation(newCompanyRep);
-											
-											int reduceConditionChance = (int)(Math.random()*4)+1;
-											if(reduceConditionChance > 3 && m.getCondition() > 0) {
-												int conditionNew = m.getCondition()-1;
-												m.setCondition(conditionNew);
-											}
-										}
-									}
-								}
-							}
-							
 							try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,true))){
 								writer.write(p.getName()+","+amountToAdd+","+prize+","+p.getTimePerUnit()+","+p.getTime()+","+quality+","+p.getMachineNeeded()+","+p.getAsignedEmployee()+","+p.getAsignedCompanyType());
 								for(int i = 0; i < p.getResourcesNeeded().length; i++) {
@@ -276,6 +285,7 @@ public class NextCycleStarted {
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("Updated");
 	}
 	private void sellProduction(ReadCSVFiles reader, Company company) {
 		if(!reader.readProductsAsString("OnStock.csv").isEmpty()) {
