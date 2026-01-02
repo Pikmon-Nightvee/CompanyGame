@@ -16,6 +16,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class ButtonManager {
@@ -44,6 +45,7 @@ public class ButtonManager {
 	private Button produceProduct = new Button("Produce");
 
 	private Button bankrupt = new Button("Back to menu");
+	private Button nextDay = new Button("Go back to work");
 	
 	private int amount = 0;
 	private int height = 270;
@@ -74,7 +76,7 @@ public class ButtonManager {
 		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
 	}
 	
-	public void start(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted) {
+	public void start(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted, StackPane gamePane) {
 		CSS(resources);
 		CSS(employ);
 		CSS(nextCycle);
@@ -82,13 +84,14 @@ public class ButtonManager {
 		CSS(employeeManager);
 		CSS(equipment);
 		CSSNoAddAmount(produce);
+		CSSNoAddAmount(nextDay);
 		CSSSubSelect(goBack);
 		CSSSubSelect(bankrupt);
 		
-		action(vBox, visual, warningCanvas, gameCanvas, company, nextCycleStarted);
+		action(vBox, visual, warningCanvas, gameCanvas, company, nextCycleStarted, gamePane);
 	}
 	
-	public void action(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted) {
+	public void action(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted, StackPane gamePane) {
 		WriteCSVFiles writer = new WriteCSVFiles();
 		ReadCSVFiles reader = new ReadCSVFiles();
 		
@@ -505,6 +508,44 @@ public class ButtonManager {
 			nextCycleStarted.nextDay(visual.getSelectCycleAmount().getValue(),reader,company);
 			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
 			visual.updateResourceEquipment(reader, changeTextResEqu, company, false);
+
+			vBox.getChildren().clear();
+			
+			Label money = new Label("Money made/lost: " + nextCycleStarted.getBalance());
+			Label producedProducts = new Label("Products made: " + nextCycleStarted.getProducedProducts());
+			Label soldProducts = new Label("Products sold: " + nextCycleStarted.getSoldProducts());
+			Label date = new Label(visual.getSelectCycleAmount().getValue() + " report:");
+			
+			VBox vBoxDate = new VBox();
+			vBoxDate.getChildren().add(date);
+			vBoxDate.setAlignment(Pos.TOP_CENTER);
+			vBox.setAlignment(Pos.CENTER);
+			vBox.getChildren().clear();
+			
+			visual.CSSLabelNoAddAmountBig(date);
+			if(nextCycleStarted.getBalance() < 0) {
+				visual.CSSLabelNoAddAmountRed(money);
+			}else {
+				visual.CSSLabelNoAddAmountGreen(money);
+			}
+			visual.CSSLabelNoAddAmount(soldProducts);
+			visual.CSSLabelNoAddAmount(producedProducts);
+			
+			gamePane.getChildren().clear();
+			gamePane.getChildren().add(gameCanvas);
+			gamePane.getChildren().add(vBoxDate);
+			gamePane.getChildren().add(vBox);
+			
+			vBox.getChildren().addAll(money,producedProducts,soldProducts,nextDay);
+			
+			nextCycleStarted.setBalance(0);
+			nextCycleStarted.setProducedProducts(0);
+			nextCycleStarted.setSoldProducts(0);
+		});
+		nextDay.setOnAction(event->{
+			vBox.getChildren().clear();
+			gamePane.getChildren().clear();
+			gamePane.getChildren().addAll(gameCanvas, warningCanvas, vBox);
 			goBack.fire();
 		});
 		visual.getSelectProduct().setOnAction(event ->{

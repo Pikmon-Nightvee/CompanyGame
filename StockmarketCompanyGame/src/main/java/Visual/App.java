@@ -64,7 +64,7 @@ public class App extends Application {
     	
     	Scene scene = new Scene(gamePane, width, height);
     	
-    	buttonManager.start(gameVBox, visualElementsHolder,warningCanvas,gameCanvas,company,nextCycle);
+    	buttonManager.start(gameVBox, visualElementsHolder,warningCanvas,gameCanvas,company,nextCycle,gamePane);
     	
     	uiMenuManager.startUp(gameVBox,buttonManager,visualElementsHolder,writeCSV,readCSV,stage,company,warningCanvas,gamePane,gameCanvas);
     	

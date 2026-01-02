@@ -311,6 +311,15 @@ public class VisualElementsHolder {
 	public void CSSLabelNoAddAmount(Label label) {
 		label.setStyle("-fx-font-size: 20px;-fx-font-weight: bold;");
 	}
+	public void CSSLabelNoAddAmountRed(Label label) {
+		label.setStyle("-fx-font-size: 20px;-fx-font-weight: bold;;-fx-font-weight: bold;-fx-text-fill: red;");
+	}
+	public void CSSLabelNoAddAmountGreen(Label label) {
+		label.setStyle("-fx-font-size: 20px;-fx-font-weight: bold;;-fx-font-weight: bold;-fx-text-fill: green;");
+	}
+	public void CSSLabelNoAddAmountBig(Label label) {
+		label.setStyle("-fx-font-size: 100px;-fx-font-weight: bold;");
+	}
 	private void CSSLabelNoAddAmountWhite(Label label) {
 		label.setStyle("-fx-font-size: 75;-fx-font-weight: bold;-fx-text-fill: white;");
 	}

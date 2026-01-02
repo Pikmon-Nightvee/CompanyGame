@@ -12,6 +12,10 @@ import FileLogic.ReadCSVFiles;
 public class NextCycleStarted {
 	private long timePassed=0;
 	
+	private int producedProducts = 0;
+	private int soldProducts = 0;
+	private long balance = 0;
+	
 	public void nextDay(String time, ReadCSVFiles reader, Company company) {
 		int days=0;
 		switch(time) {
@@ -23,7 +27,7 @@ public class NextCycleStarted {
 		for(int i = 0; i < days; i++) {
 			timePassed++;
 			
-			productsProduced(reader);
+			productsProduced(reader,company);
 			sellProduction(reader,company);
 			if(timePassed%5==0) {
 				newResources(reader,company);
@@ -37,10 +41,113 @@ public class NextCycleStarted {
 		}
 		setTimeStart();
 	}
+	
 	//TODO: Production in Produce (02.01.2026)
-	//TODO: Black base to show what changed. (02.01.2026 or the day after that)
-	private void productsProduced(ReadCSVFiles reader) {
+	private void productsProduced(ReadCSVFiles reader, Company company) {
+		if(!reader.readProductsAsString("InProduction.csv").isEmpty()) {
+			ArrayList<Product> products = reader.readProducts("InProduction.csv", company);
+			ArrayList<Employee> employees = reader.employedEmployees();
+			ArrayList<Machine> machines = reader.readMachines("MachineBought.csv",company);
+			File file = null;
+			
+			boolean restartInProduction = false;
+			
+			for(Product p : products) {
+				file = new File("DataCSV/ProductsData/InProduction.csv");
+				int amount = p.getAmount();
+				int amountToAdd = 0;
+				boolean wasSold = false;
+				int costPerUnit = p.getCost() / p.getAmount();
+				try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,restartInProduction))){
+					int timeTotal = p.getTime();
+					int timeUnit = p.getTimePerUnit();
+					int cost = p.getCost();
+					
+					timeTotal -= 5;
+					if(timeTotal % timeUnit == 0) {
+						amount--;
+						cost -= costPerUnit;
+						amountToAdd++;
+						wasSold = true;
+						
+						company.setMoneyOfCompany(company.getMoneyOfCompany()-costPerUnit);
+					}
+					
+					if(amount > 0) {
+						writer.write(p.getName()+","+amount+","+cost+","+p.getTimePerUnit()+","+timeTotal+","+p.getQuality()+","+p.getMachineNeeded()+","+p.getAsignedEmployee()+","+p.getAsignedCompanyType());
+						for(int i = 0; i < p.getResourcesNeeded().length; i++) {
+							writer.write(","+p.getResourcesNeeded()[i]);
+						}
+						for(int i = 0; i < p.getResourcesAmount().length; i++) {
+							writer.write(","+p.getResourcesAmount()[i]);
+						}
+						writer.write("\n");
+					}
+				}catch(IOException e) {
+					e.printStackTrace();
+				}finally {
+					restartInProduction = true;
+				}
+				
+				if(wasSold) {
+					int prize = costPerUnit;
+					String quality = "Standard";
+					
+					producedProducts++;
+					ArrayList<Product> produced = reader.readProducts("OnStock.csv", company);
+					file = new File("DataCSV/ProductsData/OnStock.csv");
+					
+					boolean isThere = false;
+					
+					for(Product pN : produced) {
+						if(p.getName().equals(pN.getName())&&p.getQuality().equals(pN.getQuality())){
+							isThere = true;
+						}
+					}
 
+					if(isThere) {
+						try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+							for(Product pN : produced) {
+								if(p.getName().equals(pN.getName())&&p.getQuality().equals(pN.getQuality())){
+									writer.write(pN.getName()+","+(amountToAdd+pN.getAmount())+","+pN.getCost()+","+pN.getTimePerUnit()+","+pN.getTime()+","+pN.getQuality()+","+pN.getMachineNeeded()+","+pN.getAsignedEmployee()+","+pN.getAsignedCompanyType());
+									for(int i = 0; i < pN.getResourcesNeeded().length; i++) {
+										writer.write(","+pN.getResourcesNeeded()[i]);
+									}
+									for(int i = 0; i < pN.getResourcesAmount().length; i++) {
+										writer.write(","+pN.getResourcesAmount()[i]);
+									}
+									writer.write("\n");
+								}else {
+									writer.write(pN.getName()+","+pN.getAmount()+","+pN.getCost()+","+pN.getTimePerUnit()+","+pN.getTime()+","+pN.getQuality()+","+pN.getMachineNeeded()+","+pN.getAsignedEmployee()+","+pN.getAsignedCompanyType());
+									for(int i = 0; i < pN.getResourcesNeeded().length; i++) {
+										writer.write(","+pN.getResourcesNeeded()[i]);
+									}
+									for(int i = 0; i < pN.getResourcesAmount().length; i++) {
+										writer.write(","+pN.getResourcesAmount()[i]);
+									}
+									writer.write("\n");
+								}
+							}
+						}catch(IOException e) {
+							e.printStackTrace();
+						}
+					}else {
+						try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,true))){
+							writer.write(p.getName()+","+amountToAdd+","+prize+","+p.getTimePerUnit()+","+p.getTime()+","+quality+","+p.getMachineNeeded()+","+p.getAsignedEmployee()+","+p.getAsignedCompanyType());
+							for(int i = 0; i < p.getResourcesNeeded().length; i++) {
+								writer.write(","+p.getResourcesNeeded()[i]);
+							}
+							for(int i = 0; i < p.getResourcesAmount().length; i++) {
+								writer.write(","+p.getResourcesAmount()[i]);
+							}
+							writer.write("\n");
+						}catch(IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
 	}
 	private void sellProduction(ReadCSVFiles reader, Company company) {
 		if(!reader.readProductsAsString("OnStock.csv").isEmpty()) {
@@ -78,6 +185,9 @@ public class NextCycleStarted {
 						
 						p.setAmount(amountLeft);
 						company.setMoneyOfCompany(moneyTotal);
+						
+						balance += moneyMade;
+						soldProducts += amountSold;
 					}
 		
 					if(amountLeft > 0) {
@@ -103,6 +213,7 @@ public class NextCycleStarted {
 		for(Employee e : employees) {
 			double money = company.getMoneyOfCompany() - e.getCost();
 			company.setMoneyOfCompany(money);
+			balance -= e.getCost();
 		}
 	}
 	private void newResources(ReadCSVFiles reader, Company company) {
@@ -170,5 +281,24 @@ public class NextCycleStarted {
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public int getProducedProducts() {
+		return producedProducts;
+	}
+	public int getSoldProducts() {
+		return soldProducts;
+	}
+	public long getBalance() {
+		return balance;
+	}
+	public void setProducedProducts(int producedProducts) {
+		this.producedProducts = producedProducts;
+	}
+	public void setSoldProducts(int soldProducts) {
+		this.soldProducts = soldProducts;
+	}
+	public void setBalance(long balance) {
+		this.balance = balance;
 	}
 }
