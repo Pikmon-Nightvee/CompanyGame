@@ -32,7 +32,7 @@ public class VisualElementsHolder {
 	private Label assignEmployeeTo = new Label("Select Employee to asign");
 	private Label assignedEmployee = new Label("Asign employee to Machine");
 	private Label hiredEmployees = new Label("Hired:");
-	private Label fireEmployee = new Label("Fire");
+	private Label fireEmployee = new Label("Fire/Repair Machine");
 	
 	private Label buyLabel = new Label("Buy:");
 	private Label sellLabel = new Label("Sell:");

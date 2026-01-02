@@ -30,6 +30,10 @@ public class Employee {
 	public int getReliability() {
 		return reliability;
 	}
+	public void setReliability(int reliability) {
+		this.reliability = reliability;
+	}
+
 	public int getCost() {
 		return cost;
 	}

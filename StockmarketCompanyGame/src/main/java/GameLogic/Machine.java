@@ -27,6 +27,10 @@ public class Machine {
 		return condition;
 	}
 
+	public void setCondition(int condition) {
+		this.condition = condition;
+	}
+
 	@Override
 	public String toString() {
 		return "Machine [name=" + name + ", amount=" + amount + ", cost=" + cost + ", condition=" + condition + "]" + "\n";

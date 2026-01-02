@@ -260,6 +260,23 @@ public class WriteCSVFiles {
 			employeeNoMachine(id,amount,company,reader,machines);
 		}
 	}
+	public void repairMachine(String id, ReadCSVFiles reader, Company company) {
+		ArrayList<Machine> machines = reader.readMachines("MachineBought.csv", company);
+		File file = new File("DataCSV/EquipmentData/MachineBought.csv");
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+			for(Machine m : machines) {
+				if(m.getName().equals(id)) {
+					writer.write(m.getName() + "," + m.getAmount() + "," + m.getCost() + "," + 10 + "," + company.getCompanyType());
+					writer.write("\n");
+				}else {
+					writer.write(m.getName() + "," + m.getAmount() + "," + m.getCost() + "," + m.getCondition() + "," + company.getCompanyType());
+					writer.write("\n");
+				}
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	private void employeeNoMachine(String machineName, int amountSold, Company company, ReadCSVFiles reader, ArrayList<Machine> machines) {
 		ArrayList<String> employeesName = new ArrayList<>();

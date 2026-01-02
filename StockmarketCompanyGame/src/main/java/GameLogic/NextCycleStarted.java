@@ -42,7 +42,6 @@ public class NextCycleStarted {
 		setTimeStart();
 	}
 	
-	//TODO: Production in Produce (02.01.2026)
 	private void productsProduced(ReadCSVFiles reader, Company company) {
 		if(!reader.readProductsAsString("InProduction.csv").isEmpty()) {
 			ArrayList<Product> products = reader.readProducts("InProduction.csv", company);
@@ -58,82 +57,95 @@ public class NextCycleStarted {
 				int amountToAdd = 0;
 				boolean wasSold = false;
 				int costPerUnit = p.getCost() / p.getAmount();
-				try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,restartInProduction))){
-					int timeTotal = p.getTime();
-					int timeUnit = p.getTimePerUnit();
-					int cost = p.getCost();
-					
-					timeTotal -= 5;
-					if(timeTotal % timeUnit == 0) {
-						amount--;
-						cost -= costPerUnit;
-						amountToAdd++;
-						wasSold = true;
-						
-						company.setMoneyOfCompany(company.getMoneyOfCompany()-costPerUnit);
-					}
-					
-					if(amount > 0) {
-						writer.write(p.getName()+","+amount+","+cost+","+p.getTimePerUnit()+","+timeTotal+","+p.getQuality()+","+p.getMachineNeeded()+","+p.getAsignedEmployee()+","+p.getAsignedCompanyType());
-						for(int i = 0; i < p.getResourcesNeeded().length; i++) {
-							writer.write(","+p.getResourcesNeeded()[i]);
+				
+				//Checks if the Employee is at Work and if their asigned.
+				int atWork = (int)(Math.random()*5)+1;
+				boolean isThereEmployee = false;
+				for(Employee e : employees) {
+					if(e.getName().equals(p.getAsignedEmployee())) {
+						if(e.getReliability() > atWork) {
+							isThereEmployee = true;
+						}else {
+							int reliabilityIncrease = (int)(Math.random()*2)+1;
+							if(reliabilityIncrease > 1) {
+								int recoveryChance = 3;
+								int recovery = (int)(Math.random()*recoveryChance)+1;
+								int newReliability = e.getReliability()+recovery;
+								if(newReliability > 10) {
+									newReliability = 10;
+								}
+								
+								e.setReliability(newReliability);
+							}
 						}
-						for(int i = 0; i < p.getResourcesAmount().length; i++) {
-							writer.write(","+p.getResourcesAmount()[i]);
-						}
-						writer.write("\n");
 					}
-				}catch(IOException e) {
-					e.printStackTrace();
-				}finally {
-					restartInProduction = true;
 				}
 				
-				if(wasSold) {
-					int prize = costPerUnit;
-					String quality = "Standard";
-					
-					producedProducts++;
-					ArrayList<Product> produced = reader.readProducts("OnStock.csv", company);
-					file = new File("DataCSV/ProductsData/OnStock.csv");
-					
-					boolean isThere = false;
-					
-					for(Product pN : produced) {
-						if(p.getName().equals(pN.getName())&&p.getQuality().equals(pN.getQuality())){
-							isThere = true;
-						}
-					}
-
-					if(isThere) {
-						try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
-							for(Product pN : produced) {
-								if(p.getName().equals(pN.getName())&&p.getQuality().equals(pN.getQuality())){
-									writer.write(pN.getName()+","+(amountToAdd+pN.getAmount())+","+pN.getCost()+","+pN.getTimePerUnit()+","+pN.getTime()+","+pN.getQuality()+","+pN.getMachineNeeded()+","+pN.getAsignedEmployee()+","+pN.getAsignedCompanyType());
-									for(int i = 0; i < pN.getResourcesNeeded().length; i++) {
-										writer.write(","+pN.getResourcesNeeded()[i]);
+				//Updates the InProduction.csv file, and modifies employee.
+				if(isThereEmployee) {
+					try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,restartInProduction))){
+						int timeTotal = p.getTime();
+						int timeUnit = p.getTimePerUnit();
+						int cost = p.getCost();
+						
+						timeTotal -= 5;
+						boolean notFaster = true;
+						
+						for(Employee e : employees) {
+							if(e.getName().equals(p.getAsignedEmployee())) {
+								if(e.getSpeed() > 7) {
+									notFaster = false;
+									for(int i = 0; i < 5; i++) {
+										if(timeTotal % timeUnit == 0) {
+											amount--;
+											cost -= costPerUnit;
+											amountToAdd++;
+											wasSold = true;
+											
+											company.setMoneyOfCompany(company.getMoneyOfCompany()-costPerUnit);
+										}
+										timeTotal--;
 									}
-									for(int i = 0; i < pN.getResourcesAmount().length; i++) {
-										writer.write(","+pN.getResourcesAmount()[i]);
+									int reliabilityReduce = (int)(Math.random()*2)+1;
+									if(reliabilityReduce > 1) {
+										int multiplicator = e.getAccuracy() - e.getSpeed();
+										if(multiplicator < 0) {
+											multiplicator = 0;
+										}
+										int exhausted = (int)(Math.random()*multiplicator)+1;
+										int newReliability = e.getReliability()-exhausted;
+										
+										e.setReliability(newReliability);
 									}
-									writer.write("\n");
-								}else {
-									writer.write(pN.getName()+","+pN.getAmount()+","+pN.getCost()+","+pN.getTimePerUnit()+","+pN.getTime()+","+pN.getQuality()+","+pN.getMachineNeeded()+","+pN.getAsignedEmployee()+","+pN.getAsignedCompanyType());
-									for(int i = 0; i < pN.getResourcesNeeded().length; i++) {
-										writer.write(","+pN.getResourcesNeeded()[i]);
+								}
+							}else {
+								int reliabilityIncrease = (int)(Math.random()*2)+1;
+								if(reliabilityIncrease > 1) {
+									int recoveryChance = 5;
+									int recovery = (int)(Math.random()*recoveryChance)+1;
+									int newReliability = e.getReliability()+recovery;
+									if(newReliability > 10) {
+										newReliability = 10;
 									}
-									for(int i = 0; i < pN.getResourcesAmount().length; i++) {
-										writer.write(","+pN.getResourcesAmount()[i]);
-									}
-									writer.write("\n");
+									
+									e.setReliability(newReliability);
 								}
 							}
-						}catch(IOException e) {
-							e.printStackTrace();
 						}
-					}else {
-						try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,true))){
-							writer.write(p.getName()+","+amountToAdd+","+prize+","+p.getTimePerUnit()+","+p.getTime()+","+quality+","+p.getMachineNeeded()+","+p.getAsignedEmployee()+","+p.getAsignedCompanyType());
+						
+						if(notFaster) {
+							if(timeTotal % timeUnit == 0) {
+								amount--;
+								cost -= costPerUnit;
+								amountToAdd++;
+								wasSold = true;
+								
+								company.setMoneyOfCompany(company.getMoneyOfCompany()-costPerUnit);
+							}
+						}
+						
+						if(amount > 0) {
+							writer.write(p.getName()+","+amount+","+cost+","+p.getTimePerUnit()+","+timeTotal+","+p.getQuality()+","+p.getMachineNeeded()+","+p.getAsignedEmployee()+","+p.getAsignedCompanyType());
 							for(int i = 0; i < p.getResourcesNeeded().length; i++) {
 								writer.write(","+p.getResourcesNeeded()[i]);
 							}
@@ -141,12 +153,128 @@ public class NextCycleStarted {
 								writer.write(","+p.getResourcesAmount()[i]);
 							}
 							writer.write("\n");
-						}catch(IOException e) {
-							e.printStackTrace();
+						}
+					}catch(IOException e) {
+						e.printStackTrace();
+					}finally {
+						restartInProduction = true;
+					}
+					
+					//Updates the InStock.csv file, and modifies the machine condition. Either a new product goes into stock, or is added to already existing supply
+					if(wasSold) {
+						boolean isThere = false;
+						producedProducts++;
+						
+						ArrayList<Product> produced = reader.readProducts("OnStock.csv", company);
+						file = new File("DataCSV/ProductsData/OnStock.csv");
+						
+						for(Product pN : produced) {
+							if(p.getName().equals(pN.getName())&&p.getQuality().equals(pN.getQuality())){
+								isThere = true;
+							}
+						}
+						
+						if(isThere) {
+							try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+								for(Product pN : produced) {
+									if(p.getName().equals(pN.getName())&&p.getQuality().equals(pN.getQuality())){
+										writer.write(pN.getName()+","+(amountToAdd+pN.getAmount())+","+pN.getCost()+","+pN.getTimePerUnit()+","+pN.getTime()+","+pN.getQuality()+","+pN.getMachineNeeded()+","+pN.getAsignedEmployee()+","+pN.getAsignedCompanyType());
+										for(int i = 0; i < pN.getResourcesNeeded().length; i++) {
+											writer.write(","+pN.getResourcesNeeded()[i]);
+										}
+										for(int i = 0; i < pN.getResourcesAmount().length; i++) {
+											writer.write(","+pN.getResourcesAmount()[i]);
+										}
+										writer.write("\n");
+									}else {
+										writer.write(pN.getName()+","+pN.getAmount()+","+pN.getCost()+","+pN.getTimePerUnit()+","+pN.getTime()+","+pN.getQuality()+","+pN.getMachineNeeded()+","+pN.getAsignedEmployee()+","+pN.getAsignedCompanyType());
+										for(int i = 0; i < pN.getResourcesNeeded().length; i++) {
+											writer.write(","+pN.getResourcesNeeded()[i]);
+										}
+										for(int i = 0; i < pN.getResourcesAmount().length; i++) {
+											writer.write(","+pN.getResourcesAmount()[i]);
+										}
+										writer.write("\n");
+									}
+								}
+							}catch(IOException e) {
+								e.printStackTrace();
+							}
+						}else {
+							String quality = "Standard";
+							int prize = costPerUnit;
+							
+							for(Machine m : machines) {
+								for(Employee e : employees) {
+									if(e.getName().equals(p.getAsignedEmployee())) {
+										if(m.getName().equals(p.getMachineNeeded())) {
+											int qualityRandom = (int)(Math.random()*10)+1;
+											int qualityExtraMachine = (int)(Math.random()*m.getCondition())+1;
+											int qualityExtraEmployee = (int)(Math.random()*e.getAccuracy())+1;
+											int qualityResult = qualityRandom + qualityExtraMachine + qualityExtraEmployee;
+											
+											int companyRepChange = (int)(Math.random()*10)+1;
+											if(qualityResult > 20) {
+												quality = "Gut";
+												prize += prize*0.4;
+												
+											}else if(qualityResult > 25) {
+												quality = "Hoch";
+												prize += prize*0.8;
+												companyRepChange += 5;
+											}else {
+												companyRepChange += -1;
+											}
+											int newCompanyRep = companyRepChange + company.getReputation();
+											company.setReputation(newCompanyRep);
+											
+											int reduceConditionChance = (int)(Math.random()*4)+1;
+											if(reduceConditionChance > 3 && m.getCondition() > 0) {
+												int conditionNew = m.getCondition()-1;
+												m.setCondition(conditionNew);
+											}
+										}
+									}
+								}
+							}
+							
+							try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,true))){
+								writer.write(p.getName()+","+amountToAdd+","+prize+","+p.getTimePerUnit()+","+p.getTime()+","+quality+","+p.getMachineNeeded()+","+p.getAsignedEmployee()+","+p.getAsignedCompanyType());
+								for(int i = 0; i < p.getResourcesNeeded().length; i++) {
+									writer.write(","+p.getResourcesNeeded()[i]);
+								}
+								for(int i = 0; i < p.getResourcesAmount().length; i++) {
+									writer.write(","+p.getResourcesAmount()[i]);
+								}
+								writer.write("\n");
+							}catch(IOException e) {
+								e.printStackTrace();
+							}
 						}
 					}
 				}
 			}
+			updateMachineEmployee(machines,employees,company);
+		}
+	}
+	private void updateMachineEmployee(ArrayList<Machine> machines, ArrayList<Employee> employees, Company company) {
+		File file = new File("DataCSV/EquipmentData/MachineBought.csv");
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+			for(Machine m : machines) {
+				writer.write(m.getName() + "," + m.getAmount() + "," + m.getCost() + "," + m.getCondition() + "," + company.getCompanyType());
+				writer.write("\n");
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		file = new File("DataCSV/EmployeeData/EmployedEmployees.csv");
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+			for(Employee e : employees) {
+				writer.write(e.getName() + "," + e.getCost() + "," + e.getAccuracy() + "," + e.getSpeed()+ "," +e.getReliability() + "," + e.getMachine());
+				writer.write("\n");
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
 		}
 	}
 	private void sellProduction(ReadCSVFiles reader, Company company) {

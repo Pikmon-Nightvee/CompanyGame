@@ -41,6 +41,7 @@ public class ButtonManager {
 	private Button buy = new Button("Buy");
 	private Button sell = new Button("Sell");
 	private Button changeOutput = new Button("Change");
+	private Button repair = new Button("Repair");
 
 	private Button produceProduct = new Button("Produce");
 
@@ -211,14 +212,17 @@ public class ButtonManager {
 			
 			HBox hBox = new HBox();
 			hBox.getChildren().addAll(assignTo, visual.getAssignToMachine());
+			HBox fireRepair = new HBox();
+			fireRepair.getChildren().addAll(fireEmployee,repair);
 
 			vBox.getChildren().addAll(visual.getAssignEmployeeTo(),visual.getAssignEmployed());
 			vBox.getChildren().addAll(visual.getAssignedEmployee(),hBox);
-			vBox.getChildren().addAll(visual.getFireEmployee(),fireEmployee);
+			vBox.getChildren().addAll(visual.getFireEmployee(),fireRepair);
 			vBox.getChildren().addAll(visual.getHiredEmployees(),visual.getEmployedStats());
 			
 			CSSNoAddAmount(assignTo);
 			CSSSubSelect(fireEmployee);
+			CSSSubSelect(repair);
 			visual.subSelectEmployed(company);
 			visual.employedTextArea();
 		});
@@ -275,6 +279,39 @@ public class ButtonManager {
 			visual.employedTextArea();
 		});
 		
+		repair.setOnAction(event->{
+			if(visual.getAssignEmployed().getValue() == null) {
+				errorMessage.errorMessageComboBox(visual.getAssignEmployed(), vBox);
+				return;
+			}
+			if(visual.getAssignToMachine().getValue() == "none") {
+				return;
+			}
+			
+			ArrayList<Machine> machines = reader.readMachines("MachineBought.csv",company);
+			int baseSpend = 1000;
+			int spentRepair = 0;
+			for(Machine m : machines) {
+				if(m.getName().equals(visual.getAssignToMachine().getValue()) && m.getCondition() < 10) {
+					spentRepair = (baseSpend * m.getAmount()) / m.getCondition();
+				}
+			}
+			for(Machine m : machines) {
+				if(m.getName().equals(visual.getAssignToMachine().getValue())) {
+					int newCompanyMoney = (int) (company.getMoneyOfCompany() - spentRepair);
+					System.out.println("Test Money: " + newCompanyMoney);
+					System.out.println("Test Company: " + company.getMoneyOfCompany());
+					if(0 > newCompanyMoney) {
+						return;
+					}
+				}
+			}
+			int newCompanyMoney = (int) (company.getMoneyOfCompany() - spentRepair);
+			company.setMoneyOfCompany(newCompanyMoney);
+			writer.repairMachine(visual.getAssignToMachine().getValue(), reader, company);
+			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
+		});
+		
 		fireEmployee.setOnAction(event->{
 			if(visual.getAssignEmployed().getValue() == null) {
 				errorMessage.errorMessageComboBox(visual.getAssignEmployed(), vBox);
@@ -285,6 +322,10 @@ public class ButtonManager {
 			for(Employee e : employeeToPay) {
 				if(e.getName().equals(visual.getAssignEmployed().getValue())) {
 					double money = company.getMoneyOfCompany() - e.getCost();
+					if(0 > money) {
+						errorMessage.errorMessageComboBox(visual.getAssignEmployed(), vBox);
+						return;
+					}
 					company.setMoneyOfCompany(money);
 				}
 			}
@@ -584,6 +625,9 @@ public class ButtonManager {
 		});
 		visual.getSelectEquipment().setOnMouseClicked(event ->{
 			errorMessage.errorMessageHandlerComboBox(visual.getSelectEquipment(), vBox);
+		});
+		visual.getAssignToMachine().setOnMouseClicked(event ->{
+			errorMessage.errorMessageHandlerComboBox(visual.getAssignToMachine(), vBox);
 		});
 	}
 	
