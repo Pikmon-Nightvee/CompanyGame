@@ -399,7 +399,7 @@ public class NextCycleStarted {
 	private void setTimeStart() {
 		File file = new File("DataCSV/GameStartUp/GameCycleData.csv");
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
-			writer.write((int)timePassed + "\n");
+			writer.write(timePassed + "\n");
 		}catch(IOException e) {
 			e.printStackTrace();
 		}

@@ -7,8 +7,11 @@ import FileLogic.WriteCSVFiles;
 import GameLogic.Company;
 import GameLogic.Employee;
 import GameLogic.ErrorMessageHandler;
+import GameLogic.GameManager;
+import GameLogic.LevelHolder;
 import GameLogic.Machine;
 import GameLogic.NextCycleStarted;
+import GameLogic.Player;
 import GameLogic.Product;
 import GameLogic.Resource;
 import javafx.geometry.Pos;
@@ -77,7 +80,7 @@ public class ButtonManager {
 		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
 	}
 	
-	public void start(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted, StackPane gamePane) {
+	public void start(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted, StackPane gamePane, LevelHolder level, Player player, GameManager game) {
 		CSS(resources);
 		CSS(employ);
 		CSS(nextCycle);
@@ -89,10 +92,10 @@ public class ButtonManager {
 		CSSSubSelect(goBack);
 		CSSSubSelect(bankrupt);
 		
-		action(vBox, visual, warningCanvas, gameCanvas, company, nextCycleStarted, gamePane);
+		action(vBox, visual, warningCanvas, gameCanvas, company, nextCycleStarted, gamePane, level, player, game);
 	}
 	
-	public void action(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted, StackPane gamePane) {
+	public void action(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted, StackPane gamePane, LevelHolder level, Player player, GameManager game) {
 		WriteCSVFiles writer = new WriteCSVFiles();
 		ReadCSVFiles reader = new ReadCSVFiles();
 		
@@ -138,6 +141,9 @@ public class ButtonManager {
 			
 			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
 			writer.gameWasPlayed();
+
+			level.getWalls().clear();
+			level.loadLevel(company.getCompanyType(), player);
 			
 			Label money = new Label();
 			visual.CSSLabel(money);
@@ -150,6 +156,7 @@ public class ButtonManager {
 			height = (amount + visual.getAmount()) * 20 + 10;
 			System.out.println(height);
 			System.out.println(company.toString());
+			game.updateState("InUIState");
 		});
 		
 		resources.setOnAction(event->{
