@@ -13,6 +13,7 @@ import javafx.animation.Timeline;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -55,8 +56,8 @@ public class GameManager {
 				renderer.drawWarningCanvas(warningCanvas, warningPencil);
 				break;
 			case "InTopDown":
-				gameVBox.getChildren().clear();
-				gamePencil.setFill(Color.BLACK);
+				gameVBox.getChildren().clear();				
+				gamePencil.setFill(Color.DARKGRAY);
 				renderer.drawWall(gameCanvas, gamePencil, level.getWalls(), camera);
 				gamePencil.setFill(Color.RED);
 				renderer.drawPlayer(gameCanvas, gamePencil, player, camera);

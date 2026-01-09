@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -62,6 +63,23 @@ public class UIMenuManager {
 		
 		openTopDown.setOnAction(event->{
 			vBox.getChildren().clear();
+			
+			HBox hBox = new HBox();
+			Label name = new Label("Name of Company: ");
+			Label money = new Label(" | Money of the Company (€): ");
+			Label companyType = new Label(" | Company Type: ");
+			Label companySpecification = new Label(company.getCompanyType());
+			visual.CSSLabel(money);
+			visual.CSSLabelNoAddAmount(name);
+			visual.CSSLabelNoAddAmount(companyType);
+			visual.CSSLabelNoAddAmount(companySpecification);
+			
+			visual.getNameOfCompany().setText(company.getName());
+			
+			hBox.getChildren().addAll(name,visual.getNameOfCompany(),money,visual.getMoneyOfCompany(),companyType,companySpecification);
+			hBox.setAlignment(Pos.TOP_CENTER);
+			gamePane.getChildren().add(hBox);
+			
 			game.updateState("InTopDown");
 		});
 		openUIGame.setOnAction(event->{
