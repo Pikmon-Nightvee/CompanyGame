@@ -33,20 +33,24 @@ public class KeyboardManager {
 		}
 	}
 	
-	public void keyBoardInputPlaceMachine(Set<KeyCode> inputs) {
-		if(!inputs.contains(KeyCode.Q)) {
+	public void keyBoardInputPlaceMachine(Set<KeyCode> inputs, Wall placeHolder) {
+		if(!inputs.contains(KeyCode.G)) {
 			isBeingPlaced = false;
 		}
 		
 		if(isBeingPlaced) {
 			if(timeSinceLastPressed + timeWait < System.currentTimeMillis()) {
 				if(inputs.contains(KeyCode.R)){
+					double width = placeHolder.getWidth();
+					double height = placeHolder.getHeight();
+					placeHolder.setHeight(width);
+					placeHolder.setWidth(height);
 					timeSinceLastPressed = System.currentTimeMillis();
 					System.out.println("Rotate Object");
 				}
 			}
 		}else {
-			if(inputs.contains(KeyCode.Q)) {
+			if(inputs.contains(KeyCode.G)) {
 				isBeingPlaced = true;
 				System.out.println("Object is being placed");
 			}

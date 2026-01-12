@@ -14,7 +14,7 @@ public class Renderer {
 	}
 	
 	public void drawPlayer(Canvas canvas, GraphicsContext pencil, Player player, Camera camera) {
-		pencil.fillRect(player.getX()+ camera.getX(),player.getY() + camera.getY(),player.getWidth(),player.getHeight());
+		pencil.fillRect(player.getX() + camera.getX(),player.getY() + camera.getY(),player.getWidth(),player.getHeight());
 	}
 	
 	public void drawWalls(Canvas canvas, GraphicsContext pencil, ArrayList<Wall> walls, Camera camera) {

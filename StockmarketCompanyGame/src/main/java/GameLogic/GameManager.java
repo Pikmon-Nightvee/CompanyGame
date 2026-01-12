@@ -34,7 +34,7 @@ public class GameManager {
 	private boolean mousePressed = false;
 	
 	private int width = 50;
-	private int height = 50;
+	private int height = 100;
 	private Wall placeHolder = new Wall(xMouse, yMouse, width, height);
 	
 	private long waitTime = 350;
@@ -67,7 +67,7 @@ public class GameManager {
 		//30FPS Update Loop
 		gameTimeline = new Timeline(new KeyFrame(Duration.seconds(0.032), event -> {
 			renderer.clearAll(gameCanvas, gamePencil,warningCanvas, warningPencil);
-			//System.out.println("x: " + xMouse + " y: " + yMouse);
+			System.out.println("MouseX: " + xMouse + " MouseY: " + yMouse + " PlayerX: " + player.getX() + " PlayerY: " + player.getY());
 			
 			switch(state) {
 			case "InMenu":
@@ -91,7 +91,7 @@ public class GameManager {
 					colission.pushBack(player,w);
 				}
 				//Is machine being placed?
-				keyboard.keyBoardInputPlaceMachine(inputs);
+				keyboard.keyBoardInputPlaceMachine(inputs,placeHolder);
 				if(waitTime + currentTime < System.currentTimeMillis()) {
 					gamePencil.setFill(Color.CHOCOLATE);
 				}else{
@@ -112,20 +112,20 @@ public class GameManager {
 					System.out.println("Mouse was pressed");
 					if(keyboard.isBeingPlaced()) {
 						System.out.println("Machine placed");
-						double xFinal = placeHolder.getX();
-						double yFinal = placeHolder.getY();
+						double xFinal = placeHolder.getX()-camera.getX();
+						double yFinal = placeHolder.getY()-camera.getY();
 						
 						boolean canBeAdded = true;
 						
-						canBeAdded = !colission.AABB(player.getX(), player.getY(), player.getHeight(), player.getHeight(), placeHolder.getX(), placeHolder.getY(), placeHolder.getWidth(), placeHolder.getHeight());
+						canBeAdded = !colission.AABB(player.getX(), player.getY(), player.getHeight(), player.getHeight(), xFinal, placeHolder.getY(), placeHolder.getWidth(), placeHolder.getHeight());
 						for(Wall w : level.getWalls()) {
 							if(canBeAdded) {
-								canBeAdded = !colission.AABB(w.getX(), w.getY(), w.getHeight(), w.getHeight(), placeHolder.getX(), placeHolder.getY(), placeHolder.getWidth(), placeHolder.getHeight());
+								canBeAdded = !colission.AABB(w.getX(), w.getY(), w.getHeight(), w.getHeight(), xFinal, yFinal, placeHolder.getWidth(), placeHolder.getHeight());
 							}
 						}
 						for(Wall w : level.getMachines()) {
 							if(canBeAdded) {
-								canBeAdded = !colission.AABB(w.getX(), w.getY(), w.getHeight(), w.getHeight(), placeHolder.getX(), placeHolder.getY(), placeHolder.getWidth(), placeHolder.getHeight());
+								canBeAdded = !colission.AABB(w.getX(), w.getY(), w.getHeight(), w.getHeight(), xFinal, yFinal, placeHolder.getWidth(), placeHolder.getHeight());
 							}
 						}
 						

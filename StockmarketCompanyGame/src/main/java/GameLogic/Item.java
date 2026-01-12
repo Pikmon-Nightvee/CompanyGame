@@ -42,4 +42,12 @@ public abstract class Item {
 	public void setY(double y) {
 		this.y = y;
 	}
+
+	public void setWidth(double width) {
+		this.width = width;
+	}
+
+	public void setHeight(double height) {
+		this.height = height;
+	}
 }
