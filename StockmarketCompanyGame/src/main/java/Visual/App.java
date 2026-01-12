@@ -20,7 +20,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
+//Muss fertig werden am 21.02.2026
 /**
  * JavaFX App
  */
@@ -87,13 +87,23 @@ public class App extends Application {
 
     		buttonManager.changeTextAreaSize(gameCanvas, visualElementsHolder, gameVBox);
     	});
+    	
     	scene.setOnKeyPressed(event->{
     		inputs.add(event.getCode());		
     	});
     	scene.setOnKeyReleased(event->{
     		inputs.remove(event.getCode());
     	});
-    	
+
+    	scene.setOnMousePressed(event->{
+    		gameManager.mousePressed(true);
+    	});
+    	scene.setOnMouseMoved(event->{
+    		gameManager.updateMouseCoordinates(event.getX(), event.getY());
+    	});
+    	scene.setOnMouseReleased(event->{
+    		gameManager.updateMouseCoordinates(event.getX(), event.getY());
+    	});
     	gameManager.loop(gameCanvas, gamePencil, gamePane, warningCanvas, warningPencil, readCSV, writeCSV, gameVBox, company, uiMenuManager, stage, buttonManager, visualElementsHolder, inputs, player, level, gameManager);
         
         stage.setScene(scene);

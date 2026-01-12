@@ -14,7 +14,11 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class KeyboardManager {
-	public void keyboardInputs(Set<KeyCode> inputs, Player player) {
+	private boolean isBeingPlaced = false;
+	private long timeWait = 500;
+	private long timeSinceLastPressed = 0;
+	
+	public void keyboardInputsMovement(Set<KeyCode> inputs, Player player) {
 		if(inputs.contains(KeyCode.A)) {
 			player.moveOnX(true);
 		}
@@ -29,10 +33,38 @@ public class KeyboardManager {
 		}
 	}
 	
+	public void keyBoardInputPlaceMachine(Set<KeyCode> inputs) {
+		if(!inputs.contains(KeyCode.Q)) {
+			isBeingPlaced = false;
+		}
+		
+		if(isBeingPlaced) {
+			if(timeSinceLastPressed + timeWait < System.currentTimeMillis()) {
+				if(inputs.contains(KeyCode.R)){
+					timeSinceLastPressed = System.currentTimeMillis();
+					System.out.println("Rotate Object");
+				}
+			}
+		}else {
+			if(inputs.contains(KeyCode.Q)) {
+				isBeingPlaced = true;
+				System.out.println("Object is being placed");
+			}
+		}
+	}
+	
 	public void keyboardInputMenu(Set<KeyCode> inputs, UIMenuManager uiMenu, VBox vBox, ButtonManager buttonManager, VisualElementsHolder visual, WriteCSVFiles writer, ReadCSVFiles reader, Stage stage, Company company, Canvas warningCanvas, StackPane gamePane, Canvas gameCanvas, LevelHolder level, Player player, GameManager game) {
 		if(inputs.contains(KeyCode.E)) {
 			uiMenu.loadMenu(vBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, game);
 			game.updateState("InMenu");
 		}
+	}
+
+	public boolean isBeingPlaced() {
+		return isBeingPlaced;
+	}
+
+	public void setBeingPlaced(boolean isBeingPlaced) {
+		this.isBeingPlaced = isBeingPlaced;
 	}
 }

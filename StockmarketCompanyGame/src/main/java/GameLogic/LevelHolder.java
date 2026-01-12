@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class LevelHolder {
 	//0 -> Luft, 1 -> Wand, 2 -> Spawnpoint
 	private ArrayList<Wall> walls = new ArrayList<>();
+	private ArrayList<Wall> machines = new ArrayList<>();
 	
 	private int[][] levelEDVManager = {
 									{1,1,1,1,1,1,1},
@@ -64,8 +65,17 @@ public class LevelHolder {
 			}
 		}
 	}
+	
+	public void machineAdd(double xPos, double yPos, double width, double height){
+		Wall toAdd = new Wall(xPos,yPos,width,height);
+		machines.add(toAdd);
+	}
 
 	public ArrayList<Wall> getWalls() {
 		return walls;
+	}
+
+	public ArrayList<Wall> getMachines() {
+		return machines;
 	}
 }

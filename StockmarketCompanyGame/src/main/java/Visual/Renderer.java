@@ -14,13 +14,17 @@ public class Renderer {
 	}
 	
 	public void drawPlayer(Canvas canvas, GraphicsContext pencil, Player player, Camera camera) {
-		pencil.fillRect(player.getX() + camera.getX(),player.getY() + camera.getY(),player.getWidth(),player.getHeight());
+		pencil.fillRect(player.getX()+ camera.getX(),player.getY() + camera.getY(),player.getWidth(),player.getHeight());
 	}
 	
-	public void drawWall(Canvas canvas, GraphicsContext pencil, ArrayList<Wall> walls, Camera camera) {
+	public void drawWalls(Canvas canvas, GraphicsContext pencil, ArrayList<Wall> walls, Camera camera) {
 		for(Wall w : walls) {
 			pencil.fillRect(w.getX() + camera.getX(),w.getY() + camera.getY(),w.getWidth(),w.getHeight());
 		}
+	}
+	
+	public void drawWall(Canvas canvas, GraphicsContext pencil, Wall w) {
+		pencil.fillRect(w.getX(),w.getY(),w.getWidth(),w.getHeight());
 	}
 
 	public void drawWarningCanvas(Canvas canvas, GraphicsContext pencil) {
