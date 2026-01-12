@@ -1,6 +1,7 @@
 package FileLogic;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -9,6 +10,7 @@ import GameLogic.Employee;
 import GameLogic.Machine;
 import GameLogic.Product;
 import GameLogic.Resource;
+import GameLogic.Wall;
 
 public class ReadCSVFiles {
 	public Company gameAlreadyPlayedCompanyData() {
@@ -329,5 +331,26 @@ public class ReadCSVFiles {
 			}
 		}
 		return returnValue;
+	}
+	
+	public ArrayList<Wall> machinesPlaced(){
+		ArrayList<Wall> machines = new ArrayList<>();
+		File file = new File("DataCSV/CoordinateData/MachineCoordinates.csv");
+		try(Scanner reader = new Scanner(file)){
+			while(reader.hasNext()) {
+				String currentLine = reader.nextLine();
+				String[] data = currentLine.split(",");
+				double xCoordinate = Double.parseDouble(data[0]);
+				double yCoordinate = Double.parseDouble(data[1]);
+				double width = Double.parseDouble(data[2]);
+				double height = Double.parseDouble(data[3]);
+				
+				Wall toAdd = new Wall(xCoordinate,yCoordinate,width,height);
+				machines.add(toAdd);
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		return machines;
 	}
 }

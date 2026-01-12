@@ -12,6 +12,7 @@ import GameLogic.Employee;
 import GameLogic.Machine;
 import GameLogic.Product;
 import GameLogic.Resource;
+import GameLogic.Wall;
 
 public class WriteCSVFiles {
 	public void manageEmployeeInFiles(String id, String toWhere) {
@@ -677,6 +678,15 @@ public class WriteCSVFiles {
 				e.printStackTrace();
 			}
 		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void coordinatesMachineSafe(Wall w) {
+		File file = new File("DataCSV/CoordinateData/MachineCoordinates.csv");
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,true))){
+			writer.write(w.getX()+","+w.getY()+","+w.getWidth()+","+w.getHeight()+"\n");
+		}catch(IOException e) {
 			e.printStackTrace();
 		}
 	}

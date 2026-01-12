@@ -70,6 +70,9 @@ public class LevelHolder {
 		Wall toAdd = new Wall(xPos,yPos,width,height);
 		machines.add(toAdd);
 	}
+	public void machinesLoad(ArrayList<Wall> toAdd) {
+		machines.addAll(toAdd);
+	}
 
 	public ArrayList<Wall> getWalls() {
 		return walls;

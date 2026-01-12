@@ -131,6 +131,7 @@ public class GameManager {
 						
 						if(canBeAdded) {
 							level.machineAdd(xFinal,yFinal,placeHolder.getWidth(),placeHolder.getHeight());
+							writer.coordinatesMachineSafe(placeHolder);
 						}else {
 							mousePressed = false;
 							currentTime = System.currentTimeMillis();

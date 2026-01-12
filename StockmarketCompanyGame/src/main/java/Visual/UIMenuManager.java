@@ -144,6 +144,7 @@ public class UIMenuManager {
 			buttonManager.loadGame(visual, vBox, company, warningCanvas, reader);
 			buttonManager.changeTextAreaSize(gameCanvas, visual, vBox);
 			level.loadLevel(company.getCompanyType(), player);
+			level.machinesLoad(reader.machinesPlaced());
 		});
 		quit.setOnAction(event->{
 			stage.close();
