@@ -12,7 +12,7 @@ public class CreateImportantCSVFiles {
 	 *	Creates these dirs, aswell as the files. Needs to be extended.
 	 *	Could perhaps be extended to a more introcate File System, currently abondondend.
 	 */	
-	public boolean createFilesEmployees(ReadCSVFiles readerCSV,WriteCSVFiles writeCSV) {
+	public boolean createFilesEmployees() {
 		boolean error = false;
 		try {			
 			File file = new File("DataCSV/EmployeeData/UnemployedEmployees.csv");
@@ -36,7 +36,7 @@ public class CreateImportantCSVFiles {
 		return error;
 	}
 	
-	public boolean createImportantGameStateFiles(ReadCSVFiles readerCSV,WriteCSVFiles writeCSV) {
+	public boolean createImportantGameStateFiles() {
 		boolean error = false;
 		try {
 			File file = new File("DataCSV/GameStartUp/GameAlreadyStarted.csv");
@@ -66,7 +66,7 @@ public class CreateImportantCSVFiles {
 		return error;
 	}
 	
-	public boolean createFilesMachine(ReadCSVFiles readerCSV,WriteCSVFiles writeCSV) {
+	public boolean createFilesMachine() {
 		boolean error = false;
 		try {
 			File file = new File("DataCSV/EquipmentData/MachineBought.csv");
@@ -89,7 +89,7 @@ public class CreateImportantCSVFiles {
 		return error;
 	}
 	
-	public boolean createFilesResource(ReadCSVFiles readerCSV,WriteCSVFiles writeCSV) {
+	public boolean createFilesResource() {
 		boolean error = false;
 		try {
 			File file = new File("DataCSV/ResourceData/ResourcesBought.csv");
@@ -112,7 +112,23 @@ public class CreateImportantCSVFiles {
 		return error;
 	}
 	
-	public boolean createFilesProduct(ReadCSVFiles readerCSV,WriteCSVFiles writeCSV) {
+	public boolean createFilesCoordinates() {
+		boolean error = false;
+		try {
+			File file = new File("DataCSV/CoordinateData/MachineCoordinates.csv");
+			if(file.createNewFile()) {
+				System.out.println("Important File: MachineCoordinates created");
+				error = true;
+			}else {
+				System.out.println("Important File: MachineCoordinates exists");
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return error;
+	}
+	
+	public boolean createFilesProduct() {
 		boolean error = false;
 		try {
 			File file = new File("DataCSV/ProductsData/InProduction.csv");
@@ -199,6 +215,17 @@ public class CreateImportantCSVFiles {
 	            System.out.println("Important Directory: ResourceData exists");
 	        } else {
 	            System.out.println("Important Directory: ResourceData could not be created");
+	        }
+	        
+	        dir = new File("DataCSV/CoordinateData");
+
+	        if (dir.mkdir()) { // creates only the last directory
+	            System.out.println("Important Directory: CoordinateData created");
+	            created = true;
+	        } else if (dir.exists()) {
+	            System.out.println("Important Directory: CoordinateData exists");
+	        } else {
+	            System.out.println("Important Directory: CoordinateData could not be created");
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();

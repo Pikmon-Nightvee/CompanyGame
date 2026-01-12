@@ -56,11 +56,12 @@ public class App extends Application {
     	boolean error = false;
     	
     	error = createCSV.createDirectories();
-    	error = createCSV.createImportantGameStateFiles(readCSV,writeCSV);
-    	error = createCSV.createFilesEmployees(readCSV,writeCSV);
-    	error = createCSV.createFilesMachine(readCSV, writeCSV);
-    	error = createCSV.createFilesProduct(readCSV, writeCSV);
-    	error = createCSV.createFilesResource(readCSV, writeCSV);
+    	error = createCSV.createImportantGameStateFiles();
+    	error = createCSV.createFilesEmployees();
+    	error = createCSV.createFilesMachine();
+    	error = createCSV.createFilesProduct();
+    	error = createCSV.createFilesResource();
+    	error = createCSV.createFilesCoordinates();
     	
     	if(error) {
     		System.out.println("Important Files and Directorys missing");
