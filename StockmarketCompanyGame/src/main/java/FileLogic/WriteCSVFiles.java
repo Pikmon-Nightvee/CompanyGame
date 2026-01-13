@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import GameLogic.Camera;
 import GameLogic.Company;
 import GameLogic.Employee;
 import GameLogic.Machine;
@@ -677,15 +678,22 @@ public class WriteCSVFiles {
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
+			
+			file = new File("DataCSV/CoordinateData/MachineCoordinates.csv");
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+				writer.write("");
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void coordinatesMachineSafe(Wall w) {
+	public void coordinatesMachineSafe(Wall w, double x, double y) {
 		File file = new File("DataCSV/CoordinateData/MachineCoordinates.csv");
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,true))){
-			writer.write(w.getX()+","+w.getY()+","+w.getWidth()+","+w.getHeight()+"\n");
+			writer.write(x+","+y+","+w.getWidth()+","+w.getHeight()+"\n");
 		}catch(IOException e) {
 			e.printStackTrace();
 		}

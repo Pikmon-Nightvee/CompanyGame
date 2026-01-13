@@ -67,7 +67,6 @@ public class GameManager {
 		//30FPS Update Loop
 		gameTimeline = new Timeline(new KeyFrame(Duration.seconds(0.032), event -> {
 			renderer.clearAll(gameCanvas, gamePencil,warningCanvas, warningPencil);
-			System.out.println("MouseX: " + xMouse + " MouseY: " + yMouse + " PlayerX: " + player.getX() + " PlayerY: " + player.getY());
 			
 			switch(state) {
 			case "InMenu":
@@ -115,23 +114,42 @@ public class GameManager {
 						double xFinal = placeHolder.getX()-camera.getX();
 						double yFinal = placeHolder.getY()-camera.getY();
 						
-						boolean canBeAdded = true;
+						boolean canBeAdded = false;
 						
-						canBeAdded = !colission.AABB(player.getX(), player.getY(), player.getHeight(), player.getHeight(), xFinal, placeHolder.getY(), placeHolder.getWidth(), placeHolder.getHeight());
-						for(Wall w : level.getWalls()) {
-							if(canBeAdded) {
-								canBeAdded = !colission.AABB(w.getX(), w.getY(), w.getHeight(), w.getHeight(), xFinal, yFinal, placeHolder.getWidth(), placeHolder.getHeight());
+						for(Wall w : level.getPlaceable()) {
+							if(!canBeAdded) { 
+								canBeAdded = colission.AABB(w.getX(), w.getY(), w.getHeight(), w.getHeight(), xFinal, yFinal, placeHolder.getWidth(), placeHolder.getHeight());
 							}
 						}
-						for(Wall w : level.getMachines()) {
+						if(canBeAdded) {
+							canBeAdded = !colission.AABB(player.getX(), player.getY(), player.getWidth(), player.getHeight(), xFinal, yFinal, placeHolder.getWidth(), placeHolder.getHeight());
 							if(canBeAdded) {
-								canBeAdded = !colission.AABB(w.getX(), w.getY(), w.getHeight(), w.getHeight(), xFinal, yFinal, placeHolder.getWidth(), placeHolder.getHeight());
+								for(Wall w : level.getMachines()) {
+									if(canBeAdded) {
+										System.out.println("Placeholder x,y,width,height: " + xFinal + "," + yFinal + "," + placeHolder.getWidth() + "," + placeHolder.getHeight() + " Machine x,y,width,height: " + w.getX() + "," + w.getY() + "," + w.getWidth() + "," + w.getHeight());
+										canBeAdded = !colission.AABB(w.getX(), w.getY(), w.getWidth(), w.getHeight(), xFinal, yFinal, placeHolder.getWidth(), placeHolder.getHeight());
+									}
+								}
+							}else {
+								System.out.println("Colission with player");
 							}
+							if(canBeAdded) {
+								for(Wall w : level.getWalls()) {
+									if(canBeAdded) {
+										canBeAdded = !colission.AABB(w.getX(), w.getY(), w.getWidth(), w.getHeight(), xFinal, yFinal, placeHolder.getWidth(), placeHolder.getHeight());
+									}else {
+										System.out.println("Colission with a wall");
+									}
+								}
+							}else {
+								System.out.println("Colission with a machine");
+							}
+						}else {
+							System.out.println("Out of bounce");
 						}
-						
 						if(canBeAdded) {
 							level.machineAdd(xFinal,yFinal,placeHolder.getWidth(),placeHolder.getHeight());
-							writer.coordinatesMachineSafe(placeHolder);
+							writer.coordinatesMachineSafe(placeHolder,xFinal,yFinal);
 						}else {
 							mousePressed = false;
 							currentTime = System.currentTimeMillis();

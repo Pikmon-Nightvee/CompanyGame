@@ -3,9 +3,10 @@ package GameLogic;
 import java.util.ArrayList;
 
 public class LevelHolder {
-	//0 -> Luft, 1 -> Wand, 2 -> Spawnpoint
+	//0 -> Luft platzierbar, 1 -> Wand, 2 -> Spawnpoint, 3 -> Luft nicht platzierbar
 	private ArrayList<Wall> walls = new ArrayList<>();
 	private ArrayList<Wall> machines = new ArrayList<>();
+	private ArrayList<Wall> placeable = new ArrayList<>();
 	
 	private int[][] levelEDVManager = {
 									{1,1,1,1,1,1,1},
@@ -16,11 +17,11 @@ public class LevelHolder {
 												};
 	
 	private int[][] levelFoodtruck = {
-									{0,1,1,1,1,1,1,1,1,1,1},
+									{3,1,1,1,1,1,1,1,1,1,1},
 									{1,1,0,0,0,0,0,0,0,0,1},
 									{1,0,0,0,0,2,0,0,0,0,1},
 									{1,1,0,0,0,0,0,0,0,0,1},
-									{0,1,1,1,1,1,1,1,1,1,1}
+									{3,1,1,1,1,1,1,1,1,1,1}
 												};
 	
 	private int[][] levelCraftBusiness = {
@@ -47,7 +48,12 @@ public class LevelHolder {
 		if(loadLevel != null) {
 			for(int i = 0; i < loadLevel.length; i++) {
 				for(int j = 0; j < loadLevel[0].length; j++) {
-					if(loadLevel[i][j] == 1) {
+					if(loadLevel[i][j] == 0) {
+						int insertX = currentX * sizeWall;
+						int insertY = currentY * sizeWall;
+						Wall wall = new Wall(insertX,insertY,sizeWall,sizeWall);
+						placeable.add(wall);
+					}else if(loadLevel[i][j] == 1) {
 						int insertX = currentX * sizeWall;
 						int insertY = currentY * sizeWall;
 						Wall wall = new Wall(insertX,insertY,sizeWall,sizeWall);
@@ -80,5 +86,9 @@ public class LevelHolder {
 
 	public ArrayList<Wall> getMachines() {
 		return machines;
+	}
+
+	public ArrayList<Wall> getPlaceable() {
+		return placeable;
 	}
 }
