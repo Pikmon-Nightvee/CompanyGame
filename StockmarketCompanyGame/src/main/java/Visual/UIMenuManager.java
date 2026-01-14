@@ -139,6 +139,10 @@ public class UIMenuManager {
 			this.vBox.getChildren().clear();
 			vBox.getChildren().clear();
 			level.getWalls().clear();
+			level.getMachines().clear();
+			level.getPlaceable().clear();
+			level.getToRemove().clear();
+			level.getInteract().clear();
 			game.updateState("InUIState");
 			company.setName(reader.gameAlreadyPlayedCompanyData().getName());
 			company.setMoneyOfCompany(reader.gameAlreadyPlayedCompanyData().getMoneyOfCompany());
