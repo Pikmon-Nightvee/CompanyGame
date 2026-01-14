@@ -1,6 +1,5 @@
 package GameLogic;
 
-import java.util.ArrayList;
 import java.util.Set;
 
 import FileLogic.ReadCSVFiles;
@@ -27,14 +26,15 @@ public class GameManager {
 	private KeyboardManager keyboard = new KeyboardManager();
 	private Camera camera = new Camera();
 	private ColissionHandler colission = new ColissionHandler();
-	
+
+	private String selectedMachine = "";
 	private String state = "InMenu";
 	private double xMouse = 0;
 	private double yMouse = 0;
 	private boolean mousePressed = false;
 	
-	private int width = 50;
-	private int height = 100;
+	private int width = 0;
+	private int height = 0;
 	private Wall placeHolder = new Wall(xMouse, yMouse, width, height);
 	
 	private long waitTime = 350;
@@ -77,10 +77,10 @@ public class GameManager {
 			case "InTopDown":
 				//Render
 				gameVBox.getChildren().clear();				
-				gamePencil.setFill(Color.DARKGRAY);
-				renderer.drawWalls(gameCanvas, gamePencil, level.getWalls(), camera);
 				gamePencil.setFill(Color.GREEN);
 				renderer.drawInteractable(gameCanvas, gamePencil, level.getInteract(), camera);
+				gamePencil.setFill(Color.DARKGRAY);
+				renderer.drawWalls(gameCanvas, gamePencil, level.getWalls(), camera);
 				gamePencil.setFill(Color.DARKBLUE);
 				renderer.drawWalls(gameCanvas, gamePencil, level.getMachines(), camera);
 				gamePencil.setFill(Color.RED);
@@ -95,7 +95,7 @@ public class GameManager {
 					colission.pushBack(player,m);
 				}
 				//Is machine being placed?
-				keyboard.keyBoardInputPlaceMachine(inputs,placeHolder);
+				keyboard.keyBoardInputPlaceMachine(inputs,placeHolder,reader.readMachines("MachineBought.csv", company), selectedMachine);
 				if(waitTime + currentTime < System.currentTimeMillis()) {
 					gamePencil.setFill(Color.CHOCOLATE);
 				}else{

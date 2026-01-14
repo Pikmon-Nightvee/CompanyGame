@@ -34,7 +34,19 @@ public class KeyboardManager {
 		}
 	}
 	
-	public void keyBoardInputPlaceMachine(Set<KeyCode> inputs, Wall placeHolder) {
+	public void keyBoardInputPlaceMachine(Set<KeyCode> inputs, Wall placeHolder, ArrayList<Machine> machines, String machineName) {
+//		boolean notThere = true;
+//		for(Machine m : machines) {
+//			if(m.getName().equals(machineName)) {
+//				if(m.getAmount() > 0) {
+//					notThere = false;
+//				}
+//			}
+//		}
+//		if(notThere) {
+//			return;
+//		}
+		
 		if(!inputs.contains(KeyCode.G)) {
 			isBeingPlaced = false;
 		}

@@ -105,6 +105,9 @@ public class App extends Application {
     	scene.setOnMouseReleased(event->{
     		gameManager.updateMouseCoordinates(event.getX(), event.getY());
     	});
+    	scene.setOnScroll(event->{
+    		System.out.println("Scrolled");
+    	});
     	gameManager.loop(gameCanvas, gamePencil, gamePane, warningCanvas, warningPencil, readCSV, writeCSV, gameVBox, company, uiMenuManager, stage, buttonManager, visualElementsHolder, inputs, player, level, gameManager);
         
         stage.setScene(scene);

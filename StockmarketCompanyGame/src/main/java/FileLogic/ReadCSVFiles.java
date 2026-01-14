@@ -139,7 +139,6 @@ public class ReadCSVFiles {
 				int amount = Integer.parseInt(dataInLine[1]);
 				int cost = Integer.parseInt(dataInLine[2]);
 				int reliability = Integer.parseInt(dataInLine[3]);
-				System.out.println(dataInLine[4]);
 				
 				if(company.getCompanyType().equals(dataInLine[4]) || dataInLine[4].equals("All")) {
 					Machine newMachine = new Machine(name,amount,cost,reliability);
@@ -148,10 +147,6 @@ public class ReadCSVFiles {
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
-		}
-		
-		for(Machine m : machines) {
-			System.out.println(m.toString());
 		}
 		
 		return machines;
