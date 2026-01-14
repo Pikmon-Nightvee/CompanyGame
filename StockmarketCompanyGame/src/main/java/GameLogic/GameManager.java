@@ -79,6 +79,8 @@ public class GameManager {
 				gameVBox.getChildren().clear();				
 				gamePencil.setFill(Color.DARKGRAY);
 				renderer.drawWalls(gameCanvas, gamePencil, level.getWalls(), camera);
+				gamePencil.setFill(Color.GREEN);
+				renderer.drawInteractable(gameCanvas, gamePencil, level.getInteract(), camera);
 				gamePencil.setFill(Color.DARKBLUE);
 				renderer.drawWalls(gameCanvas, gamePencil, level.getMachines(), camera);
 				gamePencil.setFill(Color.RED);
@@ -88,6 +90,9 @@ public class GameManager {
 				keyboard.keyboardInputMenu(inputs, uiMenuManager, gameVBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, gameManager);
 				for(Wall w : level.getWalls()) {
 					colission.pushBack(player,w);
+				}
+				for(Wall m : level.getMachines()) {
+					colission.pushBack(player,m);
 				}
 				//Is machine being placed?
 				keyboard.keyBoardInputPlaceMachine(inputs,placeHolder);
@@ -158,7 +163,18 @@ public class GameManager {
 					}
 					mousePressed = false;
 				}
-				
+				for(InteractableObject i : level.getInteract()) {
+					if(colission.AABB(i.getX(), i.getY(), i.getWidth(), i.getHeight(), player.getX(), player.getY(), player.getWidth(), player.getHeight())){
+						keyboard.keyBoardInputPlacedMachine(inputs, level.getMachines(), i, level, writer);
+						i.setInbounds(true);
+					}else {
+						i.setInbounds(false);
+					}
+				}
+				for(InteractableObject i : level.getToRemove()) {
+					level.getInteract().remove(i);
+				}
+				level.getToRemove().clear();
 				break;
 			case "InUIState":
 				gamePencil.setFill(Color.LIGHTGREY);

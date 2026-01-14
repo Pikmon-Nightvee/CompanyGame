@@ -6,6 +6,8 @@ public class LevelHolder {
 	//0 -> Luft platzierbar, 1 -> Wand, 2 -> Spawnpoint, 3 -> Luft nicht platzierbar
 	private ArrayList<Wall> walls = new ArrayList<>();
 	private ArrayList<Wall> machines = new ArrayList<>();
+	private ArrayList<InteractableObject> interact = new ArrayList<>();
+	private ArrayList<InteractableObject> toRemove = new ArrayList<>();
 	private ArrayList<Wall> placeable = new ArrayList<>();
 	
 	private int[][] levelEDVManager = {
@@ -71,13 +73,37 @@ public class LevelHolder {
 			}
 		}
 	}
-	
+
+	public void machinesLoad(ArrayList<Wall> toAdd) {
+		machines.addAll(toAdd);
+	}
+	private int extra = 15;
 	public void machineAdd(double xPos, double yPos, double width, double height){
 		Wall toAdd = new Wall(xPos,yPos,width,height);
 		machines.add(toAdd);
+		
+		extra = 15;
+		InteractableObject toAddIo = new InteractableObject(xPos-extra,yPos-extra,width+(extra*2),height+(extra*2),false,false);
+		interact.add(toAddIo);
 	}
-	public void machinesLoad(ArrayList<Wall> toAdd) {
-		machines.addAll(toAdd);
+	public void interactLoad(ArrayList<Wall> walls){
+		for(Wall w : walls) {
+			extra = 15;
+			InteractableObject toAddIo = new InteractableObject(w.getX()-extra,w.getY()-extra,w.getWidth()+(extra*2),w.getHeight()+(extra*2),false,false);
+			this.interact.add(toAddIo);
+		}
+	}
+	public void removeMachine(ArrayList<Wall> walls, InteractableObject i) {
+		ArrayList<Wall> toRemove = new ArrayList<>();
+		for(Wall w : walls) {
+			if(w.getX() == i.getX()+extra && w.getY() == i.getY() + extra) {
+				toRemove.add(w);
+				this.toRemove.add(i);
+			}
+		}
+		for(Wall w : toRemove) {
+			walls.remove(w);
+		}
 	}
 
 	public ArrayList<Wall> getWalls() {
@@ -90,5 +116,13 @@ public class LevelHolder {
 
 	public ArrayList<Wall> getPlaceable() {
 		return placeable;
+	}
+
+	public ArrayList<InteractableObject> getInteract() {
+		return interact;
+	}
+
+	public ArrayList<InteractableObject> getToRemove() {
+		return toRemove;
 	}
 }

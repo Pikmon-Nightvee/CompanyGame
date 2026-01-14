@@ -698,4 +698,15 @@ public class WriteCSVFiles {
 			e.printStackTrace();
 		}
 	}
+	
+	public void machineRemoved(ArrayList<Wall> walls) {
+		File file = new File("DataCSV/CoordinateData/MachineCoordinates.csv");
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+			for(Wall w : walls) {
+				writer.write(w.getX()+","+w.getY()+","+w.getWidth()+","+w.getHeight()+"\n");
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

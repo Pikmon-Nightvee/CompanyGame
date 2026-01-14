@@ -3,6 +3,7 @@ package Visual;
 import java.util.ArrayList;
 
 import GameLogic.Camera;
+import GameLogic.InteractableObject;
 import GameLogic.Player;
 import GameLogic.Wall;
 import javafx.scene.canvas.Canvas;
@@ -20,6 +21,12 @@ public class Renderer {
 	public void drawWalls(Canvas canvas, GraphicsContext pencil, ArrayList<Wall> walls, Camera camera) {
 		for(Wall w : walls) {
 			pencil.fillRect(w.getX() + camera.getX(),w.getY() + camera.getY(),w.getWidth(),w.getHeight());
+		}
+	}
+	
+	public void drawInteractable(Canvas canvas, GraphicsContext pencil, ArrayList<InteractableObject> interact, Camera camera) {
+		for(InteractableObject i : interact) {
+			pencil.fillRect(i.getX() + camera.getX(),i.getY() + camera.getY(),i.getWidth(),i.getHeight());
 		}
 	}
 	

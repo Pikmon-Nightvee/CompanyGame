@@ -1,5 +1,6 @@
 package GameLogic;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import FileLogic.ReadCSVFiles;
@@ -53,6 +54,20 @@ public class KeyboardManager {
 			if(inputs.contains(KeyCode.G)) {
 				isBeingPlaced = true;
 				System.out.println("Object is being placed");
+			}
+		}
+	}
+	
+	public void keyBoardInputPlacedMachine(Set<KeyCode> inputs, ArrayList<Wall> walls, InteractableObject interact, LevelHolder level, WriteCSVFiles writer) {
+		if(timeSinceLastPressed + timeWait < System.currentTimeMillis()) {
+			if(inputs.contains(KeyCode.F)){
+				timeSinceLastPressed = System.currentTimeMillis();
+				System.out.println("Remove machine");
+				level.removeMachine(walls, interact);
+				writer.machineRemoved(walls);
+			}else if(inputs.contains(KeyCode.C)){
+				timeSinceLastPressed = System.currentTimeMillis();
+				System.out.println("Repair machine");
 			}
 		}
 	}

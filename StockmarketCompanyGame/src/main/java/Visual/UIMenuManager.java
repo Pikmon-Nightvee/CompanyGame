@@ -131,6 +131,9 @@ public class UIMenuManager {
 			writer.resetData(reader);
 			buttonManager.addStartUpScreen(visual, vBox,reader,company);
 			buttonManager.changeTextAreaSize(gameCanvas, visual, vBox);
+			level.getMachines().clear();
+			level.getPlaceable().clear();
+			level.getWalls().clear();
 		});
 		load.setOnAction(event->{
 			this.vBox.getChildren().clear();
@@ -145,6 +148,7 @@ public class UIMenuManager {
 			buttonManager.changeTextAreaSize(gameCanvas, visual, vBox);
 			level.loadLevel(company.getCompanyType(), player);
 			level.machinesLoad(reader.machinesPlaced());
+			level.interactLoad(level.getMachines());
 		});
 		quit.setOnAction(event->{
 			stage.close();
