@@ -33,8 +33,8 @@ public class GameManager {
 	private double yMouse = 0;
 	private boolean mousePressed = false;
 	
-	private int width = 0;
-	private int height = 0;
+	private int width = 50;
+	private int height = 100;
 	private Wall placeHolder = new Wall(xMouse, yMouse, width, height);
 	
 	private long waitTime = 350;
