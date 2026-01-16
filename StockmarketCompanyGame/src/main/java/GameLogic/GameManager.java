@@ -33,8 +33,8 @@ public class GameManager {
 	private double yMouse = 0;
 	private boolean mousePressed = false;
 	
-	private int width = 50;
-	private int height = 100;
+	private int width = 0;
+	private int height = 0;
 	private Wall placeHolder = new Wall(xMouse, yMouse, width, height);
 	
 	private long waitTime = 350;
@@ -50,6 +50,53 @@ public class GameManager {
 		
 	public void updateState(String update) {
 		state = update;
+	}
+	
+	public int updateMachine(int scrollAmount, Company company) {
+		int maximum;
+		int minimum = 0;
+		switch(company.getCompanyType()) {
+		case "Foodtruck":
+			maximum = 1;
+			if(scrollAmount < minimum) {
+				scrollAmount = maximum;
+			}
+			if(scrollAmount > maximum) {
+				scrollAmount = minimum;
+			}
+			switch(scrollAmount) {
+			case 0:placeHolder.setWidth(50);placeHolder.setHeight(100);break;
+			case 1:placeHolder.setWidth(50);placeHolder.setHeight(50);break;
+			}
+			break;
+		case "Craft Buisness":
+			maximum = 2;
+			if(scrollAmount < minimum) {
+				scrollAmount = maximum;
+			}
+			if(scrollAmount > maximum) {
+				scrollAmount = minimum;
+			}
+			switch(scrollAmount) {
+			case 0:placeHolder.setWidth(100);placeHolder.setHeight(75);break;
+			case 1:placeHolder.setWidth(75);placeHolder.setHeight(75);break;
+			case 2:placeHolder.setWidth(120);placeHolder.setHeight(50);break;
+			}
+			break;
+		case "EDV-Manager":
+			maximum = 0;
+			if(scrollAmount < minimum) {
+				scrollAmount = maximum;
+			}
+			if(scrollAmount > maximum) {
+				scrollAmount = minimum;
+			}
+			switch(scrollAmount) {
+			case 0:placeHolder.setWidth(75);placeHolder.setHeight(25);break;
+			}
+			break;
+		}
+		return scrollAmount;
 	}
 	
 	//Game Loop
@@ -200,5 +247,8 @@ public class GameManager {
 		}));
 		gameTimeline.setCycleCount(Timeline.INDEFINITE);
 		gameTimeline.play();
+	}
+	public Wall getPlaceHolder() {
+		return placeHolder;
 	}
 }

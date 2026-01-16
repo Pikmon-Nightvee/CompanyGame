@@ -90,6 +90,8 @@ public class UIMenuManager {
 		});
 		backToMainMenu.setOnAction(event->{
 			level.getWalls().clear();
+			game.getPlaceHolder().setHeight(0);
+			game.getPlaceHolder().setWidth(0);
 			game.updateState("InMenu");
 			startUp(vBox,buttonManager,visual,writer,reader,stage,company,warningCanvas,gamePane,gameCanvas,level,player,game);
 		});

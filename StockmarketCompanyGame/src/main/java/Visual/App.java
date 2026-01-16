@@ -27,6 +27,7 @@ import javafx.stage.Stage;
 public class App extends Application {
 	private int width = 1000;
 	private int height = 480;
+	private int scrollAmount = 0;
 	
 	private ButtonManager buttonManager = new ButtonManager();
 	private UIMenuManager uiMenuManager = new UIMenuManager();
@@ -106,7 +107,15 @@ public class App extends Application {
     		gameManager.updateMouseCoordinates(event.getX(), event.getY());
     	});
     	scene.setOnScroll(event->{
-    		System.out.println("Scrolled");
+    		if (event.getDeltaY() > 0) {
+    			scrollAmount++;
+    	        System.out.println("Scrolled up");
+    	    } else if (event.getDeltaY() < 0) {
+    	    	scrollAmount--;
+    	        System.out.println("Scrolled down");
+    	    }
+    		scrollAmount = gameManager.updateMachine(scrollAmount, company);
+	        System.out.println("Scroll amount: " + scrollAmount);
     	});
     	gameManager.loop(gameCanvas, gamePencil, gamePane, warningCanvas, warningPencil, readCSV, writeCSV, gameVBox, company, uiMenuManager, stage, buttonManager, visualElementsHolder, inputs, player, level, gameManager);
         
