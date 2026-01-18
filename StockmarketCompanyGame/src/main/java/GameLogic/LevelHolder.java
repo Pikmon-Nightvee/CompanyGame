@@ -2,6 +2,8 @@ package GameLogic;
 
 import java.util.ArrayList;
 
+import FileLogic.WriteCSVFiles;
+
 public class LevelHolder {
 	//0 -> Luft platzierbar, 1 -> Wand, 2 -> Spawnpoint, 3 -> Luft nicht platzierbar
 	private ArrayList<Wall> walls = new ArrayList<>();
@@ -65,6 +67,8 @@ public class LevelHolder {
 						int insertY = currentY * sizeWall;
 						player.setX(insertX);
 						player.setY(insertY);
+						Wall wall = new Wall(insertX,insertY,sizeWall,sizeWall);
+						placeable.add(wall);
 					}
 					currentX++;
 				}
@@ -79,12 +83,14 @@ public class LevelHolder {
 	}
 	private int extra = 15;
 	public void machineAdd(double xPos, double yPos, double width, double height){
-		Wall toAdd = new Wall(xPos,yPos,width,height);
-		machines.add(toAdd);
-		
-		extra = 15;
-		InteractableObject toAddIo = new InteractableObject(xPos-extra,yPos-extra,width+(extra*2),height+(extra*2),false,false);
-		interact.add(toAddIo);
+		if(width > 0 && height > 0) {
+			Wall toAdd = new Wall(xPos,yPos,width,height);
+			machines.add(toAdd);
+			
+			extra = 15;
+			InteractableObject toAddIo = new InteractableObject(xPos-extra,yPos-extra,width+(extra*2),height+(extra*2),false,false);
+			interact.add(toAddIo);
+		}
 	}
 	public void interactLoad(ArrayList<Wall> walls){
 		for(Wall w : walls) {
@@ -124,5 +130,9 @@ public class LevelHolder {
 
 	public ArrayList<InteractableObject> getToRemove() {
 		return toRemove;
+	}
+
+	public int getExtra() {
+		return extra;
 	}
 }

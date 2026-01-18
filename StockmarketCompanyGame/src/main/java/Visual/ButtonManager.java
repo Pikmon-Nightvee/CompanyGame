@@ -654,7 +654,6 @@ public class ButtonManager {
 		vBox.getChildren().addAll(visual.getEmploy(),employSelectedEmployee);
 		vBox.getChildren().addAll(visual.getEmployUnemployed(),visual.getSelectUnemployed(),visual.getStatsOfUnemployed());
 
-		
 		vBox.getChildren().add(visual.getUnemployedStats());
 	}
 	
@@ -796,6 +795,13 @@ public class ButtonManager {
 		startUpCompany(vBox,visual,warningCanvas);
 		System.out.println("Money of company:"+company.getMoneyOfCompany());
 		startMaster(visual,reader,company);
+		booleanReset();
+	}
+	
+	private void booleanReset() {
+		changeTextResEqu = false;
+		isProduce = false;
+		isResource = false;
 	}
 
 	public double getMoneyStart() {

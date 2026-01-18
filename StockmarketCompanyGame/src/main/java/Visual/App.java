@@ -1,5 +1,6 @@
 package Visual;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,6 +10,7 @@ import FileLogic.WriteCSVFiles;
 import GameLogic.Company;
 import GameLogic.GameManager;
 import GameLogic.LevelHolder;
+import GameLogic.Machine;
 import GameLogic.NextCycleStarted;
 import GameLogic.Player;
 import javafx.application.Application;
@@ -107,11 +109,79 @@ public class App extends Application {
     		gameManager.updateMouseCoordinates(event.getX(), event.getY());
     	});
     	scene.setOnScroll(event->{
+    		ArrayList<Machine> allMachine = readCSV.readMachines("MachinesData.csv",company);
+    		ArrayList<Machine> bought = readCSV.readMachines("MachineBought.csv",company);
+    		int increasedTotal = 0;
+    		boolean notFound = true;
     		if (event.getDeltaY() > 0) {
-    			scrollAmount++;
+    			for(Machine machineAll : allMachine) {
+	    			if(notFound) {
+    					for(Machine machineBought : bought) {
+	    					if(machineBought.getName().equals(machineAll.getName())) {
+	    						if(increasedTotal > scrollAmount) {
+	    							scrollAmount = increasedTotal;
+	    							notFound = false;
+	    						}
+	    					}
+	    				}
+	    				increasedTotal++;
+	    				System.out.println("Iteration: "+increasedTotal+" scrollAmount: "+scrollAmount);
+	    			}
+    			}
+    			//At the top
+    			if(notFound) {
+    				System.out.println("Nothing Found");
+    				increasedTotal = 0;
+    				int setScroll=0;
+        	    	for(Machine machineAll : allMachine) {
+	        			if(notFound) {
+        	    			for(Machine machineBought : bought) {
+	    	    				if(machineBought.getName().equals(machineAll.getName())) {
+	    	    					if(increasedTotal < scrollAmount) {
+	    	    						setScroll = increasedTotal;
+	    	    						notFound = false;
+	    	    					}
+	    	    				}
+	    	    			}
+	    	    			increasedTotal++;
+	    	    			System.out.println("Iteration: "+increasedTotal+" scrollAmount: "+scrollAmount);
+	        			}
+    	    		}
+        	    	scrollAmount = setScroll;
+    			}
     	        System.out.println("Scrolled up");
     	    } else if (event.getDeltaY() < 0) {
-    	    	scrollAmount--;
+    	    	int setScroll=0;
+    	    	for(Machine machineAll : allMachine) {
+    				for(Machine machineBought : bought) {
+	    				if(machineBought.getName().equals(machineAll.getName())) {
+	    					if(increasedTotal < scrollAmount) {
+	    						setScroll = increasedTotal;
+	    						notFound = false;
+	    					}
+	    				}
+	    			}
+	    			increasedTotal++;
+	    			System.out.println("Iteration: "+increasedTotal+" scrollAmount: "+scrollAmount);
+	    		}
+    	    	scrollAmount = setScroll;
+    	    	//At the bottom
+    	    	if(notFound) {
+    				System.out.println("Nothing Found");
+    	    		increasedTotal = 0;
+    				for(Machine machineAll : allMachine) {
+        				for(Machine machineBought : bought) {
+    	    				if(machineBought.getName().equals(machineAll.getName())) {
+    	    					if(increasedTotal > scrollAmount) {
+    	    						scrollAmount = increasedTotal;
+    	    						notFound = false;
+    	    					}
+    	    				}
+        				}
+    	    			increasedTotal++;
+    	    			System.out.println("Iteration: "+increasedTotal+" scrollAmount: "+scrollAmount);
+    				}
+    	    	}
     	        System.out.println("Scrolled down");
     	    }
     		scrollAmount = gameManager.updateMachine(scrollAmount, company);

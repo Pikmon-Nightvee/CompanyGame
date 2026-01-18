@@ -34,19 +34,7 @@ public class KeyboardManager {
 		}
 	}
 	
-	public void keyBoardInputPlaceMachine(Set<KeyCode> inputs, Wall placeHolder, ArrayList<Machine> machines, String machineName) {
-//		boolean notThere = true;
-//		for(Machine m : machines) {
-//			if(m.getName().equals(machineName)) {
-//				if(m.getAmount() > 0) {
-//					notThere = false;
-//				}
-//			}
-//		}
-//		if(notThere) {
-//			return;
-//		}
-		
+	public void keyBoardInputPlaceMachine(Set<KeyCode> inputs, Wall placeHolder, ArrayList<Machine> machines) {
 		if(!inputs.contains(KeyCode.G)) {
 			isBeingPlaced = false;
 		}
@@ -70,13 +58,14 @@ public class KeyboardManager {
 		}
 	}
 	
-	public void keyBoardInputPlacedMachine(Set<KeyCode> inputs, ArrayList<Wall> walls, InteractableObject interact, LevelHolder level, WriteCSVFiles writer) {
+	public void keyBoardInputPlacedMachine(Set<KeyCode> inputs, ArrayList<Wall> walls, InteractableObject interact, LevelHolder level, WriteCSVFiles writer, ReadCSVFiles reader) {
 		if(timeSinceLastPressed + timeWait < System.currentTimeMillis()) {
 			if(inputs.contains(KeyCode.F)){
 				timeSinceLastPressed = System.currentTimeMillis();
 				System.out.println("Remove machine");
 				level.removeMachine(walls, interact);
-				writer.machineRemoved(walls);
+				writer.machineNamePlaceRemove(reader,level.getToRemove(),level.getExtra());
+				writer.machineRemoved(walls,reader);
 			}else if(inputs.contains(KeyCode.C)){
 				timeSinceLastPressed = System.currentTimeMillis();
 				System.out.println("Repair machine");

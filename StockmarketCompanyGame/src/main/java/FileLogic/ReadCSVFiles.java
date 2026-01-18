@@ -348,4 +348,21 @@ public class ReadCSVFiles {
 		}
 		return machines;
 	}
+	
+	public ArrayList<String[]> machinesTopDownGet(String dataPath){
+		ArrayList<String[]> all = new ArrayList<>();
+		String location = "DataCSV/CoordinateData/" + dataPath;
+		File file = new File(location);
+		
+		try(Scanner reader = new Scanner(file)){
+			while(reader.hasNext()) {
+				String currentLine = reader.nextLine();
+				String[] data = currentLine.split(",");
+				all.add(data);
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		return all;
+	}
 }

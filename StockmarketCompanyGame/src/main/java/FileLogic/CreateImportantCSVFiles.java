@@ -122,6 +122,14 @@ public class CreateImportantCSVFiles {
 			}else {
 				System.out.println("Important File: MachineCoordinates exists");
 			}
+			
+			file = new File("DataCSV/CoordinateData/MachinesPlaced.csv");
+			if(file.createNewFile()) {
+				System.out.println("Important File: MachinesPlaced created");
+				error = true;
+			}else {
+				System.out.println("Important File: MachinesPlaced exists");
+			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

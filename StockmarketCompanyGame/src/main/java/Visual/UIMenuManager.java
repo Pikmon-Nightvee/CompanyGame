@@ -146,12 +146,15 @@ public class UIMenuManager {
 			level.getToRemove().clear();
 			level.getInteract().clear();
 			game.updateState("InUIState");
+			
 			company.setName(reader.gameAlreadyPlayedCompanyData().getName());
 			company.setMoneyOfCompany(reader.gameAlreadyPlayedCompanyData().getMoneyOfCompany());
 			company.setReputation(reader.gameAlreadyPlayedCompanyData().getReputation());
 			company.setCompanyType(reader.gameAlreadyPlayedCompanyData().getCompanyType());
+			
 			buttonManager.loadGame(visual, vBox, company, warningCanvas, reader);
 			buttonManager.changeTextAreaSize(gameCanvas, visual, vBox);
+			
 			level.loadLevel(company.getCompanyType(), player);
 			level.machinesLoad(reader.machinesPlaced());
 			level.interactLoad(level.getMachines());

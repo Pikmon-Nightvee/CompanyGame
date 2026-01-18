@@ -1,5 +1,6 @@
 package GameLogic;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import FileLogic.ReadCSVFiles;
@@ -27,7 +28,6 @@ public class GameManager {
 	private Camera camera = new Camera();
 	private ColissionHandler colission = new ColissionHandler();
 
-	private String selectedMachine = "";
 	private String state = "InMenu";
 	private double xMouse = 0;
 	private double yMouse = 0;
@@ -39,6 +39,7 @@ public class GameManager {
 	
 	private long waitTime = 350;
 	private long currentTime = 0;
+	private int scroll = 0;
 	
 	public void updateMouseCoordinates(double xMouse, double yMouse) {
 		this.xMouse = xMouse;
@@ -55,8 +56,9 @@ public class GameManager {
 	public int updateMachine(int scrollAmount, Company company) {
 		int maximum;
 		int minimum = 0;
+		
 		switch(company.getCompanyType()) {
-		case "Foodtruck":
+		case "Foodtruck":			
 			maximum = 1;
 			if(scrollAmount < minimum) {
 				scrollAmount = maximum;
@@ -70,7 +72,7 @@ public class GameManager {
 			}
 			break;
 		case "Craft Buisness":
-			maximum = 2;
+			maximum = 3;
 			if(scrollAmount < minimum) {
 				scrollAmount = maximum;
 			}
@@ -81,6 +83,7 @@ public class GameManager {
 			case 0:placeHolder.setWidth(100);placeHolder.setHeight(75);break;
 			case 1:placeHolder.setWidth(75);placeHolder.setHeight(75);break;
 			case 2:placeHolder.setWidth(120);placeHolder.setHeight(50);break;
+			case 3:placeHolder.setWidth(25);placeHolder.setHeight(25);break;
 			}
 			break;
 		case "EDV-Manager":
@@ -96,6 +99,7 @@ public class GameManager {
 			}
 			break;
 		}
+		scroll = scrollAmount;
 		return scrollAmount;
 	}
 	
@@ -142,13 +146,19 @@ public class GameManager {
 					colission.pushBack(player,m);
 				}
 				//Is machine being placed?
-				keyboard.keyBoardInputPlaceMachine(inputs,placeHolder,reader.readMachines("MachineBought.csv", company), selectedMachine);
+				keyboard.keyBoardInputPlaceMachine(inputs,placeHolder,reader.readMachines("MachineBought.csv", company));
 				if(waitTime + currentTime < System.currentTimeMillis()) {
 					gamePencil.setFill(Color.CHOCOLATE);
 				}else{
 					gamePencil.setFill(Color.DARKRED);
 				}
 				if(keyboard.isBeingPlaced()) {
+					if(reader.readMachines("MachineBought.csv", company).isEmpty()) {
+						placeHolder.setWidth(0);
+						placeHolder.setHeight(0);
+						return;
+					}
+					
 					double xPos = xMouse;
 					double yPos = yMouse;
 					xPos -= placeHolder.getWidth()/2;
@@ -201,7 +211,8 @@ public class GameManager {
 						}
 						if(canBeAdded) {
 							level.machineAdd(xFinal,yFinal,placeHolder.getWidth(),placeHolder.getHeight());
-							writer.coordinatesMachineSafe(placeHolder,xFinal,yFinal);
+							String machine = writer.machineNamePlacedAdd(scroll, company, reader);
+							writer.coordinatesMachineSafe(placeHolder,xFinal,yFinal,machine);
 						}else {
 							mousePressed = false;
 							currentTime = System.currentTimeMillis();
@@ -212,7 +223,7 @@ public class GameManager {
 				}
 				for(InteractableObject i : level.getInteract()) {
 					if(colission.AABB(i.getX(), i.getY(), i.getWidth(), i.getHeight(), player.getX(), player.getY(), player.getWidth(), player.getHeight())){
-						keyboard.keyBoardInputPlacedMachine(inputs, level.getMachines(), i, level, writer);
+						keyboard.keyBoardInputPlacedMachine(inputs, level.getMachines(), i, level, writer, reader);
 						i.setInbounds(true);
 					}else {
 						i.setInbounds(false);

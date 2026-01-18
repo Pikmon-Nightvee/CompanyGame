@@ -10,6 +10,7 @@ import java.util.Scanner;
 import GameLogic.Camera;
 import GameLogic.Company;
 import GameLogic.Employee;
+import GameLogic.InteractableObject;
 import GameLogic.Machine;
 import GameLogic.Product;
 import GameLogic.Resource;
@@ -685,28 +686,143 @@ public class WriteCSVFiles {
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
+			
+			file = new File("DataCSV/CoordinateData/MachinesPlaced.csv");
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+				writer.write("");
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void coordinatesMachineSafe(Wall w, double x, double y) {
+	public void coordinatesMachineSafe(Wall w, double x, double y, String machine) {
 		File file = new File("DataCSV/CoordinateData/MachineCoordinates.csv");
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,true))){
-			writer.write(x+","+y+","+w.getWidth()+","+w.getHeight()+"\n");
+			writer.write(x+","+y+","+w.getWidth()+","+w.getHeight()+","+machine+"\n");
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void machineRemoved(ArrayList<Wall> walls) {
+	public void machineRemoved(ArrayList<Wall> walls, ReadCSVFiles reader) {
+		ArrayList<String[]> machineOG = reader.machinesTopDownGet("MachineCoordinates.csv");
+		
 		File file = new File("DataCSV/CoordinateData/MachineCoordinates.csv");
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
 			for(Wall w : walls) {
-				writer.write(w.getX()+","+w.getY()+","+w.getWidth()+","+w.getHeight()+"\n");
+				for(String[] s : machineOG) {
+					double x = Double.parseDouble(s[0]);
+					double y = Double.parseDouble(s[1]);
+					if(w.getX() == x && w.getY() == y) {
+						writer.write(w.getX()+","+w.getY()+","+w.getWidth()+","+w.getHeight()+","+s[4]+"\n");
+					}
+				}
 			}
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void machineNamePlaceRemove(ReadCSVFiles reader, ArrayList<InteractableObject> arrayList, int extra) {
+		ArrayList<String[]> machinePlacedName = reader.machinesTopDownGet("MachinesPlaced.csv");
+		ArrayList<String[]> machinePlacedCords = reader.machinesTopDownGet("MachineCoordinates.csv");
+		boolean notReduced = true;
+		
+		System.out.println("Reduce machine" + " size Amount: " + machinePlacedName.size() + " machine Cords Size: " + machinePlacedCords.size());
+		
+		File file = new File("DataCSV/CoordinateData/MachinesPlaced.csv");
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+			for(String[] s : machinePlacedName) {
+				int amount = Integer.parseInt(s[1]);
+				System.out.println("Start Amount: " + amount);
+				
+				if(notReduced) {
+					for(String[] cords : machinePlacedCords) {						
+						double x = Double.parseDouble(cords[0]);
+						double y = Double.parseDouble(cords[1]);
+						
+						if(cords[4].equals(s[0])) {
+							for(InteractableObject i : arrayList) {
+								if(i.getX()+extra == x && i.getY()+extra == y) {
+									amount -= 1;
+									notReduced = false;
+								}
+							}
+						}
+					}
+				}
+				if(amount > 0) {
+					System.out.println("Reduced Amount: " + amount);
+					writer.write(s[0]+","+amount);
+					writer.write("\n");
+				}
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String machineNamePlacedAdd(int scrollAmount, Company company, ReadCSVFiles reader) {
+		String machine = "";
+		switch(company.getCompanyType()) {
+		case "Foodtruck":
+			switch(scrollAmount) {
+			case 0:machine = "Ofen";break;
+			case 1:machine = "Herd";break;
+			}
+			break;
+		case "Craft Buisness":
+			switch(scrollAmount) {
+			case 0:machine = "Fräsmaschine";break;
+			case 1:machine = "Drehmaschine";break;
+			case 2:machine = "Bohrmaschine";break;
+			case 3:machine = "Kreissäge";break;
+			}
+			break;
+		case "EDV-Manager":
+			switch(scrollAmount) {
+			case 0:machine = "PC";break;
+			}
+			break;
+		}
+		ArrayList<String[]> machinePlacedName = reader.machinesTopDownGet("MachinesPlaced.csv");
+		
+		File file = new File("DataCSV/CoordinateData/MachinesPlaced.csv");
+		if(isNameContained(machinePlacedName,machine)) {
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+				if(!machinePlacedName.isEmpty()) {
+					for(String[] s : machinePlacedName) {
+						int amount = Integer.parseInt(s[1]);
+						if(s[0].equals(machine)) {
+							amount += 1;
+						}	
+						writer.write(s[0]+","+amount);
+						writer.write("\n");
+					}
+				}
+			}catch(IOException e) {
+				e.printStackTrace();
+			}
+		}else {
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,true))){
+				writer.write(machine+",1");
+			}catch(IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return machine;
+	}
+	
+	private boolean isNameContained(ArrayList<String[]> machinesName, String machineName) {
+		boolean check = false;
+		for(String[] nameCheck : machinesName) {
+			if(nameCheck[0].equals(machineName)) {
+				check = true;
+			}
+		}
+		return check;
 	}
 }
