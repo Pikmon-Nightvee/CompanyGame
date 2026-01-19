@@ -28,6 +28,7 @@ public class GameManager {
 	private Camera camera = new Camera();
 	private ColissionHandler colission = new ColissionHandler();
 
+	String machine = "";
 	private String state = "InMenu";
 	private double xMouse = 0;
 	private double yMouse = 0;
@@ -67,8 +68,8 @@ public class GameManager {
 				scrollAmount = minimum;
 			}
 			switch(scrollAmount) {
-			case 0:placeHolder.setWidth(50);placeHolder.setHeight(100);break;
-			case 1:placeHolder.setWidth(50);placeHolder.setHeight(50);break;
+			case 0:placeHolder.setWidth(50);placeHolder.setHeight(100);machine="Ofen";break;
+			case 1:placeHolder.setWidth(50);placeHolder.setHeight(50);machine="Herd";break;
 			}
 			break;
 		case "Craft Buisness":
@@ -80,10 +81,10 @@ public class GameManager {
 				scrollAmount = minimum;
 			}
 			switch(scrollAmount) {
-			case 0:placeHolder.setWidth(100);placeHolder.setHeight(75);break;
-			case 1:placeHolder.setWidth(75);placeHolder.setHeight(75);break;
-			case 2:placeHolder.setWidth(120);placeHolder.setHeight(50);break;
-			case 3:placeHolder.setWidth(25);placeHolder.setHeight(25);break;
+			case 0:placeHolder.setWidth(100);placeHolder.setHeight(75);machine="Fräsmaschine";break;
+			case 1:placeHolder.setWidth(75);placeHolder.setHeight(75);machine="Drehmaschine";break;
+			case 2:placeHolder.setWidth(120);placeHolder.setHeight(50);machine="Bohrmaschine";break;
+			case 3:placeHolder.setWidth(25);placeHolder.setHeight(25);machine="Kreissäge";break;
 			}
 			break;
 		case "EDV-Manager":
@@ -95,11 +96,12 @@ public class GameManager {
 				scrollAmount = minimum;
 			}
 			switch(scrollAmount) {
-			case 0:placeHolder.setWidth(75);placeHolder.setHeight(25);break;
+			case 0:placeHolder.setWidth(75);placeHolder.setHeight(25);machine="PC";break;
 			}
 			break;
 		}
 		scroll = scrollAmount;
+		System.out.println("Machine: " + machine);
 		return scrollAmount;
 	}
 	
@@ -186,6 +188,13 @@ public class GameManager {
 						if(canBeAdded) {
 							canBeAdded = !colission.AABB(player.getX(), player.getY(), player.getWidth(), player.getHeight(), xFinal, yFinal, placeHolder.getWidth(), placeHolder.getHeight());
 							if(canBeAdded) {
+								if(machine.isBlank()) {
+									canBeAdded = false;
+								}else {
+									canBeAdded = amountLowEnough(reader,machine,company);
+								}
+							}
+							if(canBeAdded) {
 								for(Wall w : level.getMachines()) {
 									if(canBeAdded) {
 										System.out.println("Placeholder x,y,width,height: " + xFinal + "," + yFinal + "," + placeHolder.getWidth() + "," + placeHolder.getHeight() + " Machine x,y,width,height: " + w.getX() + "," + w.getY() + "," + w.getWidth() + "," + w.getHeight());
@@ -262,4 +271,30 @@ public class GameManager {
 	public Wall getPlaceHolder() {
 		return placeHolder;
 	}
+
+    private boolean amountLowEnough(ReadCSVFiles reader, String machineName, Company company) {
+    	ArrayList<String[]> amountCheck = reader.machinesTopDownGet("MachinesPlaced.csv");
+    	ArrayList<Machine> machines = reader.readMachines("MachineBought.csv", company);
+    	
+    	int amountBought = 0;
+		int amountPlaced = 0;
+    	for(String[] s : amountCheck) {
+    		if(s[0].equals(machineName)) {
+    			amountPlaced = Integer.parseInt(s[1]);
+    		}
+    	}
+    	for(Machine m : machines) {
+    		if(m.getName().equals(machineName)) {
+    			amountBought = m.getAmount();
+    		}
+    	}
+    	
+    	if(amountPlaced < amountBought) {
+    		System.out.println("true");
+    		return true;
+    	}else {
+    		System.out.println("False");
+    		return false;
+    	}
+    }
 }

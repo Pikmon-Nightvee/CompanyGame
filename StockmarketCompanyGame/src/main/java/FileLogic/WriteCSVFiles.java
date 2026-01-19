@@ -809,6 +809,7 @@ public class WriteCSVFiles {
 		}else {
 			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,true))){
 				writer.write(machine+",1");
+				writer.write("\n");
 			}catch(IOException e) {
 				e.printStackTrace();
 			}
