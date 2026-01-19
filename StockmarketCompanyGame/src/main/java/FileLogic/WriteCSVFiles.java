@@ -817,6 +817,42 @@ public class WriteCSVFiles {
 		return machine;
 	}
 	
+	public void removeMachineCords(String machineName, ReadCSVFiles reader, Company company, int amountNeeded) {
+		ArrayList<String[]> machineNamePlaced = reader.machinesTopDownGet("MachinesPlaced.csv");
+		ArrayList<String[]> machinePlacedCords = reader.machinesTopDownGet("MachineCoordinates.csv");
+		File file = new File("DataCSV/CoordinateData/MachineCoordinates.csv");
+		
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+			int amount = 1;
+			for(String[] machine : machinePlacedCords) {
+				if(!machine[4].equals(machineName) || amount > amountNeeded) {
+					writer.write(machine[0]+","+machine[1]+","+machine[2]+","+machine[3]+","+machine[4]+"\n");
+				}else {
+					amount++;
+				}
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		file = new File("DataCSV/CoordinateData/MachinesPlaced.csv");
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+			for(String[] machine : machineNamePlaced) {
+				int amount = Integer.parseInt(machine[1]);
+				if(machine[0].equals(machineName)) {
+					amount -= amountNeeded;
+				}
+				if(amount > 0) {
+					writer.write(machine[0] + "," + amount + "\n");
+				}
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("Machine name: " + machineName);
+	}
+	
 	private boolean isNameContained(ArrayList<String[]> machinesName, String machineName) {
 		boolean check = false;
 		for(String[] nameCheck : machinesName) {

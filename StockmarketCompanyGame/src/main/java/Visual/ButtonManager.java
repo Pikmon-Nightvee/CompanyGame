@@ -480,8 +480,42 @@ public class ButtonManager {
 				writer.buySellResources(visual.getSelectResource().getValue(), "Sold", company, sellAmount);
 				visual.getSelectResource().setValue(null);
 			}else {
+				boolean removeMachine = false;
+				int machineRemoveAmount = 0;
+				
+				ArrayList<String[]> machineAmount = reader.machinesTopDownGet("MachinesPlaced.csv");
+				ArrayList<Machine> machines = reader.readMachines("MachineBought.csv", company);
+				for(String[] machine : machineAmount) {
+					if(machine[0].equals(visual.getSelectEquipment().getValue())) {
+						for(Machine m : machines) {
+							if(m.getName().equals(machine[0])) {
+								int amount = Integer.parseInt(machine[1]);
+								machineRemoveAmount = m.getAmount() - amount - sellAmount;
+								if(machineRemoveAmount < 0) {
+									machineRemoveAmount *= -1;
+									removeMachine = true;
+								}
+								System.out.println("Machine found: " + machine[0] + " Will be removed?: " + removeMachine);
+								System.out.println("Amount Placed: " + amount + " Amount Sold: " + sellAmount + " Rest: " + (sellAmount-amount));
+							}
+						}
+					}
+				}
+				
+				if(removeMachine) {
+					writer.removeMachineCords(visual.getSelectEquipment().getValue(), reader, company, machineRemoveAmount);
+				}
+				
 				writer.buySellMachines(visual.getSelectEquipment().getValue(), "Sold", company, sellAmount);
 				visual.getSelectEquipment().setValue(null);
+				
+				if(removeMachine) {
+					level.getMachines().clear();
+					level.getInteract().clear();
+					
+					level.machinesLoad(reader.machinesPlaced());
+					level.interactLoad(level.getMachines());
+				}
 			}
 			
 			visual.updateResourceEquipment(reader,changeTextResEqu,company,false);
