@@ -8,8 +8,11 @@ public class LevelHolder {
 	//0 -> Luft platzierbar, 1 -> Wand, 2 -> Spawnpoint, 3 -> Luft nicht platzierbar
 	private ArrayList<Wall> walls = new ArrayList<>();
 	private ArrayList<Wall> machines = new ArrayList<>();
+	
 	private ArrayList<InteractableObject> interact = new ArrayList<>();
+	private ArrayList<InteractableObject> blinking = new ArrayList<>();
 	private ArrayList<InteractableObject> toRemove = new ArrayList<>();
+	
 	private ArrayList<Wall> placeable = new ArrayList<>();
 	
 	private int[][] levelEDVManager = {
@@ -81,20 +84,23 @@ public class LevelHolder {
 	public void machinesLoad(ArrayList<Wall> toAdd) {
 		machines.addAll(toAdd);
 	}
-	private int extra = 15;
+
 	public void machineAdd(double xPos, double yPos, double width, double height){
 		if(width > 0 && height > 0) {
 			Wall toAdd = new Wall(xPos,yPos,width,height);
 			machines.add(toAdd);
 			
-			extra = 15;
+			int extra = 15;
 			InteractableObject toAddIo = new InteractableObject(xPos-extra,yPos-extra,width+(extra*2),height+(extra*2),false,false);
 			interact.add(toAddIo);
+			
+			toAddIo = new InteractableObject(xPos,yPos,width,height,false,true);
+			blinking.add(toAddIo);
 		}
 	}
 	public void interactLoad(ArrayList<Wall> walls){
 		for(Wall w : walls) {
-			extra = 15;
+			int extra = 15;
 			InteractableObject toAddIo = new InteractableObject(w.getX()-extra,w.getY()-extra,w.getWidth()+(extra*2),w.getHeight()+(extra*2),false,false);
 			this.interact.add(toAddIo);
 		}
@@ -102,9 +108,16 @@ public class LevelHolder {
 	public void removeMachine(ArrayList<Wall> walls, InteractableObject i) {
 		ArrayList<Wall> toRemove = new ArrayList<>();
 		for(Wall w : walls) {
-			if(w.getX() == i.getX()+extra && w.getY() == i.getY() + extra) {
+			if(w.getX() == i.getX()+i.getExtra() && w.getY() == i.getY() + i.getExtra()) {
 				toRemove.add(w);
 				this.toRemove.add(i);
+				
+				boolean interacted = false;
+				boolean broken = false;
+				
+				InteractableObject iNew = new InteractableObject(w.getX(),w.getY(),w.getWidth(),w.getHeight(),interacted,broken);
+				this.toRemove.add(iNew);
+				System.out.println("Remove Alarmlayer: "+iNew.toString());
 			}
 		}
 		for(Wall w : toRemove) {
@@ -132,7 +145,7 @@ public class LevelHolder {
 		return toRemove;
 	}
 
-	public int getExtra() {
-		return extra;
+	public ArrayList<InteractableObject> getBlinking() {
+		return blinking;
 	}
 }

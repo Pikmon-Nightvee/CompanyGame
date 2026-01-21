@@ -58,17 +58,34 @@ public class KeyboardManager {
 		}
 	}
 	
-	public void keyBoardInputPlacedMachine(Set<KeyCode> inputs, ArrayList<Wall> walls, InteractableObject interact, LevelHolder level, WriteCSVFiles writer, ReadCSVFiles reader) {
+	public void keyBoardInputPlacedMachine(Set<KeyCode> inputs, ArrayList<Wall> walls, InteractableObject interact, LevelHolder level, WriteCSVFiles writer, ReadCSVFiles reader, ArrayList<InteractableObject> toRepair, Company company) {
 		if(timeSinceLastPressed + timeWait < System.currentTimeMillis()) {
 			if(inputs.contains(KeyCode.F)){
 				timeSinceLastPressed = System.currentTimeMillis();
 				System.out.println("Remove machine");
 				level.removeMachine(walls, interact);
-				writer.machineNamePlaceRemove(reader,level.getToRemove(),level.getExtra());
+				writer.machineNamePlaceRemove(reader,level.getToRemove(),interact.getExtra());
 				writer.machineRemoved(walls,reader);
 			}else if(inputs.contains(KeyCode.C)){
 				timeSinceLastPressed = System.currentTimeMillis();
 				System.out.println("Repair machine");
+				InteractableObject compare = new InteractableObject((interact.getX()+interact.getExtra()),(interact.getY()+interact.getExtra()), 
+						(interact.getWidth()-(interact.getExtra()*2)), (interact.getHeight()-(interact.getExtra()*2)), false, false);
+				
+				for(InteractableObject i : toRepair) {
+					if(i.isBroken()) {
+						if(i.equals(compare)) {
+							i.setBroken(false);
+							double moneySpent = 1250;
+							company.setMoneyOfCompany(company.getMoneyOfCompany()-moneySpent);
+							System.out.println("Money was spent");
+						}else {
+							System.out.println("Not it");
+						}
+					}else {
+						System.out.println("Not broken");
+					}
+				}
 			}
 		}
 	}

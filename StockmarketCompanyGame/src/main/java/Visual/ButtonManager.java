@@ -757,23 +757,24 @@ public class ButtonManager {
 	}
 	
 	public void updateMoney(VBox vBox, VisualElementsHolder visual, Company company) {
-		Label money = new Label();
-		money.setText(String.valueOf(company.getMoneyOfCompany()));
-		visual.setMoneyOfCompany(money);
+		Label moneyOver = new Label();
+		moneyOver.setText(String.valueOf(company.getMoneyOfCompany()));
+		visual.CSSLabel(moneyOver);
 		
 		HBox hBox = new HBox();
 		Label name = new Label("Name of Company: ");
-		money = new Label(" | Money of the Company (€): ");
+		Label money = new Label(" | Money of the Company (€): ");
 		Label companyType = new Label(" | Company Type: ");
-		Label companySpecification = new Label(visual.getSelectCompanySpecification().getValue());
+		Label companySpecification = new Label(company.getCompanyType());
 		visual.CSSLabel(money);
 		visual.CSSLabelNoAddAmount(name);
 		visual.CSSLabelNoAddAmount(companyType);
 		visual.CSSLabelNoAddAmount(companySpecification);
 		
-		hBox.getChildren().addAll(name,visual.getNameOfCompany(),money,visual.getMoneyOfCompany(),companyType,companySpecification);
-		vBox.setAlignment(Pos.TOP_LEFT);
+		hBox.getChildren().addAll(name,visual.getNameOfCompany(),money,moneyOver,companyType,companySpecification);
 		vBox.getChildren().set(0,hBox);
+		hBox.setAlignment(Pos.TOP_CENTER);
+		vBox.setAlignment(Pos.TOP_CENTER);
 	}
 	
 	public void startUpCompany(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas) {

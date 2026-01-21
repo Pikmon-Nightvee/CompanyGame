@@ -1,5 +1,7 @@
 package GameLogic;
 
+import java.util.Objects;
+
 public abstract class Item {
 	protected double x;
 	protected double y;
@@ -17,6 +19,26 @@ public abstract class Item {
 	@Override
 	public String toString() {
 		return "Item [x=" + x + ", y=" + y + ", width=" + width + ", height=" + height + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(height, width, x, y);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Item other = (Item) obj;
+		return Double.doubleToLongBits(height) == Double.doubleToLongBits(other.height)
+				&& Double.doubleToLongBits(width) == Double.doubleToLongBits(other.width)
+				&& Double.doubleToLongBits(x) == Double.doubleToLongBits(other.x)
+				&& Double.doubleToLongBits(y) == Double.doubleToLongBits(other.y);
 	}
 
 	public double getX() {

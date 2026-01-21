@@ -28,7 +28,7 @@ public class NextCycleStarted {
 			timePassed++;
 			
 			productsProduced(reader,company);
-			//sellProduction(reader,company);
+			sellProduction(reader,company);
 			if(timePassed%5==0) {
 				newResources(reader,company);
 			}

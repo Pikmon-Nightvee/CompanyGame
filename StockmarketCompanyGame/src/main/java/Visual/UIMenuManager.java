@@ -24,6 +24,17 @@ public class UIMenuManager {
 	private Button openUIGame = new Button("To UI view");
 	private Button openTopDown = new Button("To top down view");
 	
+	private Button options = new Button("Settings");
+	private Button returnToMenu = new Button("Return to menu");
+	private Button fullScreen = new Button("Fullscreen mode");
+	private Button sfx = new Button("Turn Sfx off");
+	private Button music = new Button("Turn Music off");
+	
+	private boolean fullScreenOff = true;
+	private boolean musicOn = false;
+	private boolean sfxOn = false;
+	private boolean started = false;
+	
 	private VBox vBox = new VBox();
 	private Label nameLabel = new Label("StarUp");
 	
@@ -49,6 +60,7 @@ public class UIMenuManager {
 		
 		vBox.getChildren().add(openTopDown);
 		vBox.getChildren().add(openUIGame);
+		vBox.getChildren().add(options);
 		vBox.getChildren().add(backToMainMenu);
 		vBox.getChildren().add(quit);
 		
@@ -77,8 +89,9 @@ public class UIMenuManager {
 			visual.getNameOfCompany().setText(company.getName());
 			
 			hBox.getChildren().addAll(name,visual.getNameOfCompany(),money,visual.getMoneyOfCompany(),companyType,companySpecification);
+			vBox.setAlignment(Pos.TOP_CENTER);
 			hBox.setAlignment(Pos.TOP_CENTER);
-			gamePane.getChildren().add(hBox);
+			vBox.getChildren().add(hBox);
 			
 			game.updateState("InTopDown");
 		});
@@ -89,6 +102,7 @@ public class UIMenuManager {
 			buttonManager.changeTextAreaSize(gameCanvas, visual, vBox);
 		});
 		backToMainMenu.setOnAction(event->{
+			started = false;
 			level.getWalls().clear();
 			game.getPlaceHolder().setHeight(0);
 			game.getPlaceHolder().setWidth(0);
@@ -113,12 +127,19 @@ public class UIMenuManager {
 		if(reader.gameAlreadyStarted()) {
 			vBox.getChildren().add(load);
 		}
+		vBox.getChildren().add(options);
 		vBox.getChildren().add(quit);
 		
 		CSSNoAddAmount(start);
 		CSSNoAddAmount(load);
 		CSSNoAddAmount(quit);
 		CSSLabelNoAddAmount(nameLabel);
+		
+		CSSNoAddAmount(options);
+		CSSNoAddAmount(fullScreen);
+		CSSNoAddAmount(returnToMenu);
+		CSSNoAddAmount(sfx);
+		CSSNoAddAmount(music);
 		
 		this.vBox.setAlignment(Pos.TOP_CENTER);
 		vBox.setAlignment(Pos.CENTER);
@@ -127,7 +148,46 @@ public class UIMenuManager {
 		gamePane.getChildren().add(this.vBox);
 		gamePane.getChildren().add(vBox);
 		
+		sfx.setOnAction(event->{
+			System.out.println("sfx handler");
+			if(sfxOn) {
+				sfx.setText("Turn Sfx off");
+			}else {
+				sfx.setText("Turn Sfx on");
+			}
+			sfxOn = !sfxOn;
+		});
+		music.setOnAction(event->{
+			System.out.println("music hanlder");
+			if(musicOn) {
+				music.setText("Turn Music off");
+			}else {
+				music.setText("Turn Music on");
+			}
+			musicOn = !musicOn;
+		});
+		returnToMenu.setOnAction(event->{
+			vBox.getChildren().clear();
+			if(!started) {
+				vBox.getChildren().add(start);
+				if(reader.gameAlreadyStarted()) {
+					vBox.getChildren().add(load);
+				}
+				vBox.getChildren().add(quit);
+			}else {
+				vBox.getChildren().addAll(openTopDown,openUIGame,backToMainMenu,quit);
+			}
+		});
+		options.setOnAction(event->{
+			vBox.getChildren().clear();
+			vBox.getChildren().addAll(returnToMenu,fullScreen,sfx,music);
+		});
+		fullScreen.setOnAction(event->{
+			stage.setFullScreen(fullScreenOff);
+			fullScreenOff = !fullScreenOff;
+		});
 		start.setOnAction(event->{
+			started = true;
 			this.vBox.getChildren().clear();
 			vBox.getChildren().clear();
 			writer.resetData(reader);
@@ -138,6 +198,7 @@ public class UIMenuManager {
 			level.getWalls().clear();
 		});
 		load.setOnAction(event->{
+			started = true;
 			this.vBox.getChildren().clear();
 			vBox.getChildren().clear();
 			level.getWalls().clear();

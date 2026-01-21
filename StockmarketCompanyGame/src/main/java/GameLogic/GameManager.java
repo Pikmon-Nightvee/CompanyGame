@@ -14,7 +14,6 @@ import javafx.animation.Timeline;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -115,6 +114,7 @@ public class GameManager {
 			uiMenuManager.startUp(gameVBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, gameManager);
 			gamePencil.setFill(Color.LIGHTGREY);
 			level.getWalls().clear();
+			state = "InMenu";
 		});
 		
 		//30FPS Update Loop
@@ -128,14 +128,18 @@ public class GameManager {
 				renderer.drawWarningCanvas(warningCanvas, warningPencil);
 				break;
 			case "InTopDown":
-				//Render
-				gameVBox.getChildren().clear();				
+				//Render		
+				buttonManager.updateMoney(gameVBox, visual, company);
+				writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
+				
 				gamePencil.setFill(Color.GREEN);
 				renderer.drawInteractable(gameCanvas, gamePencil, level.getInteract(), camera);
 				gamePencil.setFill(Color.DARKGRAY);
 				renderer.drawWalls(gameCanvas, gamePencil, level.getWalls(), camera);
 				gamePencil.setFill(Color.DARKBLUE);
 				renderer.drawWalls(gameCanvas, gamePencil, level.getMachines(), camera);
+				gamePencil.setFill(Color.DARKRED);
+				renderer.drawInteractableBlinking(gameCanvas, gamePencil, level.getBlinking(), camera);
 				gamePencil.setFill(Color.RED);
 				renderer.drawPlayer(gameCanvas, gamePencil, player, camera);
 				//Player inputs
@@ -232,14 +236,12 @@ public class GameManager {
 				}
 				for(InteractableObject i : level.getInteract()) {
 					if(colission.AABB(i.getX(), i.getY(), i.getWidth(), i.getHeight(), player.getX(), player.getY(), player.getWidth(), player.getHeight())){
-						keyboard.keyBoardInputPlacedMachine(inputs, level.getMachines(), i, level, writer, reader);
-						i.setInbounds(true);
-					}else {
-						i.setInbounds(false);
+						keyboard.keyBoardInputPlacedMachine(inputs, level.getMachines(), i, level, writer, reader, level.getBlinking(), company);
 					}
 				}
 				for(InteractableObject i : level.getToRemove()) {
 					level.getInteract().remove(i);
+					level.getBlinking().remove(i);
 				}
 				level.getToRemove().clear();
 				break;
@@ -248,7 +250,13 @@ public class GameManager {
 				renderer.drawMainCanvas(gameCanvas, gamePencil);
 				renderer.drawWarningCanvas(warningCanvas, warningPencil);
 				keyboard.keyboardInputMenu(inputs, uiMenuManager, gameVBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, gameManager);
+				break;
+			case "GameOver":
+				gamePencil.setFill(Color.BLACK);
+				renderer.drawMainCanvas(gameCanvas, gamePencil);
+				break;
 			}
+		
 			camera.updateCamera(player, gameCanvas);
 			
 			if(company.getMoneyOfCompany() < 0) {
@@ -263,6 +271,7 @@ public class GameManager {
 				gameVBox.setAlignment(Pos.CENTER);
 				gamePencil.setFill(Color.BLACK);
 				gamePane.getChildren().addAll(gameCanvas,gameOver,gameVBox);
+				state = "GameOver";
 			}
 		}));
 		gameTimeline.setCycleCount(Timeline.INDEFINITE);

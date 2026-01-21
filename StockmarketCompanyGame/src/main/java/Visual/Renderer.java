@@ -30,6 +30,16 @@ public class Renderer {
 		}
 	}
 	
+	public void drawInteractableBlinking(Canvas canvas, GraphicsContext pencil, ArrayList<InteractableObject> interact, Camera camera) {
+		for(InteractableObject i : interact) {
+			if(i.isBroken()) {
+				pencil.setGlobalAlpha(i.blinking());
+				pencil.fillRect(i.getX() + camera.getX(),i.getY() + camera.getY(),i.getWidth(),i.getHeight());
+			}
+		}
+		pencil.setGlobalAlpha(1);
+	}
+	
 	public void drawWall(Canvas canvas, GraphicsContext pencil, Wall w) {
 		pencil.fillRect(w.getX(),w.getY(),w.getWidth(),w.getHeight());
 	}
