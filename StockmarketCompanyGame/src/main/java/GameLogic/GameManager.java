@@ -3,6 +3,7 @@ package GameLogic;
 import java.util.ArrayList;
 import java.util.Set;
 
+import ExternalResources.MusicManager;
 import ExternalResources.SoundeffectManager;
 import FileLogic.ReadCSVFiles;
 import FileLogic.WriteCSVFiles;
@@ -106,7 +107,7 @@ public class GameManager {
 	}
 	
 	//Game Loop
-	public void loop(Canvas gameCanvas, GraphicsContext gamePencil, StackPane gamePane,Canvas warningCanvas, GraphicsContext warningPencil, ReadCSVFiles reader, WriteCSVFiles writer, VBox gameVBox, Company company, UIMenuManager uiMenuManager, Stage stage, ButtonManager buttonManager, VisualElementsHolder visual, Set<KeyCode> inputs, Player player, LevelHolder level, GameManager gameManager, SoundeffectManager sfx) {
+	public void loop(Canvas gameCanvas, GraphicsContext gamePencil, StackPane gamePane,Canvas warningCanvas, GraphicsContext warningPencil, ReadCSVFiles reader, WriteCSVFiles writer, VBox gameVBox, Company company, UIMenuManager uiMenuManager, Stage stage, ButtonManager buttonManager, VisualElementsHolder visual, Set<KeyCode> inputs, Player player, LevelHolder level, GameManager gameManager, SoundeffectManager sfx, MusicManager music) {
 		Timeline gameTimeline = new Timeline();
 		
 		warningPencil.setFill(Color.BLACK);
@@ -276,6 +277,9 @@ public class GameManager {
 				gamePane.getChildren().addAll(gameCanvas,gameOver,gameVBox);
 				state = "GameOver";
 			}
+			
+			music.chooseBackgroundMusic(uiMenuManager.isMusicOn());
+			music.musicOff(uiMenuManager.isMusicOn());
 		}));
 		gameTimeline.setCycleCount(Timeline.INDEFINITE);
 		gameTimeline.play();

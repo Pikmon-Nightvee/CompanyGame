@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import ExternalResources.MusicManager;
 import ExternalResources.SoundeffectManager;
 import FileLogic.CreateImportantCSVFiles;
 import FileLogic.ReadCSVFiles;
@@ -56,6 +57,7 @@ public class App extends Application {
 	private WriteCSVFiles writeCSV = new WriteCSVFiles();
 
 	private SoundeffectManager sfx = new SoundeffectManager();
+	private MusicManager music = new MusicManager();
 	
     @Override
     public void start(Stage stage) {
@@ -77,6 +79,7 @@ public class App extends Application {
     	}
     	
     	sfx.loadSfx();
+    	music.loadMusic();
     	
     	nextCycle.readTimeStart();
     	
@@ -207,9 +210,10 @@ public class App extends Application {
     		if(!notFound) {
     			scrollAmount = gameManager.updateMachine(scrollAmount, company);
     			System.out.println("Scroll amount: " + scrollAmount);
+    	
     		}
     	});
-    	gameManager.loop(gameCanvas, gamePencil, gamePane, warningCanvas, warningPencil, readCSV, writeCSV, gameVBox, company, uiMenuManager, stage, buttonManager, visualElementsHolder, inputs, player, level, gameManager, sfx);
+    	gameManager.loop(gameCanvas, gamePencil, gamePane, warningCanvas, warningPencil, readCSV, writeCSV, gameVBox, company, uiMenuManager, stage, buttonManager, visualElementsHolder, inputs, player, level, gameManager, sfx, music);
         
         stage.setScene(scene);
         stage.setTitle("StarUp");

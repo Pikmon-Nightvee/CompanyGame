@@ -165,7 +165,7 @@ public class UIMenuManager {
 		});
 		music.setOnAction(event->{
 			sfx.playButton(sfxOn);
-			System.out.println("music hanlder");
+			System.out.println("music handler");
 			if(musicOn) {
 				music.setText("Turn Music on");
 			}else {
@@ -239,5 +239,8 @@ public class UIMenuManager {
 	}
 	public boolean isSfxOn() {
 		return sfxOn;
+	}
+	public boolean isMusicOn() {
+		return musicOn;
 	}
 }
