@@ -7,10 +7,10 @@ public class InteractableObject extends Item{
 	private boolean broken = false;
 	private int extra = 15;
 	
-	public InteractableObject(double x, double y, double width, double height, boolean interacted, boolean inbounds) {
+	public InteractableObject(double x, double y, double width, double height, boolean interacted, boolean broken) {
 		super(x, y, width, height);
 		this.interacted = interacted;
-		this.broken = inbounds;
+		this.broken = broken;
 	}
 	
 	private double time = 0;

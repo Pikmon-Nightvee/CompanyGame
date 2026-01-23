@@ -1,5 +1,7 @@
 module Visual {
     requires javafx.controls;
 	requires javafx.graphics;
-    exports Visual;
+	requires javafx.media;
+	requires javafx.base;  
+	exports Visual;
 }

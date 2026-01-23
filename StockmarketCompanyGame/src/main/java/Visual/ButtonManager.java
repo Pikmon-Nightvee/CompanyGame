@@ -2,6 +2,7 @@ package Visual;
 
 import java.util.ArrayList;
 
+import ExternalResources.SoundeffectManager;
 import FileLogic.ReadCSVFiles;
 import FileLogic.WriteCSVFiles;
 import GameLogic.Company;
@@ -80,7 +81,7 @@ public class ButtonManager {
 		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
 	}
 	
-	public void start(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted, StackPane gamePane, LevelHolder level, Player player, GameManager game) {
+	public void start(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted, StackPane gamePane, LevelHolder level, Player player, GameManager game, SoundeffectManager sfx, UIMenuManager UI) {
 		CSS(resources);
 		CSS(employ);
 		CSS(nextCycle);
@@ -92,14 +93,15 @@ public class ButtonManager {
 		CSSSubSelect(goBack);
 		CSSSubSelect(bankrupt);
 		
-		action(vBox, visual, warningCanvas, gameCanvas, company, nextCycleStarted, gamePane, level, player, game);
+		action(vBox, visual, warningCanvas, gameCanvas, company, nextCycleStarted, gamePane, level, player, game, sfx, UI);
 	}
 	
-	public void action(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted, StackPane gamePane, LevelHolder level, Player player, GameManager game) {
+	public void action(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted, StackPane gamePane, LevelHolder level, Player player, GameManager game, SoundeffectManager sfx, UIMenuManager UI) {
 		WriteCSVFiles writer = new WriteCSVFiles();
 		ReadCSVFiles reader = new ReadCSVFiles();
 		
 		startButton.setOnAction(event -> {
+			sfx.playButton(UI.isSfxOn());
 			boolean errorOccured = false;
 			if(visual.getInsertName().getText().isBlank()) {
 				errorMessage.errorMessageText(visual.getInsertName(), vBox);
@@ -160,6 +162,7 @@ public class ButtonManager {
 		});
 		
 		resources.setOnAction(event->{
+			sfx.playButton(UI.isSfxOn());
 			vBox.getChildren().clear();
 			vBox.getChildren().addAll(goBack);
 			
@@ -177,6 +180,7 @@ public class ButtonManager {
 		});
 		
 		changeOutput.setOnAction(event->{
+			sfx.playButton(UI.isSfxOn());
 			if(!isProduce) {
 				changeBuySell(vBox,changeTextResEqu,visual);
 				if(changeTextResEqu) {
@@ -197,6 +201,7 @@ public class ButtonManager {
 		});
 		
 		produce.setOnAction(event->{
+			sfx.playButton(UI.isSfxOn());
 			vBox.getChildren().clear();
 			vBox.getChildren().addAll(goBack);
 			
@@ -214,6 +219,7 @@ public class ButtonManager {
 		});
 		
 		employeeManager.setOnAction(event->{
+			sfx.playButton(UI.isSfxOn());
 			vBox.getChildren().clear();
 			vBox.getChildren().addAll(goBack);
 			
@@ -235,6 +241,7 @@ public class ButtonManager {
 		});
 		
 		employ.setOnAction(event->{
+			sfx.playButton(UI.isSfxOn());
 			vBox.getChildren().clear();
 			vBox.getChildren().addAll(goBack);
 			
@@ -245,6 +252,7 @@ public class ButtonManager {
 		});
 		
 		equipment.setOnAction(event->{
+			sfx.playButton(UI.isSfxOn());
 			vBox.getChildren().clear();
 			vBox.getChildren().addAll(goBack);
 			
@@ -257,6 +265,7 @@ public class ButtonManager {
 		});
 		
 		employSelectedEmployee.setOnAction(event->{
+			sfx.playButton(UI.isSfxOn());
 			if(visual.getSelectUnemployed().getValue() == null) {
 				errorMessage.errorMessageComboBox(visual.getSelectUnemployed(), vBox);
 				return;
@@ -271,6 +280,7 @@ public class ButtonManager {
 		});
 		
 		assignTo.setOnAction(event->{
+			sfx.playButton(UI.isSfxOn());
 			if(visual.getAssignEmployed().getValue() == null) {
 				errorMessage.errorMessageComboBox(visual.getAssignEmployed(), vBox);
 				return;
@@ -287,6 +297,7 @@ public class ButtonManager {
 		});
 		
 		repair.setOnAction(event->{
+			sfx.playButton(UI.isSfxOn());
 			if(visual.getAssignEmployed().getValue() == null) {
 				errorMessage.errorMessageComboBox(visual.getAssignEmployed(), vBox);
 				return;
@@ -320,6 +331,7 @@ public class ButtonManager {
 		});
 		
 		fireEmployee.setOnAction(event->{
+			sfx.playButton(UI.isSfxOn());
 			if(visual.getAssignEmployed().getValue() == null) {
 				errorMessage.errorMessageComboBox(visual.getAssignEmployed(), vBox);
 				return;
@@ -350,6 +362,7 @@ public class ButtonManager {
 		});
 		
 		goBack.setOnAction(event->{
+			sfx.playButton(UI.isSfxOn());
 			vBox.getChildren().clear();
 			visual.clearTextFields();
 			
@@ -370,6 +383,7 @@ public class ButtonManager {
 		});
 		
 		buy.setOnAction(event->{
+			sfx.playButton(UI.isSfxOn());
 			boolean errorOccured = false;
 			
 			if(visual.getAmountBuySell().getText().isBlank()){
@@ -403,6 +417,7 @@ public class ButtonManager {
 			if(errorOccured) {
 				return;
 			}
+			sfx.playLevelCash(UI.isSfxOn());
 			
 			if(isResource) {
 				ArrayList<Resource> resources = reader.readResource("ResourcesOnSell.csv", company);
@@ -436,12 +451,13 @@ public class ButtonManager {
 				writer.buySellMachines(visual.getSelectEquipment().getValue(), "Bought", company, buyAmount);
 				visual.getSelectEquipment().setValue(null);
 			}
-			
+
 			visual.updateResourceEquipment(reader,changeTextResEqu,company,false);
 			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
 		});
 		
 		sell.setOnAction(event->{
+			sfx.playButton(UI.isSfxOn());
 			boolean errorOccured = false;
 			if(visual.getAmountBuySell().getText().isBlank()){
 				errorMessage.errorMessageText(visual.getAmountBuySell(), vBox);
@@ -517,11 +533,13 @@ public class ButtonManager {
 					level.interactLoad(level.getMachines());
 				}
 			}
-			
+
+			sfx.playLevelCash(UI.isSfxOn());
 			visual.updateResourceEquipment(reader,changeTextResEqu,company,false);
 			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
 		});
 		produceProduct.setOnAction(event->{
+			sfx.playButton(UI.isSfxOn());
 			boolean errorOccured = false;
 			if(visual.getAmountToProduce().getText().isBlank()){
 				errorMessage.errorMessageText(visual.getAmountToProduce(), vBox);
@@ -587,6 +605,7 @@ public class ButtonManager {
 			visual.updateResourceEquipment(reader, changeTextResEqu, company,false);
 		});
 		nextCycle.setOnAction(event->{
+			sfx.playButton(UI.isSfxOn());
 			nextCycleStarted.nextDay(visual.getSelectCycleAmount().getValue(),reader,company);
 			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
 			visual.updateResourceEquipment(reader, changeTextResEqu, company, false);
@@ -623,8 +642,10 @@ public class ButtonManager {
 			nextCycleStarted.setBalance(0);
 			nextCycleStarted.setProducedProducts(0);
 			nextCycleStarted.setSoldProducts(0);
+			sfx.playLevelComplete(UI.isSfxOn());
 		});
 		nextDay.setOnAction(event->{
+			sfx.playButton(UI.isSfxOn());
 			vBox.getChildren().clear();
 			gamePane.getChildren().clear();
 			gamePane.getChildren().addAll(gameCanvas, warningCanvas, vBox);
@@ -666,9 +687,6 @@ public class ButtonManager {
 		});
 		visual.getSelectEquipment().setOnMouseClicked(event ->{
 			errorMessage.errorMessageHandlerComboBox(visual.getSelectEquipment(), vBox);
-		});
-		visual.getAssignToMachine().setOnMouseClicked(event ->{
-			errorMessage.errorMessageHandlerComboBox(visual.getAssignToMachine(), vBox);
 		});
 	}
 	

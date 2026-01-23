@@ -3,6 +3,7 @@ package GameLogic;
 import java.util.ArrayList;
 import java.util.Set;
 
+import ExternalResources.SoundeffectManager;
 import FileLogic.ReadCSVFiles;
 import FileLogic.WriteCSVFiles;
 import Visual.ButtonManager;
@@ -105,13 +106,13 @@ public class GameManager {
 	}
 	
 	//Game Loop
-	public void loop(Canvas gameCanvas, GraphicsContext gamePencil, StackPane gamePane,Canvas warningCanvas, GraphicsContext warningPencil, ReadCSVFiles reader, WriteCSVFiles writer, VBox gameVBox, Company company, UIMenuManager uiMenuManager, Stage stage, ButtonManager buttonManager, VisualElementsHolder visual, Set<KeyCode> inputs, Player player, LevelHolder level, GameManager gameManager) {
+	public void loop(Canvas gameCanvas, GraphicsContext gamePencil, StackPane gamePane,Canvas warningCanvas, GraphicsContext warningPencil, ReadCSVFiles reader, WriteCSVFiles writer, VBox gameVBox, Company company, UIMenuManager uiMenuManager, Stage stage, ButtonManager buttonManager, VisualElementsHolder visual, Set<KeyCode> inputs, Player player, LevelHolder level, GameManager gameManager, SoundeffectManager sfx) {
 		Timeline gameTimeline = new Timeline();
 		
 		warningPencil.setFill(Color.BLACK);
 		
 		buttonManager.getBankrupt().setOnAction(event->{
-			uiMenuManager.startUp(gameVBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, gameManager);
+			uiMenuManager.startUp(gameVBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, gameManager, sfx);
 			gamePencil.setFill(Color.LIGHTGREY);
 			level.getWalls().clear();
 			state = "InMenu";
@@ -143,8 +144,8 @@ public class GameManager {
 				gamePencil.setFill(Color.RED);
 				renderer.drawPlayer(gameCanvas, gamePencil, player, camera);
 				//Player inputs
-				keyboard.keyboardInputsMovement(inputs, player);
-				keyboard.keyboardInputMenu(inputs, uiMenuManager, gameVBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, gameManager);
+				keyboard.keyboardInputsMovement(inputs, player, uiMenuManager, sfx);
+				keyboard.keyboardInputMenu(inputs, uiMenuManager, gameVBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, gameManager, sfx);
 				for(Wall w : level.getWalls()) {
 					colission.pushBack(player,w);
 				}
@@ -152,7 +153,7 @@ public class GameManager {
 					colission.pushBack(player,m);
 				}
 				//Is machine being placed?
-				keyboard.keyBoardInputPlaceMachine(inputs,placeHolder,reader.readMachines("MachineBought.csv", company));
+				keyboard.keyBoardInputPlaceMachine(inputs,placeHolder,reader.readMachines("MachineBought.csv", company),uiMenuManager,sfx);
 				if(waitTime + currentTime < System.currentTimeMillis()) {
 					gamePencil.setFill(Color.CHOCOLATE);
 				}else{
@@ -223,6 +224,7 @@ public class GameManager {
 							System.out.println("Out of bounce");
 						}
 						if(canBeAdded) {
+							sfx.playPlacing(uiMenuManager.isSfxOn());
 							level.machineAdd(xFinal,yFinal,placeHolder.getWidth(),placeHolder.getHeight());
 							String machine = writer.machineNamePlacedAdd(scroll, company, reader);
 							writer.coordinatesMachineSafe(placeHolder,xFinal,yFinal,machine);
@@ -236,7 +238,7 @@ public class GameManager {
 				}
 				for(InteractableObject i : level.getInteract()) {
 					if(colission.AABB(i.getX(), i.getY(), i.getWidth(), i.getHeight(), player.getX(), player.getY(), player.getWidth(), player.getHeight())){
-						keyboard.keyBoardInputPlacedMachine(inputs, level.getMachines(), i, level, writer, reader, level.getBlinking(), company);
+						keyboard.keyBoardInputPlacedMachine(inputs, level.getMachines(), i, level, writer, reader, level.getBlinking(), company, uiMenuManager, sfx);
 					}
 				}
 				for(InteractableObject i : level.getToRemove()) {
@@ -249,7 +251,7 @@ public class GameManager {
 				gamePencil.setFill(Color.LIGHTGREY);
 				renderer.drawMainCanvas(gameCanvas, gamePencil);
 				renderer.drawWarningCanvas(warningCanvas, warningPencil);
-				keyboard.keyboardInputMenu(inputs, uiMenuManager, gameVBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, gameManager);
+				keyboard.keyboardInputMenu(inputs, uiMenuManager, gameVBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, gameManager, sfx);
 				break;
 			case "GameOver":
 				gamePencil.setFill(Color.BLACK);
@@ -260,6 +262,7 @@ public class GameManager {
 			camera.updateCamera(player, gameCanvas);
 			
 			if(company.getMoneyOfCompany() < 0) {
+				sfx.playGameOver(uiMenuManager.isSfxOn());
 				writer.resetData(reader);
 				company.setMoneyOfCompany(0);
 				gameVBox.getChildren().clear();

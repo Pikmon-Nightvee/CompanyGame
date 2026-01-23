@@ -1,5 +1,6 @@
 package Visual;
 
+import ExternalResources.SoundeffectManager;
 import FileLogic.ReadCSVFiles;
 import FileLogic.WriteCSVFiles;
 import GameLogic.Company;
@@ -31,8 +32,8 @@ public class UIMenuManager {
 	private Button music = new Button("Turn Music off");
 	
 	private boolean fullScreenOff = true;
-	private boolean musicOn = false;
-	private boolean sfxOn = false;
+	private boolean musicOn = true;
+	private boolean sfxOn = true;
 	private boolean started = false;
 	
 	private VBox vBox = new VBox();
@@ -50,7 +51,7 @@ public class UIMenuManager {
 		gameState = insert;
 	}
 	
-	public void loadMenu(VBox vBox, ButtonManager buttonManager, VisualElementsHolder visual, WriteCSVFiles writer, ReadCSVFiles reader, Stage stage, Company company, Canvas warningCanvas, StackPane gamePane, Canvas gameCanvas, LevelHolder level, Player player, GameManager game) {
+	public void loadMenu(VBox vBox, ButtonManager buttonManager, VisualElementsHolder visual, WriteCSVFiles writer, ReadCSVFiles reader, Stage stage, Company company, Canvas warningCanvas, StackPane gamePane, Canvas gameCanvas, LevelHolder level, Player player, GameManager game, SoundeffectManager sfx) {
 		vBox.getChildren().clear();
 		gamePane.getChildren().clear();
 		visual.getSelectDifficulty().getItems().clear();
@@ -74,6 +75,7 @@ public class UIMenuManager {
 		gamePane.getChildren().add(vBox);
 		
 		openTopDown.setOnAction(event->{
+			sfx.playButton(sfxOn);
 			vBox.getChildren().clear();
 			
 			HBox hBox = new HBox();
@@ -96,25 +98,28 @@ public class UIMenuManager {
 			game.updateState("InTopDown");
 		});
 		openUIGame.setOnAction(event->{
+			sfx.playButton(sfxOn);
 			vBox.getChildren().clear();
 			game.updateState("InUIState");
 			buttonManager.loadGame(visual, vBox, company, warningCanvas, reader);
 			buttonManager.changeTextAreaSize(gameCanvas, visual, vBox);
 		});
 		backToMainMenu.setOnAction(event->{
+			sfx.playButton(sfxOn);
 			started = false;
 			level.getWalls().clear();
 			game.getPlaceHolder().setHeight(0);
 			game.getPlaceHolder().setWidth(0);
 			game.updateState("InMenu");
-			startUp(vBox,buttonManager,visual,writer,reader,stage,company,warningCanvas,gamePane,gameCanvas,level,player,game);
+			startUp(vBox,buttonManager,visual,writer,reader,stage,company,warningCanvas,gamePane,gameCanvas,level,player,game,sfx);
 		});
 		quit.setOnAction(event->{
+			sfx.playButton(sfxOn);
 			stage.close();
 		});
 	}
 	
-	public void startUp(VBox vBox, ButtonManager buttonManager, VisualElementsHolder visual, WriteCSVFiles writer, ReadCSVFiles reader, Stage stage, Company company, Canvas warningCanvas, StackPane gamePane, Canvas gameCanvas, LevelHolder level, Player player, GameManager game) {
+	public void startUp(VBox vBox, ButtonManager buttonManager, VisualElementsHolder visual, WriteCSVFiles writer, ReadCSVFiles reader, Stage stage, Company company, Canvas warningCanvas, StackPane gamePane, Canvas gameCanvas, LevelHolder level, Player player, GameManager game, SoundeffectManager sfx) {
 		vBox.getChildren().clear();
 		this.vBox.getChildren().clear();
 		gamePane.getChildren().clear();
@@ -138,7 +143,7 @@ public class UIMenuManager {
 		CSSNoAddAmount(options);
 		CSSNoAddAmount(fullScreen);
 		CSSNoAddAmount(returnToMenu);
-		CSSNoAddAmount(sfx);
+		CSSNoAddAmount(this.sfx);
 		CSSNoAddAmount(music);
 		
 		this.vBox.setAlignment(Pos.TOP_CENTER);
@@ -148,25 +153,28 @@ public class UIMenuManager {
 		gamePane.getChildren().add(this.vBox);
 		gamePane.getChildren().add(vBox);
 		
-		sfx.setOnAction(event->{
+		this.sfx.setOnAction(event->{
+			sfx.playButton(sfxOn);
 			System.out.println("sfx handler");
 			if(sfxOn) {
-				sfx.setText("Turn Sfx off");
+				this.sfx.setText("Turn Sfx on");
 			}else {
-				sfx.setText("Turn Sfx on");
+				this.sfx.setText("Turn Sfx off");
 			}
 			sfxOn = !sfxOn;
 		});
 		music.setOnAction(event->{
+			sfx.playButton(sfxOn);
 			System.out.println("music hanlder");
 			if(musicOn) {
-				music.setText("Turn Music off");
-			}else {
 				music.setText("Turn Music on");
+			}else {
+				music.setText("Turn Music off");
 			}
 			musicOn = !musicOn;
 		});
 		returnToMenu.setOnAction(event->{
+			sfx.playButton(sfxOn);
 			vBox.getChildren().clear();
 			if(!started) {
 				vBox.getChildren().add(start);
@@ -179,14 +187,17 @@ public class UIMenuManager {
 			}
 		});
 		options.setOnAction(event->{
+			sfx.playButton(sfxOn);
 			vBox.getChildren().clear();
-			vBox.getChildren().addAll(returnToMenu,fullScreen,sfx,music);
+			vBox.getChildren().addAll(returnToMenu,fullScreen,this.sfx,music);
 		});
 		fullScreen.setOnAction(event->{
+			sfx.playButton(sfxOn);
 			stage.setFullScreen(fullScreenOff);
 			fullScreenOff = !fullScreenOff;
 		});
 		start.setOnAction(event->{
+			sfx.playButton(sfxOn);
 			started = true;
 			this.vBox.getChildren().clear();
 			vBox.getChildren().clear();
@@ -198,6 +209,7 @@ public class UIMenuManager {
 			level.getWalls().clear();
 		});
 		load.setOnAction(event->{
+			sfx.playButton(sfxOn);
 			started = true;
 			this.vBox.getChildren().clear();
 			vBox.getChildren().clear();
@@ -221,7 +233,11 @@ public class UIMenuManager {
 			level.interactLoad(level.getMachines());
 		});
 		quit.setOnAction(event->{
+			sfx.playButton(sfxOn);
 			stage.close();
 		});
+	}
+	public boolean isSfxOn() {
+		return sfxOn;
 	}
 }

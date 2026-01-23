@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import ExternalResources.SoundeffectManager;
 import FileLogic.CreateImportantCSVFiles;
 import FileLogic.ReadCSVFiles;
 import FileLogic.WriteCSVFiles;
@@ -53,6 +54,8 @@ public class App extends Application {
 	private CreateImportantCSVFiles createCSV = new CreateImportantCSVFiles();
 	private ReadCSVFiles readCSV = new ReadCSVFiles();
 	private WriteCSVFiles writeCSV = new WriteCSVFiles();
+
+	private SoundeffectManager sfx = new SoundeffectManager();
 	
     @Override
     public void start(Stage stage) {
@@ -72,13 +75,16 @@ public class App extends Application {
     	}else {
     		System.out.println("All Important Files and Directorys there");
     	}
+    	
+    	sfx.loadSfx();
+    	
     	nextCycle.readTimeStart();
     	
     	Scene scene = new Scene(gamePane, width, height);
     	
-    	buttonManager.start(gameVBox, visualElementsHolder,warningCanvas,gameCanvas,company,nextCycle,gamePane,level,player,gameManager);
+    	buttonManager.start(gameVBox, visualElementsHolder,warningCanvas,gameCanvas,company,nextCycle,gamePane,level,player,gameManager,sfx,uiMenuManager);
     	
-    	uiMenuManager.startUp(gameVBox,buttonManager,visualElementsHolder,writeCSV,readCSV,stage,company,warningCanvas,gamePane,gameCanvas,level,player,gameManager);
+    	uiMenuManager.startUp(gameVBox,buttonManager,visualElementsHolder,writeCSV,readCSV,stage,company,warningCanvas,gamePane,gameCanvas,level,player,gameManager,sfx);
     	
     	gamePane.widthProperty().addListener((obs, oldVal, newVal) -> {
     		gameCanvas.setWidth(newVal.doubleValue());
@@ -109,6 +115,8 @@ public class App extends Application {
     		gameManager.updateMouseCoordinates(event.getX(), event.getY());
     	});
     	scene.setOnScroll(event->{
+    		sfx.playSelect(uiMenuManager.isSfxOn());
+    		
     		ArrayList<Machine> allMachine = readCSV.readMachines("MachinesData.csv",company);
     		ArrayList<Machine> bought = readCSV.readMachines("MachineBought.csv",company);
     		int increasedTotal = 0;
@@ -201,7 +209,7 @@ public class App extends Application {
     			System.out.println("Scroll amount: " + scrollAmount);
     		}
     	});
-    	gameManager.loop(gameCanvas, gamePencil, gamePane, warningCanvas, warningPencil, readCSV, writeCSV, gameVBox, company, uiMenuManager, stage, buttonManager, visualElementsHolder, inputs, player, level, gameManager);
+    	gameManager.loop(gameCanvas, gamePencil, gamePane, warningCanvas, warningPencil, readCSV, writeCSV, gameVBox, company, uiMenuManager, stage, buttonManager, visualElementsHolder, inputs, player, level, gameManager, sfx);
         
         stage.setScene(scene);
         stage.setTitle("StarUp");
