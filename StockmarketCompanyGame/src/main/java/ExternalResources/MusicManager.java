@@ -54,6 +54,8 @@ public class MusicManager {
 				notPlayed = true;
 				musicPlaying = nextSound;
 			});
+
+	        musicPlaying = (int)(Math.random()*3);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
