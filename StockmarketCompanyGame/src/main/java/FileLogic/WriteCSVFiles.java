@@ -924,11 +924,14 @@ public class WriteCSVFiles {
 					for(Machine mB : machinesBroken) {
 						if(mB.getName().equals(m.getName())) {
 							nameNotChosen = false;
-							int conditionMath = mB.getAmount();
+							int conditionMath = mB.getAmount()+1;
 							int conditionInsert = m.getCondition();
 							if(mB.getName().equals(id)) {
-								conditionInsert = (int)(conditionInsert / conditionMath);
+								System.out.println("Brokenamount:"+conditionMath);
+								System.out.println("conditioninsert:"+conditionInsert);
+								conditionInsert = (int)(10 / conditionMath);
 								conditionInsert += m.getCondition();
+								System.out.println("Condition Repair:"+conditionInsert);
 								if(conditionInsert > 10) {
 									conditionInsert = 10;
 								}
@@ -942,6 +945,7 @@ public class WriteCSVFiles {
 							writer.write("\n");
 						}
 					}
+					System.out.println(nameNotChosen);
 					if(nameNotChosen) {
 						writer.write(m.getName()+","+m.getAmount()+","+m.getCost()+","+m.getCondition()+","+company.getCompanyType());
 						writer.write("\n");
