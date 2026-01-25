@@ -75,6 +75,9 @@ public class UIMenuManager {
 		gamePane.getChildren().add(vBox);
 		
 		openTopDown.setOnAction(event->{
+			level.getBlinking().clear();
+			level.setBlinking(reader.activateBlink(company, level));
+			
 			sfx.playButton(sfxOn);
 			vBox.getChildren().clear();
 			
@@ -97,7 +100,7 @@ public class UIMenuManager {
 			
 			game.updateState("InTopDown");
 		});
-		openUIGame.setOnAction(event->{
+		openUIGame.setOnAction(event->{			
 			sfx.playButton(sfxOn);
 			vBox.getChildren().clear();
 			game.updateState("InUIState");

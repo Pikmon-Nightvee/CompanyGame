@@ -93,9 +93,6 @@ public class LevelHolder {
 			int extra = 15;
 			InteractableObject toAddIo = new InteractableObject(xPos-extra,yPos-extra,width+(extra*2),height+(extra*2),false,false);
 			interact.add(toAddIo);
-			
-			toAddIo = new InteractableObject(xPos,yPos,width,height,false,true);
-			blinking.add(toAddIo);
 		}
 	}
 	public void interactLoad(ArrayList<Wall> walls){
@@ -147,5 +144,13 @@ public class LevelHolder {
 
 	public ArrayList<InteractableObject> getBlinking() {
 		return blinking;
+	}
+
+	public void setBlinking(ArrayList<InteractableObject> blinking) {
+		this.blinking = blinking;
+	}
+
+	public void addBlinking(InteractableObject blinking) {
+		this.blinking.add(blinking);
 	}
 }

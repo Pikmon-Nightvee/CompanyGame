@@ -89,6 +89,23 @@ public class KeyboardManager {
 							double moneySpent = 1250;
 							company.setMoneyOfCompany(company.getMoneyOfCompany()-moneySpent);
 							System.out.println("Money was spent");
+							
+							ArrayList<String[]> machines = reader.machinesTopDownGet("MachineCoordinates.csv");
+							Wall wall = new Wall(i.getX(),i.getY(),i.getWidth(),i.getHeight());
+							for(String[] machine : machines) {
+								double x = Double.parseDouble(machine[0]);
+								double y = Double.parseDouble(machine[1]);
+								double width = Double.parseDouble(machine[2]);
+								double height = Double.parseDouble(machine[3]);
+								String name = machine[4];
+								
+								Wall compareTo = new Wall(x,y,width,height);
+								System.out.println("Wall1: "+compareTo.toString()+" Wall2: "+wall.toString()+" equals: "+compareTo.equals(wall));
+								if(compareTo.equals(wall)) {
+									writer.machineBrokenSold(reader, name, 1, company);
+									writer.machineBrokenRepair(reader, name, company);
+								}
+							}
 						}else {
 							System.out.println("Not it");
 						}

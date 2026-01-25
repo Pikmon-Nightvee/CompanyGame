@@ -286,6 +286,11 @@ public class ButtonManager {
 				return;
 			}
 			
+			if(employeeAlreadyWorking(reader,company,visual.getAssignEmployed().getValue())) {
+				errorMessage.errorMessageComboBox(visual.getAssignEmployed(), vBox);
+				return;
+			}
+			
 			writer.setEmployeeMachine(visual.getAssignEmployed().getValue(), visual.getAssignToMachine().getValue());
 			writer.deleteProduction(visual.getAssignEmployed().getValue(), company, reader);
 			
@@ -310,8 +315,13 @@ public class ButtonManager {
 			int baseSpend = 1000;
 			int spentRepair = 0;
 			for(Machine m : machines) {
-				if(m.getName().equals(visual.getAssignToMachine().getValue()) && m.getCondition() < 10) {
-					spentRepair = (baseSpend * m.getAmount()) / m.getCondition();
+				if(m.getCondition()>0) {
+					if(m.getName().equals(visual.getAssignToMachine().getValue()) && m.getCondition() < 10) {
+						spentRepair = (baseSpend * m.getAmount()) / m.getCondition();
+					}
+				}else {
+					baseSpend += 250;
+					baseSpend *= m.getAmount();
 				}
 			}
 			for(Machine m : machines) {
@@ -324,10 +334,18 @@ public class ButtonManager {
 					}
 				}
 			}
+			
 			int newCompanyMoney = (int) (company.getMoneyOfCompany() - spentRepair);
 			company.setMoneyOfCompany(newCompanyMoney);
 			writer.repairMachine(visual.getAssignToMachine().getValue(), reader, company);
 			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
+			
+			machines = reader.readMachines("MachineBroken.csv",company);
+			for(Machine m : machines) {
+				if(m.getName().equals(visual.getAssignToMachine().getValue())) {
+					writer.machineBrokenSold(reader, m.getName(), m.getAmount(), company);
+				}
+			}
 		});
 		
 		fireEmployee.setOnAction(event->{
@@ -517,6 +535,31 @@ public class ButtonManager {
 						}
 					}
 				}
+
+				ArrayList<Machine> machineBroken = reader.readMachines("MachineBroken.csv",company);
+				boolean removeMachineBroken = false;
+				int machineRemoveAmountBroken = 0;
+				for(Machine machine : machineBroken) {
+					if(machine.getName().equals(visual.getSelectEquipment().getValue())) {
+						for(Machine m : machines) {
+							if(m.getName().equals(machine.getName())) {
+								int amount = machine.getAmount();
+								machineRemoveAmountBroken = m.getAmount() - amount - sellAmount;
+								if(machineRemoveAmountBroken < 0) {
+									machineRemoveAmountBroken *= -1;
+									removeMachineBroken = true;
+								}
+								System.out.println("Machine found: " + machine.getName() + " Will be removed?: " + removeMachine);
+								System.out.println("Amount Placed: " + amount + " Amount Sold: " + sellAmount + " Rest: " + (sellAmount-amount));
+							}
+						}
+					}
+				}
+				
+				if(removeMachineBroken) {
+					System.out.println("Machine had to be sold broken; amount: "+machineRemoveAmountBroken);
+					writer.machineBrokenSold(reader, visual.getSelectEquipment().getValue(), machineRemoveAmountBroken, company);
+				}
 				
 				if(removeMachine) {
 					writer.removeMachineCords(visual.getSelectEquipment().getValue(), reader, company, machineRemoveAmount);
@@ -636,6 +679,8 @@ public class ButtonManager {
 			gamePane.getChildren().add(gameCanvas);
 			gamePane.getChildren().add(vBoxDate);
 			gamePane.getChildren().add(vBox);
+			
+			writer.machineBroken(reader, company);
 			
 			vBox.getChildren().addAll(money,producedProducts,soldProducts,nextDay);
 			
@@ -849,6 +894,17 @@ public class ButtonManager {
 		System.out.println("Money of company:"+company.getMoneyOfCompany());
 		startMaster(visual,reader,company);
 		booleanReset();
+	}
+	
+	public boolean employeeAlreadyWorking(ReadCSVFiles reader, Company company, String employee) {
+		ArrayList<Product> productsInProduction = reader.readProducts("InProduction.csv", company);
+		for(Product p : productsInProduction) {
+			if(p.getAsignedEmployee().equals(employee)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	private void booleanReset() {

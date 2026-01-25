@@ -229,6 +229,7 @@ public class GameManager {
 							level.machineAdd(xFinal,yFinal,placeHolder.getWidth(),placeHolder.getHeight());
 							String machine = writer.machineNamePlacedAdd(scroll, company, reader);
 							writer.coordinatesMachineSafe(placeHolder,xFinal,yFinal,machine);
+							blink(reader,company,level,placeHolder,xFinal,yFinal);
 						}else {
 							mousePressed = false;
 							currentTime = System.currentTimeMillis();
@@ -311,6 +312,30 @@ public class GameManager {
     	}else {
     		System.out.println("False");
     		return false;
+    	}
+    }
+    
+    public void blink(ReadCSVFiles reader, Company company, LevelHolder level, Wall wall, double x, double y) {
+    	ArrayList<Machine> machines = reader.readMachines("MachineBroken.csv", company);
+    	ArrayList<String[]> machinesPlaced = reader.machinesTopDownGet("MachinesPlaced.csv");
+    	
+    	ArrayList<InteractableObject> toAdd = new ArrayList<>();
+    	
+    	for(Machine m : machines) {
+    		for(String[] mCords : machinesPlaced) {
+    			if(m.getName().equals(mCords[0]) && m.getName().equals(machine)) {
+    				int amountBroken = m.getAmount();
+    				int amountPlaced = Integer.parseInt(mCords[1]);
+    				if(amountBroken >= amountPlaced) {
+    					InteractableObject i = new InteractableObject(x,y,wall.getWidth(),wall.getHeight(),false,true);
+    					toAdd.add(i);
+    				}
+    			}
+    		}
+    	}
+    	
+    	for(InteractableObject i : toAdd) {
+    		level.addBlinking(i);
     	}
     }
 }

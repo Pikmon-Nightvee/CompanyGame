@@ -7,6 +7,8 @@ import java.util.Scanner;
 
 import GameLogic.Company;
 import GameLogic.Employee;
+import GameLogic.InteractableObject;
+import GameLogic.LevelHolder;
 import GameLogic.Machine;
 import GameLogic.Product;
 import GameLogic.Resource;
@@ -364,5 +366,33 @@ public class ReadCSVFiles {
 			e.printStackTrace();
 		}
 		return all;
+	}
+	
+	public ArrayList<InteractableObject> activateBlink(Company company, LevelHolder level){
+		ArrayList<InteractableObject> toAdd = new ArrayList<>();
+		
+		ArrayList<Machine> broken = readMachines("MachineBroken.csv",company);
+		ArrayList<String[]> machines = machinesTopDownGet("MachineCoordinates.csv");
+		
+		if(!broken.isEmpty()) {
+			for(Machine m : broken) {
+				int amount = 0;
+				for(String[] mString : machines) {
+					if(mString[4].equals(m.getName())) {
+						if(amount < m.getAmount()) {
+							double xCoordinate = Double.parseDouble(mString[0]);
+							double yCoordinate = Double.parseDouble(mString[1]);
+							double width = Double.parseDouble(mString[2]);
+							double height = Double.parseDouble(mString[3]);
+							InteractableObject i = new InteractableObject(xCoordinate,yCoordinate,width,height,false,true);
+							toAdd.add(i);
+						}
+						amount++;
+					}
+				}
+			}
+		}
+		
+		return toAdd;
 	}
 }

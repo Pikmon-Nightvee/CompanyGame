@@ -862,4 +862,97 @@ public class WriteCSVFiles {
 		}
 		return check;
 	}
+	
+	public void machineBroken(ReadCSVFiles reader,Company company) {
+		ArrayList<Machine> machines = reader.readMachines("MachineBought.csv", company);
+		ArrayList<Machine> alreadyBroken = reader.readMachines("MachineBroken.csv", company);
+		
+		File file = new File("DataCSV/EquipmentData/MachineBroken.csv");
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+			for(Machine m : machines) {
+				if(m.getCondition() <= 0) {
+					for(Machine mB : alreadyBroken) {
+						if(mB.getName().equals(m.getName())) {
+							writer.write(m.getName()+","+m.getAmount()+","+m.getCost()+","+m.getCondition()+","+company.getCompanyType());
+							writer.write("\n");
+						}else {
+							writer.write(m.getName()+","+m.getAmount()+","+m.getCost()+","+m.getCondition()+","+company.getCompanyType());
+							writer.write("\n");
+						}
+					}
+					if(alreadyBroken.isEmpty()) {
+						writer.write(m.getName()+","+m.getAmount()+","+m.getCost()+","+m.getCondition()+","+company.getCompanyType());
+						writer.write("\n");
+					}
+				}
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void machineBrokenSold(ReadCSVFiles reader, String id, int sold, Company company) {
+		ArrayList<Machine> machines = reader.readMachines("MachineBroken.csv", company);
+		File file = new File("DataCSV/EquipmentData/MachineBroken.csv");
+		
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+			for(Machine m : machines) {
+				int amount = m.getAmount();
+				if(m.getName().equals(id)){
+					amount -= sold;
+				}
+				if(amount > 0) {
+					System.out.println(m.toString());
+					writer.write(m.getName()+","+amount+","+m.getCost()+","+m.getCondition()+","+company.getCompanyType());
+					writer.write("\n");
+				}
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void machineBrokenRepair(ReadCSVFiles reader, String id, Company company) {
+		ArrayList<Machine> machinesBroken = reader.readMachines("MachineBroken.csv", company);
+		ArrayList<Machine> machines = reader.readMachines("MachineBought.csv", company);
+		File file = new File("DataCSV/EquipmentData/MachineBought.csv");
+		
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+			for(Machine m : machines) {
+				if(!machinesBroken.isEmpty()) {
+					boolean nameNotChosen = true;
+					for(Machine mB : machinesBroken) {
+						if(mB.getName().equals(m.getName())) {
+							nameNotChosen = false;
+							int conditionMath = mB.getAmount();
+							int conditionInsert = m.getCondition();
+							if(mB.getName().equals(id)) {
+								conditionInsert = (int)(conditionInsert / conditionMath);
+								conditionInsert += m.getCondition();
+								if(conditionInsert > 10) {
+									conditionInsert = 10;
+								}
+								if(conditionInsert <= 0) {
+									conditionInsert = 1;
+								}
+								System.out.println("Condition Repair:"+conditionInsert);
+							}
+							
+							writer.write(m.getName()+","+m.getAmount()+","+m.getCost()+","+conditionInsert+","+company.getCompanyType());
+							writer.write("\n");
+						}
+					}
+					if(nameNotChosen) {
+						writer.write(m.getName()+","+m.getAmount()+","+m.getCost()+","+m.getCondition()+","+company.getCompanyType());
+						writer.write("\n");
+					}
+				}else {
+					writer.write(m.getName()+","+m.getAmount()+","+m.getCost()+","+"10"+","+company.getCompanyType());
+					writer.write("\n");
+				}
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
