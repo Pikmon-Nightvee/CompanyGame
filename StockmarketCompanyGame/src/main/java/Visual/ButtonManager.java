@@ -2,6 +2,7 @@ package Visual;
 
 import java.util.ArrayList;
 
+import ExternalResources.GraphicsManager;
 import ExternalResources.SoundeffectManager;
 import FileLogic.ReadCSVFiles;
 import FileLogic.WriteCSVFiles;
@@ -64,21 +65,73 @@ public class ButtonManager {
 	private boolean isProduce = false;
 	private boolean isResource = false;
 	
+	private void setButtonBackground(GraphicsManager graphic, Button button) {
+		try {
+			button.setOnMousePressed(event->{
+				button.setBackground(graphic.getButtonPressed());
+			});
+			button.setOnMouseMoved(event->{
+				button.setBackground(graphic.getButtonHover());
+			});
+			button.setOnMouseExited(event->{
+				button.setBackground(graphic.getButtonUnpressed());
+			});
+			button.setOnMouseReleased(event->{
+				button.setBackground(graphic.getButtonUnpressed());
+			});
+			button.setBackground(graphic.getButtonUnpressed());
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void imageLoader(GraphicsManager graphic) {
+		try {
+			setButtonBackground(graphic,resources);
+			setButtonBackground(graphic,equipment);
+			setButtonBackground(graphic,employ);
+			setButtonBackground(graphic,nextCycle);
+			setButtonBackground(graphic,produce);
+
+			setButtonBackground(graphic,startButton);
+			
+			setButtonBackground(graphic,employeeManager);
+			setButtonBackground(graphic,goBack);
+
+			setButtonBackground(graphic,employSelectedEmployee);
+			
+			setButtonBackground(graphic,assignTo);
+			setButtonBackground(graphic,fireEmployee);
+			
+			setButtonBackground(graphic,buy);
+			setButtonBackground(graphic,sell);
+			setButtonBackground(graphic,changeOutput);
+			setButtonBackground(graphic,repair);
+
+			setButtonBackground(graphic,produceProduct);
+			
+			setButtonBackground(graphic,bankrupt);
+			setButtonBackground(graphic,nextDay);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private void CSS(Button button) {
 		amount += 1;
 		button.setPrefSize(200, 20);
-		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
+		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold; -fx-text-fill: white");
 	}
 	
 	private void CSSSubSelect(Button button) {
 		subSelect += 1;
 		button.setPrefSize(200, 20);
-		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
+		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold; -fx-text-fill: white");
 	}
 	
 	private void CSSNoAddAmount(Button button) {
 		button.setPrefSize(200, 20);
-		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
+		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold; -fx-text-fill: white");
 	}
 	
 	public void start(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted, StackPane gamePane, LevelHolder level, Player player, GameManager game, SoundeffectManager sfx, UIMenuManager UI) {

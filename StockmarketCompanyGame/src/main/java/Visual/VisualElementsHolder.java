@@ -2,6 +2,7 @@ package Visual;
 
 import java.util.ArrayList;
 
+import ExternalResources.GraphicsManager;
 import FileLogic.ReadCSVFiles;
 import GameLogic.Company;
 import GameLogic.Employee;
@@ -9,6 +10,7 @@ import GameLogic.Machine;
 import GameLogic.Product;
 import GameLogic.Resource;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -295,10 +297,48 @@ public class VisualElementsHolder {
 		setProductAllText(builder.toString());
 	}
 	
+	private void setButtonBackground(GraphicsManager graphic, ComboBox combo) {
+		try {
+			combo.setOnMousePressed(event->{
+				combo.setBackground(graphic.getComboPressed());
+			});
+			combo.setOnMouseMoved(event->{
+				combo.setBackground(graphic.getComboHover());
+			});
+			combo.setOnMouseExited(event->{
+				combo.setBackground(graphic.getComboUnpressed());
+			});
+			combo.setOnMouseReleased(event->{
+				combo.setBackground(graphic.getComboUnpressed());
+			});
+			combo.setBackground(graphic.getComboUnpressed());
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void loadImage(GraphicsManager graphic) {
+		setButtonBackground(graphic,selectDifficulty);
+		setButtonBackground(graphic,selectCycleAmount);
+		setButtonBackground(graphic,selectCompanyType);
+		setButtonBackground(graphic,selectCompanySpecification);
+		setButtonBackground(graphic,selectUnemployed);
+
+		setButtonBackground(graphic,assignEmployed);
+		setButtonBackground(graphic,assignToMachine);
+
+		setButtonBackground(graphic,selectResource);
+		setButtonBackground(graphic,selectEquipment);
+
+		setButtonBackground(graphic,availableEmployees);
+		setButtonBackground(graphic,selectProduct);
+	}
+	
 	private void CSSBox(ComboBox<String> comboBox) {
 		amount += 1;
 		comboBox.setPrefSize(200, 20);
-		comboBox.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
+		comboBox.setStyle("-fx-font-size:15px;-fx-font-weight: bold; -fx-text-fill: white");
 	}
 	public void CSSLabel(Label label) {
 		amount += 1;
@@ -306,7 +346,7 @@ public class VisualElementsHolder {
 	}
 	private void CSSBoxNoAddAmount(ComboBox<String> comboBox) {
 		comboBox.setPrefSize(200, 20);
-		comboBox.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
+		comboBox.setStyle("-fx-font-size:15px;-fx-font-weight: bold; -fx-text-fill: white");
 	}
 	public void CSSLabelNoAddAmount(Label label) {
 		label.setStyle("-fx-font-size: 20px;-fx-font-weight: bold;");
@@ -449,7 +489,7 @@ public class VisualElementsHolder {
 	private void CSSBoxSubSelect(ComboBox<String> comboBox) {
 		subAmount += 1;
 		comboBox.setPrefSize(200, 20);
-		comboBox.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
+		comboBox.setStyle("-fx-font-size:15px;-fx-font-weight: bold; -fx-text-fill: white");
 	}
 	public void CSSLabelSubSelect(Label label) {
 		subAmount += 1;

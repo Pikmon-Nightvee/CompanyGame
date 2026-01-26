@@ -2,6 +2,7 @@ package Visual;
 
 import java.util.ArrayList;
 
+import ExternalResources.GraphicsManager;
 import GameLogic.Camera;
 import GameLogic.InteractableObject;
 import GameLogic.Player;
@@ -10,8 +11,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
 public class Renderer {
-	public void drawMainCanvas(Canvas canvas, GraphicsContext pencil) {
-		pencil.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+	public void drawMainCanvas(Canvas canvas, GraphicsContext pencil, String id, GraphicsManager graphic) {
+		switch(id) {
+		case "InMenu": pencil.drawImage(graphic.getBackgroundMenu(),0, 0, canvas.getWidth(), canvas.getHeight()); break;
+		case "InUIState": pencil.drawImage(graphic.getBackgroundUI(),0, 0, canvas.getWidth(), canvas.getHeight()); break;
+		}
+		System.out.println(id);
 	}
 	
 	public void drawPlayer(Canvas canvas, GraphicsContext pencil, Player player, Camera camera) {
@@ -44,8 +49,9 @@ public class Renderer {
 		pencil.fillRect(w.getX(),w.getY(),w.getWidth(),w.getHeight());
 	}
 
-	public void drawWarningCanvas(Canvas canvas, GraphicsContext pencil) {
+	public void drawWarningCanvas(Canvas canvas, GraphicsContext pencil, GraphicsManager graphic) {
 		pencil.fillRect(0, 20, canvas.getWidth(), canvas.getHeight());
+		pencil.drawImage(graphic.getWarningCanvasOverlay(),0, 20, canvas.getWidth(), canvas.getHeight()-20);
 	}
 	
 	public void clearAll(Canvas gameCanvas, GraphicsContext gamePencil, Canvas warningCanvas,

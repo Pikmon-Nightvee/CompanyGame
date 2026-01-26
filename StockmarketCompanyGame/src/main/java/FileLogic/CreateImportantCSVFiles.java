@@ -83,6 +83,13 @@ public class CreateImportantCSVFiles {
 			}else {
 				System.out.println("Important File: MachineNotBought exists");
 			}
+			file = new File("DataCSV/EquipmentData/MachineBroken.csv");
+			if(file.createNewFile()) {
+				System.out.println("Important File: MachineBroken created");
+				error = true;
+			}else {
+				System.out.println("Important File: MachineBroken exists");
+			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

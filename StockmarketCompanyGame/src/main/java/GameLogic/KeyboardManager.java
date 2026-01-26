@@ -3,6 +3,7 @@ package GameLogic;
 import java.util.ArrayList;
 import java.util.Set;
 
+import ExternalResources.GraphicsManager;
 import ExternalResources.SoundeffectManager;
 import FileLogic.ReadCSVFiles;
 import FileLogic.WriteCSVFiles;
@@ -117,9 +118,9 @@ public class KeyboardManager {
 		}
 	}
 	
-	public void keyboardInputMenu(Set<KeyCode> inputs, UIMenuManager uiMenu, VBox vBox, ButtonManager buttonManager, VisualElementsHolder visual, WriteCSVFiles writer, ReadCSVFiles reader, Stage stage, Company company, Canvas warningCanvas, StackPane gamePane, Canvas gameCanvas, LevelHolder level, Player player, GameManager game, SoundeffectManager sfx) {
+	public void keyboardInputMenu(Set<KeyCode> inputs, UIMenuManager uiMenu, VBox vBox, ButtonManager buttonManager, VisualElementsHolder visual, WriteCSVFiles writer, ReadCSVFiles reader, Stage stage, Company company, Canvas warningCanvas, StackPane gamePane, Canvas gameCanvas, LevelHolder level, Player player, GameManager game, SoundeffectManager sfx, GraphicsManager graphic) {
 		if(inputs.contains(KeyCode.E)) {
-			uiMenu.loadMenu(vBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, game, sfx);
+			uiMenu.loadMenu(vBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, game, sfx, graphic);
 			game.updateState("InMenu");
 		}
 	}

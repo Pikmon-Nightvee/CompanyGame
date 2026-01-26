@@ -3,6 +3,7 @@ package GameLogic;
 import java.util.ArrayList;
 import java.util.Set;
 
+import ExternalResources.GraphicsManager;
 import ExternalResources.MusicManager;
 import ExternalResources.SoundeffectManager;
 import FileLogic.ReadCSVFiles;
@@ -107,7 +108,7 @@ public class GameManager {
 	}
 	
 	//Game Loop
-	public void loop(Canvas gameCanvas, GraphicsContext gamePencil, StackPane gamePane,Canvas warningCanvas, GraphicsContext warningPencil, ReadCSVFiles reader, WriteCSVFiles writer, VBox gameVBox, Company company, UIMenuManager uiMenuManager, Stage stage, ButtonManager buttonManager, VisualElementsHolder visual, Set<KeyCode> inputs, Player player, LevelHolder level, GameManager gameManager, SoundeffectManager sfx, MusicManager music) {
+	public void loop(Canvas gameCanvas, GraphicsContext gamePencil, StackPane gamePane,Canvas warningCanvas, GraphicsContext warningPencil, ReadCSVFiles reader, WriteCSVFiles writer, VBox gameVBox, Company company, UIMenuManager uiMenuManager, Stage stage, ButtonManager buttonManager, VisualElementsHolder visual, Set<KeyCode> inputs, Player player, LevelHolder level, GameManager gameManager, SoundeffectManager sfx, MusicManager music, GraphicsManager graphic) {
 		Timeline gameTimeline = new Timeline();
 		
 		warningPencil.setFill(Color.BLACK);
@@ -126,8 +127,7 @@ public class GameManager {
 			switch(state) {
 			case "InMenu":
 				gamePencil.setFill(Color.LIGHTGREY);
-				renderer.drawMainCanvas(gameCanvas, gamePencil);
-				renderer.drawWarningCanvas(warningCanvas, warningPencil);
+				renderer.drawMainCanvas(gameCanvas, gamePencil, state, graphic);
 				break;
 			case "InTopDown":
 				//Render		
@@ -146,7 +146,7 @@ public class GameManager {
 				renderer.drawPlayer(gameCanvas, gamePencil, player, camera);
 				//Player inputs
 				keyboard.keyboardInputsMovement(inputs, player, uiMenuManager, sfx);
-				keyboard.keyboardInputMenu(inputs, uiMenuManager, gameVBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, gameManager, sfx);
+				keyboard.keyboardInputMenu(inputs, uiMenuManager, gameVBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, gameManager, sfx, graphic);
 				for(Wall w : level.getWalls()) {
 					colission.pushBack(player,w);
 				}
@@ -251,13 +251,13 @@ public class GameManager {
 				break;
 			case "InUIState":
 				gamePencil.setFill(Color.LIGHTGREY);
-				renderer.drawMainCanvas(gameCanvas, gamePencil);
-				renderer.drawWarningCanvas(warningCanvas, warningPencil);
-				keyboard.keyboardInputMenu(inputs, uiMenuManager, gameVBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, gameManager, sfx);
+				renderer.drawMainCanvas(gameCanvas, gamePencil, state, graphic);
+				renderer.drawWarningCanvas(warningCanvas, warningPencil,graphic);
+				keyboard.keyboardInputMenu(inputs, uiMenuManager, gameVBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, gameManager, sfx, graphic);
 				break;
 			case "GameOver":
 				gamePencil.setFill(Color.BLACK);
-				renderer.drawMainCanvas(gameCanvas, gamePencil);
+				renderer.drawMainCanvas(gameCanvas, gamePencil, state, graphic);
 				break;
 			}
 		

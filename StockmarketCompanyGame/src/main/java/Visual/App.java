@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import ExternalResources.GraphicsManager;
 import ExternalResources.MusicManager;
 import ExternalResources.SoundeffectManager;
 import FileLogic.CreateImportantCSVFiles;
@@ -58,6 +59,7 @@ public class App extends Application {
 
 	private SoundeffectManager sfx = new SoundeffectManager();
 	private MusicManager music = new MusicManager();
+	private GraphicsManager graphic = new GraphicsManager();
 	
     @Override
     public void start(Stage stage) {
@@ -80,6 +82,14 @@ public class App extends Application {
     	
     	sfx.loadSfx();
     	music.loadMusic();
+    	
+    	graphic.loadMenu();
+    	graphic.loadUI();
+    	uiMenuManager.imageLoader(graphic);
+    	buttonManager.imageLoader(graphic);
+    	visualElementsHolder.loadImage(graphic);
+    	
+    	stage.getIcons().add(graphic.getIcon());
     	
     	nextCycle.readTimeStart();
     	
@@ -213,7 +223,7 @@ public class App extends Application {
     	
     		}
     	});
-    	gameManager.loop(gameCanvas, gamePencil, gamePane, warningCanvas, warningPencil, readCSV, writeCSV, gameVBox, company, uiMenuManager, stage, buttonManager, visualElementsHolder, inputs, player, level, gameManager, sfx, music);
+    	gameManager.loop(gameCanvas, gamePencil, gamePane, warningCanvas, warningPencil, readCSV, writeCSV, gameVBox, company, uiMenuManager, stage, buttonManager, visualElementsHolder, inputs, player, level, gameManager, sfx, music, graphic);
         
         stage.setScene(scene);
         stage.setTitle("StarUp");

@@ -1,5 +1,6 @@
 package Visual;
 
+import ExternalResources.GraphicsManager;
 import ExternalResources.SoundeffectManager;
 import FileLogic.ReadCSVFiles;
 import FileLogic.WriteCSVFiles;
@@ -41,17 +42,57 @@ public class UIMenuManager {
 	
 	private void CSSNoAddAmount(Button button) {
 		button.setPrefSize(200, 20);
-		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold;");
+		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold; -fx-text-fill: white");
 	}
 	private void CSSLabelNoAddAmount(Label label) {
-		label.setStyle("-fx-font-size: 100px;-fx-font-weight: bold;");
+		label.setStyle("-fx-font-size: 100px;-fx-font-weight: bold; -fx-text-fill: #949494;");
 	}
 
 	private void changeGameState(String gameState, String insert) {
 		gameState = insert;
 	}
 	
-	public void loadMenu(VBox vBox, ButtonManager buttonManager, VisualElementsHolder visual, WriteCSVFiles writer, ReadCSVFiles reader, Stage stage, Company company, Canvas warningCanvas, StackPane gamePane, Canvas gameCanvas, LevelHolder level, Player player, GameManager game, SoundeffectManager sfx) {
+	private void setButtonBackground(GraphicsManager graphic, Button button) {
+		try {
+			button.setOnMousePressed(event->{
+				button.setBackground(graphic.getButtonPressed());
+			});
+			button.setOnMouseMoved(event->{
+				button.setBackground(graphic.getButtonHover());
+			});
+			button.setOnMouseExited(event->{
+				button.setBackground(graphic.getButtonUnpressed());
+			});
+			button.setOnMouseReleased(event->{
+				button.setBackground(graphic.getButtonUnpressed());
+			});
+			button.setBackground(graphic.getButtonUnpressed());
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void imageLoader(GraphicsManager graphic) {
+		try {
+			setButtonBackground(graphic,start);
+			setButtonBackground(graphic,load);
+			setButtonBackground(graphic,quit);
+
+			setButtonBackground(graphic,backToMainMenu);
+			setButtonBackground(graphic,openUIGame);
+			setButtonBackground(graphic,openTopDown);
+
+			setButtonBackground(graphic,options);
+			setButtonBackground(graphic,returnToMenu);
+			setButtonBackground(graphic,fullScreen);
+			setButtonBackground(graphic,sfx);
+			setButtonBackground(graphic,music);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void loadMenu(VBox vBox, ButtonManager buttonManager, VisualElementsHolder visual, WriteCSVFiles writer, ReadCSVFiles reader, Stage stage, Company company, Canvas warningCanvas, StackPane gamePane, Canvas gameCanvas, LevelHolder level, Player player, GameManager game, SoundeffectManager sfx, GraphicsManager graphic) {
 		vBox.getChildren().clear();
 		gamePane.getChildren().clear();
 		visual.getSelectDifficulty().getItems().clear();
@@ -73,6 +114,8 @@ public class UIMenuManager {
 		vBox.setAlignment(Pos.CENTER);
 		gamePane.getChildren().add(gameCanvas);
 		gamePane.getChildren().add(vBox);
+		
+		imageLoader(graphic);
 		
 		openTopDown.setOnAction(event->{
 			level.getBlinking().clear();
