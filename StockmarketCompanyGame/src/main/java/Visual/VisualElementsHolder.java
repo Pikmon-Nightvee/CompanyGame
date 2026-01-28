@@ -335,6 +335,18 @@ public class VisualElementsHolder {
 		setButtonBackground(graphic,selectProduct);
 	}
 	
+	public void changeTextAreas() {
+		CSSArea(unemployedStats);
+		CSSArea(employedStats);
+
+		CSSArea(equipmentAll);
+		CSSArea(resourceAll);
+		CSSArea(productAll);
+	}
+
+	private void CSSArea(TextArea textArea) {
+		textArea.setStyle("-fx-font-weight: bold;");
+	}
 	private void CSSBox(ComboBox<String> comboBox) {
 		amount += 1;
 		comboBox.setPrefSize(200, 20);

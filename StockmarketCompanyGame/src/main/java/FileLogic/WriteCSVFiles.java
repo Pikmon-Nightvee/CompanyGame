@@ -12,6 +12,7 @@ import GameLogic.Company;
 import GameLogic.Employee;
 import GameLogic.InteractableObject;
 import GameLogic.Machine;
+import GameLogic.Player;
 import GameLogic.Product;
 import GameLogic.Resource;
 import GameLogic.Wall;
@@ -629,6 +630,13 @@ public class WriteCSVFiles {
 				e.printStackTrace();
 			}
 			
+			file = new File("DataCSV/EquipmentData/MachineBroken.csv");
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+				writer.write("");
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			
 			file = new File("DataCSV/EquipmentData/MachineNotBought.csv");
 			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
 				for(String toInsert : readCSV.readMachineAsString("MachinesData.csv")) {
@@ -693,7 +701,26 @@ public class WriteCSVFiles {
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
+			
+			file = new File("DataCSV/CoordinateData/PlayerCords.csv");
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+				writer.write("");
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void savePlayerCords(Player player, Camera camera) {
+		double x = player.getX();
+		double y = player.getY();
+		
+		File file = new File("DataCSV/CoordinateData/PlayerCords.csv");
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
+			writer.write(x+","+y);
+		}catch(IOException e) {
 			e.printStackTrace();
 		}
 	}

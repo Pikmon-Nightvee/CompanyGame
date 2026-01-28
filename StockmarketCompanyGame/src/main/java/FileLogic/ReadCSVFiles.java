@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import GameLogic.Camera;
 import GameLogic.Company;
 import GameLogic.Employee;
 import GameLogic.InteractableObject;
 import GameLogic.LevelHolder;
 import GameLogic.Machine;
+import GameLogic.Player;
 import GameLogic.Product;
 import GameLogic.Resource;
 import GameLogic.Wall;
@@ -394,5 +396,37 @@ public class ReadCSVFiles {
 		}
 		
 		return toAdd;
+	}
+	
+	public boolean isAdded() {
+		String location = "DataCSV/CoordinateData/Playercords.csv";
+		File file = new File(location);
+		
+		try(Scanner reader = new Scanner(file)){
+			if(!reader.hasNext()) {
+				return false;
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+	
+	public void setPlayerCord(Player player) {
+		String location = "DataCSV/CoordinateData/Playercords.csv";
+		File file = new File(location);
+		
+		try(Scanner reader = new Scanner(file)){
+			String line = reader.nextLine();
+			String[] data = line.split(",");
+			double x = Double.parseDouble(data[0]);
+			double y = Double.parseDouble(data[1]);
+			
+			
+			player.setX(x);
+			player.setY(y);
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

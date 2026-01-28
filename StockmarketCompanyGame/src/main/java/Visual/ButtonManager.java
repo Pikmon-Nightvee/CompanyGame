@@ -208,8 +208,6 @@ public class ButtonManager {
 			startUpMain(vBox,visual,company);
 			startUpCompany(vBox,visual,warningCanvas);
 			System.out.println(companyNameSet);
-			height = (amount + visual.getAmount()) * 20 + 10;
-			System.out.println(height);
 			System.out.println(company.toString());
 			game.updateState("InUIState");
 		});
@@ -849,7 +847,6 @@ public class ButtonManager {
 	public void changeTextAreaSize(Canvas gameCanvas,VisualElementsHolder visual, VBox vBox) {
 		int setAboveCanvasEdge = 20;
 		subHeight = (int) (gameCanvas.getHeight());
-		System.out.println("Height: " + vBox.prefHeight(-1) + " HeightCanvas: " + gameCanvas.getHeight()); 
 		
 		visual.setTextAreaSize(subHeight, gameCanvas);
 	}
@@ -975,7 +972,11 @@ public class ButtonManager {
 	}
 
 	public int getHeight() {
+		System.out.println(height);
 		return height;
+	}
+	public void setHeight(int height) {
+		this.height = height;
 	}
 
 	public Button getBankrupt() {

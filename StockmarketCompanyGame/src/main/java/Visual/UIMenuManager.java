@@ -247,12 +247,15 @@ public class UIMenuManager {
 			started = true;
 			this.vBox.getChildren().clear();
 			vBox.getChildren().clear();
+			level.getWalls().clear();
+			level.getMachines().clear();
+			level.getPlaceable().clear();
+			level.getToRemove().clear();
+			level.getInteract().clear();
+			
 			writer.resetData(reader);
 			buttonManager.addStartUpScreen(visual, vBox,reader,company);
 			buttonManager.changeTextAreaSize(gameCanvas, visual, vBox);
-			level.getMachines().clear();
-			level.getPlaceable().clear();
-			level.getWalls().clear();
 		});
 		load.setOnAction(event->{
 			sfx.playButton(sfxOn);
@@ -277,6 +280,13 @@ public class UIMenuManager {
 			level.loadLevel(company.getCompanyType(), player);
 			level.machinesLoad(reader.machinesPlaced());
 			level.interactLoad(level.getMachines());
+			
+			if(reader.isAdded()) {
+				System.out.println("Player cords found");
+				reader.setPlayerCord(player);
+			}else {
+				System.out.println("Player cords not found");
+			}
 		});
 		quit.setOnAction(event->{
 			sfx.playButton(sfxOn);

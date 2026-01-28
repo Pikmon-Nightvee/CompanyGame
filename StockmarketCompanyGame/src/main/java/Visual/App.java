@@ -89,6 +89,8 @@ public class App extends Application {
     	buttonManager.imageLoader(graphic);
     	visualElementsHolder.loadImage(graphic);
     	
+    	visualElementsHolder.changeTextAreas();
+    	
     	stage.getIcons().add(graphic.getIcon());
     	
     	nextCycle.readTimeStart();
@@ -106,7 +108,6 @@ public class App extends Application {
     	gamePane.heightProperty().addListener((obs, oldVal, newVal) -> {
     		gameCanvas.setHeight(newVal.doubleValue());
     		warningCanvas.setHeight((newVal.doubleValue()- buttonManager.getHeight()-20));
-    		System.out.println(newVal.doubleValue());
 
     		buttonManager.changeTextAreaSize(gameCanvas, visualElementsHolder, gameVBox);
     	});
@@ -220,7 +221,6 @@ public class App extends Application {
     		if(!notFound) {
     			scrollAmount = gameManager.updateMachine(scrollAmount, company);
     			System.out.println("Scroll amount: " + scrollAmount);
-    	
     		}
     	});
     	gameManager.loop(gameCanvas, gamePencil, gamePane, warningCanvas, warningPencil, readCSV, writeCSV, gameVBox, company, uiMenuManager, stage, buttonManager, visualElementsHolder, inputs, player, level, gameManager, sfx, music, graphic);

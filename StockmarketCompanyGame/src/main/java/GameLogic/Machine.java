@@ -33,6 +33,6 @@ public class Machine {
 
 	@Override
 	public String toString() {
-		return "Machine [name=" + name + ", amount=" + amount + ", cost=" + cost + ", condition=" + condition + "]" + "\n";
+		return name + " (" + "amount: " + amount + ", cost: " + cost + ", condition: " + condition + ")" + "\n";
 	}
 }

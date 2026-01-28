@@ -123,7 +123,6 @@ public class GameManager {
 		//30FPS Update Loop
 		gameTimeline = new Timeline(new KeyFrame(Duration.seconds(0.032), event -> {
 			renderer.clearAll(gameCanvas, gamePencil,warningCanvas, warningPencil);
-			
 			switch(state) {
 			case "InMenu":
 				gamePencil.setFill(Color.LIGHTGREY);
@@ -248,6 +247,8 @@ public class GameManager {
 					level.getBlinking().remove(i);
 				}
 				level.getToRemove().clear();
+
+				writer.savePlayerCords(player, camera);
 				break;
 			case "InUIState":
 				gamePencil.setFill(Color.LIGHTGREY);

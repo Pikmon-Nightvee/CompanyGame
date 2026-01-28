@@ -16,7 +16,6 @@ public class Renderer {
 		case "InMenu": pencil.drawImage(graphic.getBackgroundMenu(),0, 0, canvas.getWidth(), canvas.getHeight()); break;
 		case "InUIState": pencil.drawImage(graphic.getBackgroundUI(),0, 0, canvas.getWidth(), canvas.getHeight()); break;
 		}
-		System.out.println(id);
 	}
 	
 	public void drawPlayer(Canvas canvas, GraphicsContext pencil, Player player, Camera camera) {

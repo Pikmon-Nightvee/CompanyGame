@@ -40,18 +40,18 @@ public class Product {
 	}
 
 	public String toStringProduceable() {
-		return "Product [name=" + name + ", cost=" + cost + ", timePerUnit=" + timePerUnit + ", machineNeeded=" + 
-				machineNeeded + ", resourcesNeeded=" + Arrays.toString(resourcesNeeded) + ", resourcesAmount="
-				+ Arrays.toString(resourcesAmount) + "]";
+		return name + " (" + "cost: " + cost + ", time per unit: " + timePerUnit + ", machine needed: " + 
+				machineNeeded + ", resources needed: " + Arrays.toString(resourcesNeeded) + ", resources amount: "
+				+ Arrays.toString(resourcesAmount) + ")";
 	}
 
 	public String toStringInProduction() {
-		return "Product [name=" + name + ", amount=" + amount + ", cost=" + cost
-				+ ", time=" + time + ", asignedEmployee=" + asignedEmployee + "]";
+		return name + " (" + "amount: " + amount + ", cost: " + cost
+				+ ", time: " + time + ", asigned employee: " + asignedEmployee + ")";
 	}
 
 	public String toStringOnStock() {
-		return "Product [name=" + name + ", amount=" + amount + ", prize=" + cost + ", quality=" + quality + "]";
+		return name + " (" + "amount: " + amount + ", prize: " + cost + ", quality: " + quality + ")";
 	}
 
 	public String getAsignedCompanyType() {
