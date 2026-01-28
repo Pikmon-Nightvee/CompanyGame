@@ -36,6 +36,13 @@ public class GraphicsManager {
 	private BackgroundImage ComboImgHover;
 	private Background ComboHover;
 	
+	//TopDownGame:
+	private Image floor;
+	private Image wall;
+	private Image floorFood;
+	private Image wallFood;
+	private Image wallFoodSpecial;
+	
 	//ChatGPT to make the Background button size:
 	private BackgroundSize bgSize = new BackgroundSize(
 	        100, 100,      // width, height
@@ -43,6 +50,31 @@ public class GraphicsManager {
 	        true, false   // contain = true, cover = false
 	);
 
+	public void loadTopDown() {
+		try {
+			String filePath = "FloorFood.png";
+			filePath = folder + filePath;
+			floorFood = new Image(getClass().getResource(filePath).toExternalForm());
+
+			filePath = "WallFood.png";
+			filePath = folder + filePath;
+			wallFood = new Image(getClass().getResource(filePath).toExternalForm());
+
+			filePath = "WallFoodSpecial.png";
+			filePath = folder + filePath;
+			wallFoodSpecial = new Image(getClass().getResource(filePath).toExternalForm());
+			
+			filePath = "Floor.png";
+			filePath = folder + filePath;
+			floor = new Image(getClass().getResource(filePath).toExternalForm());
+
+			filePath = "Wall.png";
+			filePath = folder + filePath;
+			wall = new Image(getClass().getResource(filePath).toExternalForm());
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public void loadMenu() {
 		try {
@@ -140,5 +172,25 @@ public class GraphicsManager {
 
 	public Background getComboHover() {
 		return ComboHover;
+	}
+
+	public Image getFloorFood() {
+		return floorFood;
+	}
+
+	public Image getWallFood() {
+		return wallFood;
+	}
+
+	public Image getWallFoodSpecial() {
+		return wallFoodSpecial;
+	}
+
+	public Image getFloor() {
+		return floor;
+	}
+
+	public Image getWall() {
+		return wall;
 	}
 }

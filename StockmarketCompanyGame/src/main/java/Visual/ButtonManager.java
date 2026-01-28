@@ -872,17 +872,18 @@ public class ButtonManager {
 	public void updateMoney(VBox vBox, VisualElementsHolder visual, Company company) {
 		Label moneyOver = new Label();
 		moneyOver.setText(String.valueOf(company.getMoneyOfCompany()));
-		visual.CSSLabel(moneyOver);
+		visual.CSSLabelWhite(moneyOver);
 		
 		HBox hBox = new HBox();
 		Label name = new Label("Name of Company: ");
 		Label money = new Label(" | Money of the Company (€): ");
 		Label companyType = new Label(" | Company Type: ");
 		Label companySpecification = new Label(company.getCompanyType());
-		visual.CSSLabel(money);
-		visual.CSSLabelNoAddAmount(name);
-		visual.CSSLabelNoAddAmount(companyType);
-		visual.CSSLabelNoAddAmount(companySpecification);
+		visual.CSSLabelWhite(money);
+		visual.CSSLabelWhite(name);
+		visual.CSSLabelWhite(companyType);
+		visual.CSSLabelWhite(companySpecification);
+		visual.CSSLabelWhite(visual.getNameOfCompany());
 		
 		hBox.getChildren().addAll(name,visual.getNameOfCompany(),money,moneyOver,companyType,companySpecification);
 		vBox.getChildren().set(0,hBox);

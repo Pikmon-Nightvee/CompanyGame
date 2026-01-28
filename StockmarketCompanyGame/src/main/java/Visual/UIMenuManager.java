@@ -129,10 +129,10 @@ public class UIMenuManager {
 			Label money = new Label(" | Money of the Company (€): ");
 			Label companyType = new Label(" | Company Type: ");
 			Label companySpecification = new Label(company.getCompanyType());
-			visual.CSSLabel(money);
-			visual.CSSLabelNoAddAmount(name);
-			visual.CSSLabelNoAddAmount(companyType);
-			visual.CSSLabelNoAddAmount(companySpecification);
+			visual.CSSLabelWhite(money);
+			visual.CSSLabelWhite(name);
+			visual.CSSLabelWhite(companyType);
+			visual.CSSLabelWhite(companySpecification);
 			
 			visual.getNameOfCompany().setText(company.getName());
 			
@@ -249,6 +249,7 @@ public class UIMenuManager {
 			vBox.getChildren().clear();
 			level.getWalls().clear();
 			level.getMachines().clear();
+			level.getWheels().clear();
 			level.getPlaceable().clear();
 			level.getToRemove().clear();
 			level.getInteract().clear();
@@ -263,6 +264,7 @@ public class UIMenuManager {
 			this.vBox.getChildren().clear();
 			vBox.getChildren().clear();
 			level.getWalls().clear();
+			level.getWheels().clear();
 			level.getMachines().clear();
 			level.getPlaceable().clear();
 			level.getToRemove().clear();

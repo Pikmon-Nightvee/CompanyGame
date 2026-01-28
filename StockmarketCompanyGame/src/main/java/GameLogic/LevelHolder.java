@@ -8,6 +8,7 @@ public class LevelHolder {
 	//0 -> Luft platzierbar, 1 -> Wand, 2 -> Spawnpoint, 3 -> Luft nicht platzierbar
 	private ArrayList<Wall> walls = new ArrayList<>();
 	private ArrayList<Wall> machines = new ArrayList<>();
+	private ArrayList<Wall> wheels = new ArrayList<>();
 	
 	private ArrayList<InteractableObject> interact = new ArrayList<>();
 	private ArrayList<InteractableObject> blinking = new ArrayList<>();
@@ -24,11 +25,11 @@ public class LevelHolder {
 												};
 	
 	private int[][] levelFoodtruck = {
-									{3,1,1,1,1,1,1,1,1,1,1},
+									{3,1,1,4,1,1,1,1,1,4,1},
 									{1,1,0,0,0,0,0,0,0,0,1},
 									{1,0,0,0,0,2,0,0,0,0,1},
 									{1,1,0,0,0,0,0,0,0,0,1},
-									{3,1,1,1,1,1,1,1,1,1,1}
+									{3,1,1,4,1,1,1,1,1,4,1}
 												};
 	
 	private int[][] levelCraftBusiness = {
@@ -72,6 +73,11 @@ public class LevelHolder {
 						player.setY(insertY);
 						Wall wall = new Wall(insertX,insertY,sizeWall,sizeWall);
 						placeable.add(wall);
+					}else if(loadLevel[i][j] == 4) {
+						int insertX = currentX * sizeWall;
+						int insertY = currentY * sizeWall;
+						Wall wall = new Wall(insertX,insertY,sizeWall,sizeWall);
+						wheels.add(wall);
 					}
 					currentX++;
 				}
@@ -152,5 +158,9 @@ public class LevelHolder {
 
 	public void addBlinking(InteractableObject blinking) {
 		this.blinking.add(blinking);
+	}
+
+	public ArrayList<Wall> getWheels() {
+		return wheels;
 	}
 }

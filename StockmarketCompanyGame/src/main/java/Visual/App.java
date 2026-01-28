@@ -85,6 +85,7 @@ public class App extends Application {
     	
     	graphic.loadMenu();
     	graphic.loadUI();
+    	graphic.loadTopDown();
     	uiMenuManager.imageLoader(graphic);
     	buttonManager.imageLoader(graphic);
     	visualElementsHolder.loadImage(graphic);

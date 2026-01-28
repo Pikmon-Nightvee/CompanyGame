@@ -356,6 +356,9 @@ public class VisualElementsHolder {
 		amount += 1;
 		label.setStyle("-fx-font-size: 20px;-fx-font-weight: bold;");
 	}
+	public void CSSLabelWhite(Label label) {
+		label.setStyle("-fx-font-size: 20px;-fx-font-weight: bold; -fx-text-fill: white");
+	}
 	private void CSSBoxNoAddAmount(ComboBox<String> comboBox) {
 		comboBox.setPrefSize(200, 20);
 		comboBox.setStyle("-fx-font-size:15px;-fx-font-weight: bold; -fx-text-fill: white");

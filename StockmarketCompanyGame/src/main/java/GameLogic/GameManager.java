@@ -133,16 +133,26 @@ public class GameManager {
 				buttonManager.updateMoney(gameVBox, visual, company);
 				writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
 				
+				gamePencil.setFill(Color.BLACK);
+				renderer.allBlack(gameCanvas, gamePencil);
+				
 				gamePencil.setFill(Color.GREEN);
 				renderer.drawInteractable(gameCanvas, gamePencil, level.getInteract(), camera);
+				
 				gamePencil.setFill(Color.DARKGRAY);
-				renderer.drawWalls(gameCanvas, gamePencil, level.getWalls(), camera);
+				renderer.drawWalls(gameCanvas, gamePencil, level.getWalls(), camera, graphic, company);
+				renderer.drawWheels(gameCanvas, gamePencil, level.getWheels(), camera, graphic);
+				gamePencil.setFill(Color.LIGHTGRAY);
+				renderer.drawFloor(gameCanvas, gamePencil, level.getPlaceable(), camera, graphic, company);
+				
 				gamePencil.setFill(Color.DARKBLUE);
-				renderer.drawWalls(gameCanvas, gamePencil, level.getMachines(), camera);
+				renderer.drawMachines(gameCanvas, gamePencil, level.getMachines(), camera, graphic, company);
 				gamePencil.setFill(Color.DARKRED);
 				renderer.drawInteractableBlinking(gameCanvas, gamePencil, level.getBlinking(), camera);
-				gamePencil.setFill(Color.RED);
+				
+				gamePencil.setFill(Color.YELLOW);
 				renderer.drawPlayer(gameCanvas, gamePencil, player, camera);
+				
 				//Player inputs
 				keyboard.keyboardInputsMovement(inputs, player, uiMenuManager, sfx);
 				keyboard.keyboardInputMenu(inputs, uiMenuManager, gameVBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, gameManager, sfx, graphic);

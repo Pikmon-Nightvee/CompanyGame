@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ExternalResources.GraphicsManager;
 import GameLogic.Camera;
+import GameLogic.Company;
 import GameLogic.InteractableObject;
 import GameLogic.Player;
 import GameLogic.Wall;
@@ -22,9 +23,35 @@ public class Renderer {
 		pencil.fillRect(player.getX() + camera.getX(),player.getY() + camera.getY(),player.getWidth(),player.getHeight());
 	}
 	
-	public void drawWalls(Canvas canvas, GraphicsContext pencil, ArrayList<Wall> walls, Camera camera) {
+	public void drawWalls(Canvas canvas, GraphicsContext pencil, ArrayList<Wall> walls, Camera camera, GraphicsManager graphic, Company company) {
+		for(Wall w : walls) {
+			if(company.getCompanyType().equals("Foodtruck")) {
+				pencil.drawImage(graphic.getWallFood(),w.getX() + camera.getX(),w.getY() + camera.getY(),w.getWidth(),w.getHeight());
+			}else{
+				pencil.drawImage(graphic.getWall(),w.getX() + camera.getX(),w.getY() + camera.getY(),w.getWidth(),w.getHeight());
+			}
+		}
+	}
+	
+	public void drawFloor(Canvas canvas, GraphicsContext pencil, ArrayList<Wall> walls, Camera camera, GraphicsManager graphic, Company company) {
+		for(Wall w : walls) {
+			if(company.getCompanyType().equals("Foodtruck")) {
+				pencil.drawImage(graphic.getFloorFood(),w.getX() + camera.getX(),w.getY() + camera.getY(),w.getWidth(),w.getHeight());
+			}else{
+				pencil.drawImage(graphic.getFloor(),w.getX() + camera.getX(),w.getY() + camera.getY(),w.getWidth(),w.getHeight());
+			}
+		}
+	}
+	
+	public void drawMachines(Canvas canvas, GraphicsContext pencil, ArrayList<Wall> walls, Camera camera, GraphicsManager graphic, Company company) {
 		for(Wall w : walls) {
 			pencil.fillRect(w.getX() + camera.getX(),w.getY() + camera.getY(),w.getWidth(),w.getHeight());
+		}
+	}
+	
+	public void drawWheels(Canvas canvas, GraphicsContext pencil, ArrayList<Wall> walls, Camera camera, GraphicsManager graphic) {
+		for(Wall w : walls) {
+			pencil.drawImage(graphic.getWallFoodSpecial(),w.getX() + camera.getX(),w.getY() + camera.getY(),w.getWidth(),w.getHeight());
 		}
 	}
 	
@@ -57,5 +84,9 @@ public class Renderer {
 			GraphicsContext warningPencil) {
 		gamePencil.clearRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
 		warningPencil.clearRect(0, 0, warningCanvas.getWidth(), warningCanvas.getHeight());
+	}
+	
+	public void allBlack(Canvas gameCanvas, GraphicsContext gamePencil) {
+		gamePencil.fillRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
 	}
 }
