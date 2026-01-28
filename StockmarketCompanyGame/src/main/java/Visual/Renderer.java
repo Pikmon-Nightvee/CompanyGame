@@ -55,6 +55,12 @@ public class Renderer {
 		}
 	}
 	
+	public void drawHeadlights(Canvas canvas, GraphicsContext pencil, ArrayList<Wall> walls, Camera camera, GraphicsManager graphic) {
+		for(Wall w : walls) {
+			pencil.drawImage(graphic.getWallFoodSpecialLight(),w.getX() + camera.getX(),w.getY() + camera.getY(),w.getWidth(),w.getHeight());
+		}
+	}
+	
 	public void drawInteractable(Canvas canvas, GraphicsContext pencil, ArrayList<InteractableObject> interact, Camera camera) {
 		for(InteractableObject i : interact) {
 			pencil.fillRect(i.getX() + camera.getX(),i.getY() + camera.getY(),i.getWidth(),i.getHeight());

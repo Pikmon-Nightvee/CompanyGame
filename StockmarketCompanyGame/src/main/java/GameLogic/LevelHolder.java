@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import FileLogic.WriteCSVFiles;
 
 public class LevelHolder {
-	//0 -> Luft platzierbar, 1 -> Wand, 2 -> Spawnpoint, 3 -> Luft nicht platzierbar
+	//0 -> Luft platzierbar, 1 -> Wand, 2 -> Spawnpoint, 3 -> Luft nicht platzierbar, 4 -> Rad, 5 -> Headlight
 	private ArrayList<Wall> walls = new ArrayList<>();
 	private ArrayList<Wall> machines = new ArrayList<>();
 	private ArrayList<Wall> wheels = new ArrayList<>();
+	private ArrayList<Wall> headlights = new ArrayList<>();
 	
 	private ArrayList<InteractableObject> interact = new ArrayList<>();
 	private ArrayList<InteractableObject> blinking = new ArrayList<>();
@@ -26,9 +27,9 @@ public class LevelHolder {
 	
 	private int[][] levelFoodtruck = {
 									{3,1,1,4,1,1,1,1,1,4,1},
-									{1,1,0,0,0,0,0,0,0,0,1},
+									{5,1,0,0,0,0,0,0,0,0,1},
 									{1,0,0,0,0,2,0,0,0,0,1},
-									{1,1,0,0,0,0,0,0,0,0,1},
+									{5,1,0,0,0,0,0,0,0,0,1},
 									{3,1,1,4,1,1,1,1,1,4,1}
 												};
 	
@@ -78,6 +79,11 @@ public class LevelHolder {
 						int insertY = currentY * sizeWall;
 						Wall wall = new Wall(insertX,insertY,sizeWall,sizeWall);
 						wheels.add(wall);
+					}else if(loadLevel[i][j] == 5) {
+						int insertX = currentX * sizeWall;
+						int insertY = currentY * sizeWall;
+						Wall wall = new Wall(insertX,insertY,sizeWall,sizeWall);
+						headlights.add(wall);
 					}
 					currentX++;
 				}
@@ -162,5 +168,9 @@ public class LevelHolder {
 
 	public ArrayList<Wall> getWheels() {
 		return wheels;
+	}
+
+	public ArrayList<Wall> getHeadlights() {
+		return headlights;
 	}
 }

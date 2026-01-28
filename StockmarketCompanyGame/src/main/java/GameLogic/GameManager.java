@@ -140,6 +140,7 @@ public class GameManager {
 				renderer.drawInteractable(gameCanvas, gamePencil, level.getInteract(), camera);
 				
 				gamePencil.setFill(Color.DARKGRAY);
+				renderer.drawHeadlights(gameCanvas, gamePencil, level.getHeadlights(), camera, graphic);
 				renderer.drawWalls(gameCanvas, gamePencil, level.getWalls(), camera, graphic, company);
 				renderer.drawWheels(gameCanvas, gamePencil, level.getWheels(), camera, graphic);
 				gamePencil.setFill(Color.LIGHTGRAY);

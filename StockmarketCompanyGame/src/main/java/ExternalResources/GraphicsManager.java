@@ -42,6 +42,7 @@ public class GraphicsManager {
 	private Image floorFood;
 	private Image wallFood;
 	private Image wallFoodSpecial;
+	private Image wallFoodSpecialLight;
 	
 	//ChatGPT to make the Background button size:
 	private BackgroundSize bgSize = new BackgroundSize(
@@ -59,6 +60,10 @@ public class GraphicsManager {
 			filePath = "WallFood.png";
 			filePath = folder + filePath;
 			wallFood = new Image(getClass().getResource(filePath).toExternalForm());
+			
+			filePath = "headlight.png";
+			filePath = folder + filePath;
+			wallFoodSpecialLight = new Image(getClass().getResource(filePath).toExternalForm());
 
 			filePath = "WallFoodSpecial.png";
 			filePath = folder + filePath;
@@ -192,5 +197,9 @@ public class GraphicsManager {
 
 	public Image getWall() {
 		return wall;
+	}
+
+	public Image getWallFoodSpecialLight() {
+		return wallFoodSpecialLight;
 	}
 }
