@@ -13,6 +13,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
 public class Renderer {
+	private boolean notTurned = true;
+	
 	public void drawMainCanvas(Canvas canvas, GraphicsContext pencil, String id, GraphicsManager graphic) {
 		switch(id) {
 		case "InMenu": pencil.drawImage(graphic.getBackgroundMenu(),0, 0, canvas.getWidth(), canvas.getHeight()); break;
@@ -46,12 +48,77 @@ public class Renderer {
 	
 	public void drawMachines(Canvas canvas, GraphicsContext pencil, ArrayList<MachinePlaceObject> machines, Camera camera, GraphicsManager graphic, Company company) {
 		for(MachinePlaceObject m : machines) {
-			pencil.fillRect(m.getX() + camera.getX(),m.getY() + camera.getY(),m.getWidth(),m.getHeight());
+			//pencil.fillRect(m.getX() + camera.getX(),m.getY() + camera.getY(),m.getWidth(),m.getHeight());
+			switchImage(graphic,m,true,false);
+			boolean notTurned = true;
+			if(graphic.getMachine().getWidth() != m.getWidth() && graphic.getMachine().getHeight() != m.getHeight()) {
+				notTurned = false;
+			}
+			switchImage(graphic,m,notTurned,false);
+			pencil.drawImage(graphic.getMachine(),m.getX() + camera.getX(),m.getY() + camera.getY(),m.getWidth(),m.getHeight()); 
 		}
 	}
 	
-	public void drawMachine(Canvas canvas, GraphicsContext pencil, MachinePlaceObject m) {
-		pencil.fillRect(m.getX(),m.getY(),m.getWidth(),m.getHeight());
+	public void drawMachine(Canvas canvas, GraphicsContext pencil, MachinePlaceObject m, GraphicsManager graphic) {
+		//pencil.fillRect(m.getX(),m.getY(),m.getWidth(),m.getHeight());
+		if(graphic.getMachinePlaceHolder().getWidth() != m.getWidth() && graphic.getMachinePlaceHolder().getHeight() != m.getHeight()) {
+			notTurned = !notTurned;
+		}
+		switchImage(graphic,m,notTurned,true);
+		pencil.drawImage(graphic.getMachinePlaceHolder(),m.getX(),m.getY(),m.getWidth(),m.getHeight()); 
+	}
+	
+	private void switchImage(GraphicsManager graphic, MachinePlaceObject m, boolean notTurned, boolean isHolder) {
+		String switchTo = "";
+		switch(m.getObject()) {
+		case "PC": 
+			if(notTurned) {
+				switchTo = "PC.png";
+			}else {
+				switchTo = "PC1.png";
+			}  
+			break;
+		case "Ofen": 
+			if(notTurned) {
+				switchTo = "Ofen.png";
+			}else {
+				switchTo = "OfenD.png";
+			} 
+			break;
+		case "Herd":
+			switchTo = "Oven.png";
+			break;
+		case "Bohrmaschine": 
+			if(notTurned) {
+				switchTo = "Bohrmaschine.png";
+			}else {
+				switchTo = "BohrmaschineD.png";
+			} 
+			break;
+		case "Drehmaschine":
+			if(notTurned) {
+				switchTo = "Drehmaschine.png";
+			}else {
+				switchTo = "DrehmaschineD.png";
+			} 
+			break;
+		case "Fräsmaschine": 
+			if(notTurned) {
+				switchTo = "Fräsmaschine.png";
+			}else {
+				switchTo = "FräsmaschineD.png";
+			} 
+			break;
+		case "Kreissäge":
+			switchTo = "Kreissäge.png";
+			break;
+		}
+		if(isHolder) {
+			System.out.println(switchTo);
+			graphic.changeMachinePlaceHolder(switchTo);
+		}else {
+			graphic.changeMachine(switchTo);
+		}
 	}
 	
 	public void drawWheels(Canvas canvas, GraphicsContext pencil, ArrayList<Wall> walls, Camera camera, GraphicsManager graphic) {

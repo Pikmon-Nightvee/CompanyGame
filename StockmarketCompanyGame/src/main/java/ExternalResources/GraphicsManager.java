@@ -43,6 +43,7 @@ public class GraphicsManager {
 	private Image wallFood;
 	private Image wallFoodSpecial;
 	private Image wallFoodSpecialLight;
+	private Image machinePlaceHolder;
 	private Image machine;
 	
 	//ChatGPT to make the Background button size:
@@ -51,9 +52,21 @@ public class GraphicsManager {
 	        true, true,    // width & height are percentages
 	        true, false   // contain = true, cover = false
 	);
+	
+	public void changeMachine(String imageName) {
+		String filePath = folder+imageName;
+		machine = new Image(getClass().getResource(filePath).toExternalForm());
+	}
+	public void changeMachinePlaceHolder(String imageName) {
+		String filePath = folder+imageName;
+		machinePlaceHolder = new Image(getClass().getResource(filePath).toExternalForm());
+	}
 
 	public void loadTopDown() {
 		try {
+			changeMachine("PC.png");
+			changeMachinePlaceHolder("PC.png");
+			
 			String filePath = "FloorFood.png";
 			filePath = folder + filePath;
 			floorFood = new Image(getClass().getResource(filePath).toExternalForm());
@@ -202,5 +215,13 @@ public class GraphicsManager {
 
 	public Image getWallFoodSpecialLight() {
 		return wallFoodSpecialLight;
+	}
+
+	public Image getMachine() {
+		return machine;
+	}
+	
+	public Image getMachinePlaceHolder() {
+		return machinePlaceHolder;
 	}
 }

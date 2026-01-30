@@ -184,7 +184,8 @@ public class GameManager {
 					
 					placeHolder.setX(xPos);
 					placeHolder.setY(yPos);
-					renderer.drawMachine(gameCanvas, gamePencil, placeHolder);
+					placeHolder.setObject(machine);
+					renderer.drawMachine(gameCanvas, gamePencil, placeHolder, graphic);
 				}
 				
 				if(mousePressed) {
