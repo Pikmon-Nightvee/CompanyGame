@@ -11,6 +11,7 @@ import GameLogic.Player;
 import GameLogic.Wall;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class Renderer {
 	private boolean notTurned = true;
@@ -19,6 +20,7 @@ public class Renderer {
 		switch(id) {
 		case "InMenu": pencil.drawImage(graphic.getBackgroundMenu(),0, 0, canvas.getWidth(), canvas.getHeight()); break;
 		case "InUIState": pencil.drawImage(graphic.getBackgroundUI(),0, 0, canvas.getWidth(), canvas.getHeight()); break;
+		case "GameOver": pencil.fillRect(0, 0, canvas.getWidth(), canvas.getHeight()); break;
 		}
 	}
 	
@@ -59,13 +61,20 @@ public class Renderer {
 		}
 	}
 	
-	public void drawMachine(Canvas canvas, GraphicsContext pencil, MachinePlaceObject m, GraphicsManager graphic) {
+	public void drawMachine(Canvas canvas, GraphicsContext pencil, MachinePlaceObject m, GraphicsManager graphic, boolean isOutofbounce) {
 		//pencil.fillRect(m.getX(),m.getY(),m.getWidth(),m.getHeight());
 		if(graphic.getMachinePlaceHolder().getWidth() != m.getWidth() && graphic.getMachinePlaceHolder().getHeight() != m.getHeight()) {
 			notTurned = !notTurned;
 		}
 		switchImage(graphic,m,notTurned,true);
 		pencil.drawImage(graphic.getMachinePlaceHolder(),m.getX(),m.getY(),m.getWidth(),m.getHeight()); 
+		
+		if(isOutofbounce) { 
+			pencil.setGlobalAlpha(0.5);
+			pencil.setFill(Color.RED);
+			pencil.fillRect(m.getX(),m.getY(),m.getWidth(),m.getHeight());
+		}
+		pencil.setGlobalAlpha(1);
 	}
 	
 	private void switchImage(GraphicsManager graphic, MachinePlaceObject m, boolean notTurned, boolean isHolder) {

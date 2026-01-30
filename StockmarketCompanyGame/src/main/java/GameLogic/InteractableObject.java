@@ -15,7 +15,7 @@ public class InteractableObject extends Item{
 	
 	private double time = 0;
 	public double blinking() {
-		double opacity = Math.sin(time);
+		double opacity = Math.sin(time)-0.1;
 		time += 0.05;
 		if(opacity < -0.5) {
 			time = 0;

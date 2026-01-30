@@ -165,10 +165,10 @@ public class GameManager {
 				}
 				//Is machine being placed?
 				keyboard.keyBoardInputPlaceMachine(inputs,placeHolder,reader.readMachines("MachineBought.csv", company),uiMenuManager,sfx);
-				if(waitTime + currentTime < System.currentTimeMillis()) {
-					gamePencil.setFill(Color.CHOCOLATE);
-				}else{
-					gamePencil.setFill(Color.DARKRED);
+				
+				boolean isOutofBounce = false;
+				if(!(waitTime + currentTime < System.currentTimeMillis())) {
+					isOutofBounce = true;
 				}
 				if(keyboard.isBeingPlaced()) {
 					if(reader.readMachines("MachineBought.csv", company).isEmpty()) {
@@ -185,7 +185,7 @@ public class GameManager {
 					placeHolder.setX(xPos);
 					placeHolder.setY(yPos);
 					placeHolder.setObject(machine);
-					renderer.drawMachine(gameCanvas, gamePencil, placeHolder, graphic);
+					renderer.drawMachine(gameCanvas, gamePencil, placeHolder, graphic,isOutofBounce);
 				}
 				
 				if(mousePressed) {
@@ -333,7 +333,7 @@ public class GameManager {
     	
     	for(Machine m : machines) {
     		for(String[] mCords : machinesPlaced) {
-    			if(m.getName().equals(mCords[0]) && m.getName().equals(machine)) {
+    			if(m.getName().equals(mCords[0]) && m.getName().equals(machine.getObject())) {
     				int amountBroken = m.getAmount();
     				int amountPlaced = Integer.parseInt(mCords[1]);
     				if(amountBroken >= amountPlaced) {
