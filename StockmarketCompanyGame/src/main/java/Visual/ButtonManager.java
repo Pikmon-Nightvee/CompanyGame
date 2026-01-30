@@ -169,6 +169,7 @@ public class ButtonManager {
 				errorOccured = true;
 			}
 			if(errorOccured) {
+				sfx.playError(UI.isSfxOn());
 				return;
 			}
 			
@@ -318,6 +319,7 @@ public class ButtonManager {
 		employSelectedEmployee.setOnAction(event->{
 			sfx.playButton(UI.isSfxOn());
 			if(visual.getSelectUnemployed().getValue() == null) {
+				sfx.playError(UI.isSfxOn());
 				errorMessage.errorMessageComboBox(visual.getSelectUnemployed(), vBox);
 				return;
 			}
@@ -333,12 +335,14 @@ public class ButtonManager {
 		assignTo.setOnAction(event->{
 			sfx.playButton(UI.isSfxOn());
 			if(visual.getAssignEmployed().getValue() == null) {
+				sfx.playError(UI.isSfxOn());
 				errorMessage.errorMessageComboBox(visual.getAssignEmployed(), vBox);
 				return;
 			}
 			
 			if(employeeAlreadyWorking(reader,company,visual.getAssignEmployed().getValue())) {
 				errorMessage.errorMessageComboBox(visual.getAssignEmployed(), vBox);
+				sfx.playError(UI.isSfxOn());
 				return;
 			}
 			
@@ -356,9 +360,11 @@ public class ButtonManager {
 			sfx.playButton(UI.isSfxOn());
 			if(visual.getAssignEmployed().getValue() == null) {
 				errorMessage.errorMessageComboBox(visual.getAssignEmployed(), vBox);
+				sfx.playError(UI.isSfxOn());
 				return;
 			}
 			if(visual.getAssignToMachine().getValue() == "none") {
+				sfx.playError(UI.isSfxOn());
 				return;
 			}
 			
@@ -403,6 +409,7 @@ public class ButtonManager {
 			sfx.playButton(UI.isSfxOn());
 			if(visual.getAssignEmployed().getValue() == null) {
 				errorMessage.errorMessageComboBox(visual.getAssignEmployed(), vBox);
+				sfx.playError(UI.isSfxOn());
 				return;
 			}
 			
@@ -411,6 +418,7 @@ public class ButtonManager {
 				if(e.getName().equals(visual.getAssignEmployed().getValue())) {
 					double money = company.getMoneyOfCompany() - e.getCost();
 					if(0 > money) {
+						sfx.playError(UI.isSfxOn());
 						errorMessage.errorMessageComboBox(visual.getAssignEmployed(), vBox);
 						return;
 					}
@@ -484,6 +492,7 @@ public class ButtonManager {
 				}
 			}
 			if(errorOccured) {
+				sfx.playError(UI.isSfxOn());
 				return;
 			}
 			sfx.playLevelCash(UI.isSfxOn());
@@ -497,6 +506,7 @@ public class ButtonManager {
 						System.out.println("Test Money: " + moneyToSpend);
 						System.out.println("Test Company: " + company.getMoneyOfCompany());
 						if(company.getMoneyOfCompany() <= moneyToSpend) {
+							sfx.playError(UI.isSfxOn());
 							errorMessage.errorMessageText(visual.getAmountBuySell(), vBox);
 							return;
 						}
@@ -511,6 +521,7 @@ public class ButtonManager {
 					if(m.getName().equals(visual.getSelectEquipment().getValue())) {
 						int moneyToSpend = buyAmount * m.getCost();
 						if(company.getMoneyOfCompany() <= moneyToSpend) {
+							sfx.playError(UI.isSfxOn());
 							errorMessage.errorMessageText(visual.getAmountBuySell(), vBox);
 							return;
 						}
@@ -558,6 +569,7 @@ public class ButtonManager {
 				}
 			}
 			if(errorOccured) {
+				sfx.playError(UI.isSfxOn());
 				return;
 			}
 			
@@ -658,6 +670,7 @@ public class ButtonManager {
 				errorOccured = true;
 			}
 			if(errorOccured) {
+				sfx.playError(UI.isSfxOn());
 				return;
 			}
 			if(writer.resourcesNotAvailable(visual.getSelectProduct().getValue(), visual.getAvailableEmployees().getValue(), Integer.parseInt(visual.getAmountToProduce().getText()), company, reader)){
@@ -669,6 +682,7 @@ public class ButtonManager {
 				errorOccured = true;
 			}
 			if(errorOccured) {
+				sfx.playError(UI.isSfxOn());
 				return;
 			}
 			
@@ -678,6 +692,7 @@ public class ButtonManager {
 				if(p.getName().equals(visual.getSelectProduct().getValue())) {
 					int moneyToSpend = produceAmount * p.getCost();
 					if(company.getMoneyOfCompany() <= moneyToSpend) {
+						sfx.playError(UI.isSfxOn());
 						errorMessage.errorMessageText(visual.getAmountToProduce(), vBox);
 						return;
 					}

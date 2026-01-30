@@ -16,6 +16,7 @@ public class SoundeffectManager {
 	private MediaPlayer placing;
 	private MediaPlayer select;
 	private MediaPlayer pickUp;
+	private MediaPlayer error;
 	
 	public void loadSfx() {
 		try {
@@ -49,6 +50,9 @@ public class SoundeffectManager {
 
 	        sound = new Media(getClass().getResource(folder+"Pickup.mp3").toExternalForm());
 	        pickUp = new MediaPlayer(sound);
+
+	        sound = new Media(getClass().getResource(folder+"Error.mp3").toExternalForm());
+	        error = new MediaPlayer(sound);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -56,6 +60,12 @@ public class SoundeffectManager {
 
 	public MediaPlayer getButton() {
 		return button;
+	}
+
+	public Object playError(boolean isPlayed) {
+		error.stop();
+		if(isPlayed)error.play();
+		return null;
 	}
 
 	public Object playButton(boolean isPlayed) {

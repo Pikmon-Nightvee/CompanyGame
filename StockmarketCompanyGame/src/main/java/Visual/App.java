@@ -88,7 +88,7 @@ public class App extends Application {
     	graphic.loadTopDown();
     	uiMenuManager.imageLoader(graphic);
     	buttonManager.imageLoader(graphic);
-    	visualElementsHolder.loadImage(graphic);
+    	visualElementsHolder.loadImage(graphic,sfx,uiMenuManager);
     	
     	visualElementsHolder.changeTextAreas();
     	

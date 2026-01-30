@@ -253,7 +253,8 @@ public class UIMenuManager {
 			level.getPlaceable().clear();
 			level.getToRemove().clear();
 			level.getInteract().clear();
-			
+
+	    	game.choosStartingMachine(company);
 			writer.resetData(reader);
 			buttonManager.addStartUpScreen(visual, vBox,reader,company);
 			buttonManager.changeTextAreaSize(gameCanvas, visual, vBox);
@@ -275,7 +276,8 @@ public class UIMenuManager {
 			company.setMoneyOfCompany(reader.gameAlreadyPlayedCompanyData().getMoneyOfCompany());
 			company.setReputation(reader.gameAlreadyPlayedCompanyData().getReputation());
 			company.setCompanyType(reader.gameAlreadyPlayedCompanyData().getCompanyType());
-			
+
+			game.choosStartingMachine(company);
 			buttonManager.loadGame(visual, vBox, company, warningCanvas, reader);
 			buttonManager.changeTextAreaSize(gameCanvas, visual, vBox);
 			

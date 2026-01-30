@@ -1,6 +1,7 @@
 package Visual;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import ExternalResources.GraphicsManager;
 import GameLogic.Camera;
@@ -11,10 +12,14 @@ import GameLogic.Player;
 import GameLogic.Wall;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 
 public class Renderer {
 	private boolean notTurned = true;
+	private long walkTimer = 0;
+	private long waitWalk = 250;
+	private KeyCode lastPressed = KeyCode.COLORED_KEY_0;
 	
 	public void drawMainCanvas(Canvas canvas, GraphicsContext pencil, String id, GraphicsManager graphic) {
 		switch(id) {
@@ -24,8 +29,86 @@ public class Renderer {
 		}
 	}
 	
-	public void drawPlayer(Canvas canvas, GraphicsContext pencil, Player player, Camera camera) {
-		pencil.fillRect(player.getX() + camera.getX(),player.getY() + camera.getY(),player.getWidth(),player.getHeight());
+	public void drawPlayer(Canvas canvas, GraphicsContext pencil, Player player, Camera camera, GraphicsManager graphic, Set<KeyCode> inputs) {		
+		//pencil.fillRect(player.getX() + camera.getX(),player.getY() + camera.getY(),player.getWidth(),player.getHeight());
+		boolean notMoving = true;
+		if(inputs.contains(KeyCode.A) && ! inputs.contains(KeyCode.D)) {
+			lastPressed = KeyCode.A;
+			notMoving = false;
+			if(walkTimer + waitWalk < System.currentTimeMillis()) {
+				graphic.changePlayer("Walk1PlayerA.png");
+			}
+			if(walkTimer + (waitWalk*2) < System.currentTimeMillis()) {
+				graphic.changePlayer("StandPlayerA.png");
+			}
+			if(walkTimer + (waitWalk*3) < System.currentTimeMillis()) {
+				graphic.changePlayer("Walk2PlayerA.png");
+			}
+			if(walkTimer + (waitWalk*4) < System.currentTimeMillis()) {
+				graphic.changePlayer("StandPlayerA.png");
+				walkTimer = System.currentTimeMillis();
+			}
+		}else if(inputs.contains(KeyCode.W) && !inputs.contains(KeyCode.S)) {
+			lastPressed = KeyCode.W;
+			notMoving = false;
+			if(walkTimer + waitWalk < System.currentTimeMillis()) {
+				graphic.changePlayer("Walk1PlayerW.png");
+			}
+			if(walkTimer + (waitWalk*2) < System.currentTimeMillis()) {
+				graphic.changePlayer("StandPlayerW.png");
+			}
+			if(walkTimer + (waitWalk*3) < System.currentTimeMillis()) {
+				graphic.changePlayer("Walk2PlayerW.png");
+			}
+			if(walkTimer + (waitWalk*4) < System.currentTimeMillis()) {
+				graphic.changePlayer("StandPlayerW.png");
+				walkTimer = System.currentTimeMillis();
+			}
+		}else if(inputs.contains(KeyCode.S) && !inputs.contains(KeyCode.W)) {
+			lastPressed = KeyCode.S;
+			notMoving = false;
+			if(walkTimer + waitWalk < System.currentTimeMillis()) {
+				graphic.changePlayer("Walk1PlayerS.png");
+			}
+			if(walkTimer + (waitWalk*2) < System.currentTimeMillis()) {
+				graphic.changePlayer("StandPlayerS.png");
+			}
+			if(walkTimer + (waitWalk*3) < System.currentTimeMillis()) {
+				graphic.changePlayer("Walk2PlayerS.png");
+			}
+			if(walkTimer + (waitWalk*4) < System.currentTimeMillis()) {
+				graphic.changePlayer("StandPlayerS.png");
+				walkTimer = System.currentTimeMillis();
+			}
+		}else if(inputs.contains(KeyCode.D) && !inputs.contains(KeyCode.A)) {
+			lastPressed = KeyCode.D;
+			notMoving = false;
+			if(walkTimer + waitWalk < System.currentTimeMillis()) {
+				graphic.changePlayer("Walk1PlayerD.png");
+			}
+			if(walkTimer + (waitWalk*2) < System.currentTimeMillis()) {
+				graphic.changePlayer("StandPlayerD.png");
+			}
+			if(walkTimer + (waitWalk*3) < System.currentTimeMillis()) {
+				graphic.changePlayer("Walk2PlayerD.png");
+			}
+			if(walkTimer + (waitWalk*4) < System.currentTimeMillis()) {
+				graphic.changePlayer("StandPlayerD.png");
+				walkTimer = System.currentTimeMillis();
+			}
+		}
+		if(notMoving) {
+			if(lastPressed.equals(KeyCode.A)) {
+				graphic.changePlayer("StandPlayerA.png");
+			}else if(lastPressed.equals(KeyCode.D)){
+				graphic.changePlayer("StandPlayerD.png");
+			}else if(lastPressed.equals(KeyCode.W)){
+				graphic.changePlayer("StandPlayerW.png");
+			}else if(lastPressed.equals(KeyCode.S)){
+				graphic.changePlayer("StandPlayerS.png");
+			}
+		}
+		pencil.drawImage(graphic.getPlayer(), player.getX() + camera.getX(),player.getY() + camera.getY(),player.getWidth(),player.getHeight());
 	}
 	
 	public void drawWalls(Canvas canvas, GraphicsContext pencil, ArrayList<Wall> walls, Camera camera, GraphicsManager graphic, Company company) {
@@ -123,7 +206,6 @@ public class Renderer {
 			break;
 		}
 		if(isHolder) {
-			System.out.println(switchTo);
 			graphic.changeMachinePlaceHolder(switchTo);
 		}else {
 			graphic.changeMachine(switchTo);

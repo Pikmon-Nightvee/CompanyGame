@@ -3,6 +3,7 @@ package Visual;
 import java.util.ArrayList;
 
 import ExternalResources.GraphicsManager;
+import ExternalResources.SoundeffectManager;
 import FileLogic.ReadCSVFiles;
 import GameLogic.Company;
 import GameLogic.Employee;
@@ -297,9 +298,10 @@ public class VisualElementsHolder {
 		setProductAllText(builder.toString());
 	}
 	
-	private void setButtonBackground(GraphicsManager graphic, ComboBox combo) {
+	private void setButtonBackground(GraphicsManager graphic, ComboBox combo, SoundeffectManager sfx, UIMenuManager UI) {
 		try {
 			combo.setOnMousePressed(event->{
+				sfx.playButton(UI.isSfxOn());
 				combo.setBackground(graphic.getComboPressed());
 			});
 			combo.setOnMouseMoved(event->{
@@ -318,21 +320,21 @@ public class VisualElementsHolder {
 		}
 	}
 	
-	public void loadImage(GraphicsManager graphic) {
-		setButtonBackground(graphic,selectDifficulty);
-		setButtonBackground(graphic,selectCycleAmount);
-		setButtonBackground(graphic,selectCompanyType);
-		setButtonBackground(graphic,selectCompanySpecification);
-		setButtonBackground(graphic,selectUnemployed);
+	public void loadImage(GraphicsManager graphic, SoundeffectManager sfx, UIMenuManager UI) {
+		setButtonBackground(graphic,selectDifficulty,sfx,UI);
+		setButtonBackground(graphic,selectCycleAmount,sfx,UI);
+		setButtonBackground(graphic,selectCompanyType,sfx,UI);
+		setButtonBackground(graphic,selectCompanySpecification,sfx,UI);
+		setButtonBackground(graphic,selectUnemployed,sfx,UI);
 
-		setButtonBackground(graphic,assignEmployed);
-		setButtonBackground(graphic,assignToMachine);
+		setButtonBackground(graphic,assignEmployed,sfx,UI);
+		setButtonBackground(graphic,assignToMachine,sfx,UI);
 
-		setButtonBackground(graphic,selectResource);
-		setButtonBackground(graphic,selectEquipment);
+		setButtonBackground(graphic,selectResource,sfx,UI);
+		setButtonBackground(graphic,selectEquipment,sfx,UI);
 
-		setButtonBackground(graphic,availableEmployees);
-		setButtonBackground(graphic,selectProduct);
+		setButtonBackground(graphic,availableEmployees,sfx,UI);
+		setButtonBackground(graphic,selectProduct,sfx,UI);
 	}
 	
 	public void changeTextAreas() {

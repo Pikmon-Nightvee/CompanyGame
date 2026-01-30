@@ -56,6 +56,14 @@ public class GameManager {
 		state = update;
 	}
 	
+	public void choosStartingMachine(Company company) {
+		switch(company.getCompanyType()) {
+		case "Foodtruck":placeHolder.setWidth(50);placeHolder.setHeight(50);machine = "Herd"; break;
+		case "EDV-Manager":placeHolder.setWidth(75);placeHolder.setHeight(25);machine = "PC"; break;
+		case "Craft Buisness":placeHolder.setWidth(25);placeHolder.setHeight(25);machine = "Kreissäge"; break;
+		}
+	}
+	
 	public int updateMachine(int scrollAmount, Company company) {
 		int maximum;
 		int minimum = 0;
@@ -123,6 +131,7 @@ public class GameManager {
 		//30FPS Update Loop
 		gameTimeline = new Timeline(new KeyFrame(Duration.seconds(0.032), event -> {
 			renderer.clearAll(gameCanvas, gamePencil,warningCanvas, warningPencil);
+
 			switch(state) {
 			case "InMenu":
 				gamePencil.setFill(Color.LIGHTGREY);
@@ -152,12 +161,15 @@ public class GameManager {
 				renderer.drawInteractableBlinking(gameCanvas, gamePencil, level.getBlinking(), camera);
 				
 				gamePencil.setFill(Color.YELLOW);
-				renderer.drawPlayer(gameCanvas, gamePencil, player, camera);
+				renderer.drawPlayer(gameCanvas, gamePencil, player, camera, graphic, inputs);
 				
 				//Player inputs
 				keyboard.keyboardInputsMovement(inputs, player, uiMenuManager, sfx);
 				keyboard.keyboardInputMenu(inputs, uiMenuManager, gameVBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, gameManager, sfx, graphic);
 				for(Wall w : level.getWalls()) {
+					colission.pushBack(player,w);
+				}
+				for(Wall w : level.getWheels()) {
 					colission.pushBack(player,w);
 				}
 				for(MachinePlaceObject m : level.getMachines()) {
@@ -171,12 +183,6 @@ public class GameManager {
 					isOutofBounce = true;
 				}
 				if(keyboard.isBeingPlaced()) {
-					if(reader.readMachines("MachineBought.csv", company).isEmpty()) {
-						placeHolder.setWidth(0);
-						placeHolder.setHeight(0);
-						return;
-					}
-					
 					double xPos = xMouse;
 					double yPos = yMouse;
 					xPos -= placeHolder.getWidth()/2;
@@ -242,6 +248,7 @@ public class GameManager {
 							writer.coordinatesMachineSafe(placeHolder,xFinal,yFinal,machine);
 							blink(reader,company,level,placeHolder,xFinal,yFinal);
 						}else {
+							sfx.playError(uiMenuManager.isSfxOn());
 							mousePressed = false;
 							currentTime = System.currentTimeMillis();
 							return;
