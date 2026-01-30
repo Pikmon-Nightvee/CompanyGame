@@ -38,7 +38,7 @@ public class GameManager {
 	
 	private int width = 0;
 	private int height = 0;
-	private Wall placeHolder = new Wall(xMouse, yMouse, width, height);
+	private MachinePlaceObject placeHolder = new MachinePlaceObject(xMouse, yMouse, width, height, machine);
 	
 	private long waitTime = 350;
 	private long currentTime = 0;
@@ -160,7 +160,7 @@ public class GameManager {
 				for(Wall w : level.getWalls()) {
 					colission.pushBack(player,w);
 				}
-				for(Wall m : level.getMachines()) {
+				for(MachinePlaceObject m : level.getMachines()) {
 					colission.pushBack(player,m);
 				}
 				//Is machine being placed?
@@ -184,7 +184,7 @@ public class GameManager {
 					
 					placeHolder.setX(xPos);
 					placeHolder.setY(yPos);
-					renderer.drawWall(gameCanvas, gamePencil, placeHolder);
+					renderer.drawMachine(gameCanvas, gamePencil, placeHolder);
 				}
 				
 				if(mousePressed) {
@@ -211,10 +211,10 @@ public class GameManager {
 								}
 							}
 							if(canBeAdded) {
-								for(Wall w : level.getMachines()) {
+								for(MachinePlaceObject m : level.getMachines()) {
 									if(canBeAdded) {
-										System.out.println("Placeholder x,y,width,height: " + xFinal + "," + yFinal + "," + placeHolder.getWidth() + "," + placeHolder.getHeight() + " Machine x,y,width,height: " + w.getX() + "," + w.getY() + "," + w.getWidth() + "," + w.getHeight());
-										canBeAdded = !colission.AABB(w.getX(), w.getY(), w.getWidth(), w.getHeight(), xFinal, yFinal, placeHolder.getWidth(), placeHolder.getHeight());
+										System.out.println("Placeholder x,y,width,height: " + xFinal + "," + yFinal + "," + placeHolder.getWidth() + "," + placeHolder.getHeight() + " Machine x,y,width,height: " + m.getX() + "," + m.getY() + "," + m.getWidth() + "," + m.getHeight());
+										canBeAdded = !colission.AABB(m.getX(), m.getY(), m.getWidth(), m.getHeight(), xFinal, yFinal, placeHolder.getWidth(), placeHolder.getHeight());
 									}
 								}
 							}else {
@@ -236,7 +236,7 @@ public class GameManager {
 						}
 						if(canBeAdded) {
 							sfx.playPlacing(uiMenuManager.isSfxOn());
-							level.machineAdd(xFinal,yFinal,placeHolder.getWidth(),placeHolder.getHeight());
+							level.machineAdd(xFinal,yFinal,placeHolder.getWidth(),placeHolder.getHeight(),machine);
 							String machine = writer.machineNamePlacedAdd(scroll, company, reader);
 							writer.coordinatesMachineSafe(placeHolder,xFinal,yFinal,machine);
 							blink(reader,company,level,placeHolder,xFinal,yFinal);
@@ -297,9 +297,6 @@ public class GameManager {
 		gameTimeline.setCycleCount(Timeline.INDEFINITE);
 		gameTimeline.play();
 	}
-	public Wall getPlaceHolder() {
-		return placeHolder;
-	}
 
     private boolean amountLowEnough(ReadCSVFiles reader, String machineName, Company company) {
     	ArrayList<String[]> amountCheck = reader.machinesTopDownGet("MachinesPlaced.csv");
@@ -327,7 +324,7 @@ public class GameManager {
     	}
     }
     
-    public void blink(ReadCSVFiles reader, Company company, LevelHolder level, Wall wall, double x, double y) {
+    public void blink(ReadCSVFiles reader, Company company, LevelHolder level, MachinePlaceObject machine, double x, double y) {
     	ArrayList<Machine> machines = reader.readMachines("MachineBroken.csv", company);
     	ArrayList<String[]> machinesPlaced = reader.machinesTopDownGet("MachinesPlaced.csv");
     	
@@ -339,7 +336,7 @@ public class GameManager {
     				int amountBroken = m.getAmount();
     				int amountPlaced = Integer.parseInt(mCords[1]);
     				if(amountBroken >= amountPlaced) {
-    					InteractableObject i = new InteractableObject(x,y,wall.getWidth(),wall.getHeight(),false,true);
+    					InteractableObject i = new InteractableObject(x,y,machine.getWidth(),machine.getHeight(),false,true);
     					toAdd.add(i);
     				}
     			}
@@ -350,4 +347,7 @@ public class GameManager {
     		level.addBlinking(i);
     	}
     }
+	public MachinePlaceObject getPlaceHolder() {
+		return placeHolder;
+	}
 }

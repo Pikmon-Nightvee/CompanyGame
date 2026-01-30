@@ -11,6 +11,7 @@ import GameLogic.Employee;
 import GameLogic.InteractableObject;
 import GameLogic.LevelHolder;
 import GameLogic.Machine;
+import GameLogic.MachinePlaceObject;
 import GameLogic.Player;
 import GameLogic.Product;
 import GameLogic.Resource;
@@ -332,8 +333,8 @@ public class ReadCSVFiles {
 		return returnValue;
 	}
 	
-	public ArrayList<Wall> machinesPlaced(){
-		ArrayList<Wall> machines = new ArrayList<>();
+	public ArrayList<MachinePlaceObject> machinesPlaced(){
+		ArrayList<MachinePlaceObject> machines = new ArrayList<>();
 		File file = new File("DataCSV/CoordinateData/MachineCoordinates.csv");
 		try(Scanner reader = new Scanner(file)){
 			while(reader.hasNext()) {
@@ -343,8 +344,9 @@ public class ReadCSVFiles {
 				double yCoordinate = Double.parseDouble(data[1]);
 				double width = Double.parseDouble(data[2]);
 				double height = Double.parseDouble(data[3]);
+				String machine = data[4];
 				
-				Wall toAdd = new Wall(xCoordinate,yCoordinate,width,height);
+				MachinePlaceObject toAdd = new MachinePlaceObject(xCoordinate,yCoordinate,width,height,machine);
 				machines.add(toAdd);
 			}
 		}catch(IOException e) {

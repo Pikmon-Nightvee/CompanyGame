@@ -43,6 +43,7 @@ public class GraphicsManager {
 	private Image wallFood;
 	private Image wallFoodSpecial;
 	private Image wallFoodSpecialLight;
+	private Image machine;
 	
 	//ChatGPT to make the Background button size:
 	private BackgroundSize bgSize = new BackgroundSize(

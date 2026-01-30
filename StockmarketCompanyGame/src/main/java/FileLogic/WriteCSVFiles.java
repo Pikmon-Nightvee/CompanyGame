@@ -12,6 +12,7 @@ import GameLogic.Company;
 import GameLogic.Employee;
 import GameLogic.InteractableObject;
 import GameLogic.Machine;
+import GameLogic.MachinePlaceObject;
 import GameLogic.Player;
 import GameLogic.Product;
 import GameLogic.Resource;
@@ -725,7 +726,7 @@ public class WriteCSVFiles {
 		}
 	}
 	
-	public void coordinatesMachineSafe(Wall w, double x, double y, String machine) {
+	public void coordinatesMachineSafe(MachinePlaceObject w, double x, double y, String machine) {
 		File file = new File("DataCSV/CoordinateData/MachineCoordinates.csv");
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,true))){
 			writer.write(x+","+y+","+w.getWidth()+","+w.getHeight()+","+machine+"\n");
@@ -734,17 +735,17 @@ public class WriteCSVFiles {
 		}
 	}
 	
-	public void machineRemoved(ArrayList<Wall> walls, ReadCSVFiles reader) {
+	public void machineRemoved(ArrayList<MachinePlaceObject> machines, ReadCSVFiles reader) {
 		ArrayList<String[]> machineOG = reader.machinesTopDownGet("MachineCoordinates.csv");
 		
 		File file = new File("DataCSV/CoordinateData/MachineCoordinates.csv");
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
-			for(Wall w : walls) {
+			for(MachinePlaceObject m : machines) {
 				for(String[] s : machineOG) {
 					double x = Double.parseDouble(s[0]);
 					double y = Double.parseDouble(s[1]);
-					if(w.getX() == x && w.getY() == y) {
-						writer.write(w.getX()+","+w.getY()+","+w.getWidth()+","+w.getHeight()+","+s[4]+"\n");
+					if(m.getX() == x && m.getY() == y) {
+						writer.write(m.getX()+","+m.getY()+","+m.getWidth()+","+m.getHeight()+","+s[4]+"\n");
 					}
 				}
 			}

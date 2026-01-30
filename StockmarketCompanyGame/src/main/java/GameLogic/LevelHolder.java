@@ -7,7 +7,7 @@ import FileLogic.WriteCSVFiles;
 public class LevelHolder {
 	//0 -> Luft platzierbar, 1 -> Wand, 2 -> Spawnpoint, 3 -> Luft nicht platzierbar, 4 -> Rad, 5 -> Headlight
 	private ArrayList<Wall> walls = new ArrayList<>();
-	private ArrayList<Wall> machines = new ArrayList<>();
+	private ArrayList<MachinePlaceObject> machines = new ArrayList<>();
 	private ArrayList<Wall> wheels = new ArrayList<>();
 	private ArrayList<Wall> headlights = new ArrayList<>();
 	
@@ -93,13 +93,13 @@ public class LevelHolder {
 		}
 	}
 
-	public void machinesLoad(ArrayList<Wall> toAdd) {
+	public void machinesLoad(ArrayList<MachinePlaceObject> toAdd) {
 		machines.addAll(toAdd);
 	}
 
-	public void machineAdd(double xPos, double yPos, double width, double height){
+	public void machineAdd(double xPos, double yPos, double width, double height, String machine){
 		if(width > 0 && height > 0) {
-			Wall toAdd = new Wall(xPos,yPos,width,height);
+			MachinePlaceObject toAdd = new MachinePlaceObject(xPos,yPos,width,height,machine);
 			machines.add(toAdd);
 			
 			int extra = 15;
@@ -107,30 +107,30 @@ public class LevelHolder {
 			interact.add(toAddIo);
 		}
 	}
-	public void interactLoad(ArrayList<Wall> walls){
-		for(Wall w : walls) {
+	public void interactLoad(ArrayList<MachinePlaceObject> machines){
+		for(MachinePlaceObject m : machines) {
 			int extra = 15;
-			InteractableObject toAddIo = new InteractableObject(w.getX()-extra,w.getY()-extra,w.getWidth()+(extra*2),w.getHeight()+(extra*2),false,false);
+			InteractableObject toAddIo = new InteractableObject(m.getX()-extra,m.getY()-extra,m.getWidth()+(extra*2),m.getHeight()+(extra*2),false,false);
 			this.interact.add(toAddIo);
 		}
 	}
-	public void removeMachine(ArrayList<Wall> walls, InteractableObject i) {
-		ArrayList<Wall> toRemove = new ArrayList<>();
-		for(Wall w : walls) {
-			if(w.getX() == i.getX()+i.getExtra() && w.getY() == i.getY() + i.getExtra()) {
-				toRemove.add(w);
+	public void removeMachine(ArrayList<MachinePlaceObject> machines, InteractableObject i) {
+		ArrayList<MachinePlaceObject> toRemove = new ArrayList<>();
+		for(MachinePlaceObject m : machines) {
+			if(m.getX() == i.getX()+i.getExtra() && m.getY() == i.getY() + i.getExtra()) {
+				toRemove.add(m);
 				this.toRemove.add(i);
 				
 				boolean interacted = false;
 				boolean broken = false;
 				
-				InteractableObject iNew = new InteractableObject(w.getX(),w.getY(),w.getWidth(),w.getHeight(),interacted,broken);
+				InteractableObject iNew = new InteractableObject(m.getX(),m.getY(),m.getWidth(),m.getHeight(),interacted,broken);
 				this.toRemove.add(iNew);
 				System.out.println("Remove Alarmlayer: "+iNew.toString());
 			}
 		}
-		for(Wall w : toRemove) {
-			walls.remove(w);
+		for(MachinePlaceObject w : toRemove) {
+			machines.remove(w);
 		}
 	}
 
@@ -138,7 +138,7 @@ public class LevelHolder {
 		return walls;
 	}
 
-	public ArrayList<Wall> getMachines() {
+	public ArrayList<MachinePlaceObject> getMachines() {
 		return machines;
 	}
 

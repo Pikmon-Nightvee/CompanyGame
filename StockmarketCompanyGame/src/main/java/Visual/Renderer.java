@@ -6,6 +6,7 @@ import ExternalResources.GraphicsManager;
 import GameLogic.Camera;
 import GameLogic.Company;
 import GameLogic.InteractableObject;
+import GameLogic.MachinePlaceObject;
 import GameLogic.Player;
 import GameLogic.Wall;
 import javafx.scene.canvas.Canvas;
@@ -43,10 +44,14 @@ public class Renderer {
 		}
 	}
 	
-	public void drawMachines(Canvas canvas, GraphicsContext pencil, ArrayList<Wall> walls, Camera camera, GraphicsManager graphic, Company company) {
-		for(Wall w : walls) {
-			pencil.fillRect(w.getX() + camera.getX(),w.getY() + camera.getY(),w.getWidth(),w.getHeight());
+	public void drawMachines(Canvas canvas, GraphicsContext pencil, ArrayList<MachinePlaceObject> machines, Camera camera, GraphicsManager graphic, Company company) {
+		for(MachinePlaceObject m : machines) {
+			pencil.fillRect(m.getX() + camera.getX(),m.getY() + camera.getY(),m.getWidth(),m.getHeight());
 		}
+	}
+	
+	public void drawMachine(Canvas canvas, GraphicsContext pencil, MachinePlaceObject m) {
+		pencil.fillRect(m.getX(),m.getY(),m.getWidth(),m.getHeight());
 	}
 	
 	public void drawWheels(Canvas canvas, GraphicsContext pencil, ArrayList<Wall> walls, Camera camera, GraphicsManager graphic) {

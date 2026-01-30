@@ -41,7 +41,7 @@ public class KeyboardManager {
 		}
 	}
 	
-	public void keyBoardInputPlaceMachine(Set<KeyCode> inputs, Wall placeHolder, ArrayList<Machine> machines, UIMenuManager UI, SoundeffectManager sfx) {
+	public void keyBoardInputPlaceMachine(Set<KeyCode> inputs, MachinePlaceObject placeHolder, ArrayList<Machine> machines, UIMenuManager UI, SoundeffectManager sfx) {
 		if(!inputs.contains(KeyCode.G)) {
 			isBeingPlaced = false;
 		}
@@ -67,7 +67,7 @@ public class KeyboardManager {
 		}
 	}
 	
-	public void keyBoardInputPlacedMachine(Set<KeyCode> inputs, ArrayList<Wall> walls, InteractableObject interact, LevelHolder level, WriteCSVFiles writer, ReadCSVFiles reader, ArrayList<InteractableObject> toRepair, Company company, UIMenuManager UI, SoundeffectManager sfx) {
+	public void keyBoardInputPlacedMachine(Set<KeyCode> inputs, ArrayList<MachinePlaceObject> walls, InteractableObject interact, LevelHolder level, WriteCSVFiles writer, ReadCSVFiles reader, ArrayList<InteractableObject> toRepair, Company company, UIMenuManager UI, SoundeffectManager sfx) {
 		if(timeSinceLastPressed + timeWait < System.currentTimeMillis()) {
 			if(inputs.contains(KeyCode.F)){
 				sfx.playPickUp(UI.isSfxOn());
