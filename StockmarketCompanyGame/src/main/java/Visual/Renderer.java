@@ -188,11 +188,7 @@ public class Renderer {
 			} 
 			break;
 		case "Drehmaschine":
-			if(notTurned) {
-				switchTo = "Drehmaschine.png";
-			}else {
-				switchTo = "DrehmaschineD.png";
-			} 
+			switchTo = "Drehmaschine.png";
 			break;
 		case "Fräsmaschine": 
 			if(notTurned) {

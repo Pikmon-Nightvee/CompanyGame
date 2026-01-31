@@ -29,7 +29,7 @@ public class ColissionHandler {
 					double xPushBack = item1.getX() + pushSpeed;
 					item1.setX(xPushBack);
 				}
-			}else {
+			}else if(overlapY < overlapX){
 				if(yUp < yDown) {
 					pushSpeed = yUp;
 					double yPushBack = item1.getY() - pushSpeed;

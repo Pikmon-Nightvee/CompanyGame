@@ -313,7 +313,9 @@ public class GameManager {
     	int amountBought = 0;
 		int amountPlaced = 0;
     	for(String[] s : amountCheck) {
+    		System.out.println("CheckLine: " + s[1]);
     		if(s[0].equals(machineName)) {
+        		System.out.println("CheckLine2: " + s[1]);
     			amountPlaced = Integer.parseInt(s[1]);
     		}
     	}
@@ -323,6 +325,7 @@ public class GameManager {
     		}
     	}
     	
+    	System.out.println("bought: "+amountBought + " placed: " + amountPlaced);
     	if(amountPlaced < amountBought) {
     		System.out.println("true");
     		return true;
