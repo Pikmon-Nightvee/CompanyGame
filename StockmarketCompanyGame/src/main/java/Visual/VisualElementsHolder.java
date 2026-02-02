@@ -50,6 +50,9 @@ public class VisualElementsHolder {
 	private Label productLabel = new Label("Producable Products:");
 
 	private Label bankrupt = new Label("You have gone bankrupt!");
+
+	private String warningCanvasText = "Broken machines: ";
+	private int warningCanvasInt = 0;
 	
 	//TextFields:
 	private TextField insertName = new TextField();
@@ -721,5 +724,17 @@ public class VisualElementsHolder {
 
 	public ComboBox<String> getAssignToMachine() {
 		return assignToMachine;
+	}
+
+	public void setWarningCanvasInt(int warningCanvasInt) {
+		this.warningCanvasInt = warningCanvasInt;
+	}
+
+	public int getWarningCanvasInt() {
+		return warningCanvasInt;
+	}
+
+	public String updateWarningCanvas() {
+		return warningCanvasText + warningCanvasInt;
 	}
 }

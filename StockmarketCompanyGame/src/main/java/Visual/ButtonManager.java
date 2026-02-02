@@ -18,11 +18,15 @@ import GameLogic.Product;
 import GameLogic.Resource;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 public class ButtonManager {
 	private ErrorMessageHandler errorMessage = new ErrorMessageHandler();
@@ -134,7 +138,7 @@ public class ButtonManager {
 		button.setStyle("-fx-font-size:15px;-fx-font-weight: bold; -fx-text-fill: white");
 	}
 	
-	public void start(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted, StackPane gamePane, LevelHolder level, Player player, GameManager game, SoundeffectManager sfx, UIMenuManager UI) {
+	public void start(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted, StackPane gamePane, LevelHolder level, Player player, GameManager game, SoundeffectManager sfx, UIMenuManager UI, GraphicsContext warningPencil) {
 		CSS(resources);
 		CSS(employ);
 		CSS(nextCycle);
@@ -146,10 +150,10 @@ public class ButtonManager {
 		CSSSubSelect(goBack);
 		CSSSubSelect(bankrupt);
 		
-		action(vBox, visual, warningCanvas, gameCanvas, company, nextCycleStarted, gamePane, level, player, game, sfx, UI);
+		action(vBox, visual, warningCanvas, gameCanvas, company, nextCycleStarted, gamePane, level, player, game, sfx, UI, warningPencil);
 	}
 	
-	public void action(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted, StackPane gamePane, LevelHolder level, Player player, GameManager game, SoundeffectManager sfx, UIMenuManager UI) {
+	public void action(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted, StackPane gamePane, LevelHolder level, Player player, GameManager game, SoundeffectManager sfx, UIMenuManager UI, GraphicsContext warningPencil) {
 		WriteCSVFiles writer = new WriteCSVFiles();
 		ReadCSVFiles reader = new ReadCSVFiles();
 		
@@ -760,6 +764,9 @@ public class ButtonManager {
 			vBox.getChildren().clear();
 			gamePane.getChildren().clear();
 			gamePane.getChildren().addAll(gameCanvas, warningCanvas, vBox);
+			
+			visual.setWarningCanvasInt(reader.brokenMachines());
+			
 			goBack.fire();
 		});
 		visual.getSelectProduct().setOnAction(event ->{

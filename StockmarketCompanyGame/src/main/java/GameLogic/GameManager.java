@@ -272,7 +272,8 @@ public class GameManager {
 			case "InUIState":
 				gamePencil.setFill(Color.LIGHTGREY);
 				renderer.drawMainCanvas(gameCanvas, gamePencil, state, graphic);
-				renderer.drawWarningCanvas(warningCanvas, warningPencil,graphic);
+				warningPencil.setFill(Color.BLACK);
+				renderer.drawWarningCanvas(warningCanvas, warningPencil,graphic,visual);
 				keyboard.keyboardInputMenu(inputs, uiMenuManager, gameVBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, gameManager, sfx, graphic);
 				break;
 			case "GameOver":

@@ -14,6 +14,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 public class Renderer {
 	private boolean notTurned = true;
@@ -240,9 +243,32 @@ public class Renderer {
 		pencil.fillRect(w.getX(),w.getY(),w.getWidth(),w.getHeight());
 	}
 
-	public void drawWarningCanvas(Canvas canvas, GraphicsContext pencil, GraphicsManager graphic) {
+	public void drawWarningCanvas(Canvas canvas, GraphicsContext pencil, GraphicsManager graphic, VisualElementsHolder visual) {
 		pencil.fillRect(0, 20, canvas.getWidth(), canvas.getHeight());
 		pencil.drawImage(graphic.getWarningCanvasOverlay(),0, 20, canvas.getWidth(), canvas.getHeight()-20);
+		
+		//ChatGPT generated code:
+		if(visual.getWarningCanvasInt() > 0) {
+			String error = visual.updateWarningCanvas();
+			pencil.setFill(Color.RED);
+			
+			Font font = Font.font("Arial", FontWeight.BOLD, 35);
+			pencil.setFont(font);;
+	
+		    // Measure text size
+		    Text text = new Text(error);
+		    text.setFont(font);
+	
+		    double textWidth = text.getLayoutBounds().getWidth();
+		    double textHeight = text.getLayoutBounds().getHeight();
+	
+		    // Center position
+		    double x = (canvas.getWidth() - textWidth) / 2;
+		    double y = 20 + ((canvas.getHeight() - 20) / 2) + (textHeight / 4);
+	
+		    pencil.fillText(error, x, y);
+		}
+		//End
 	}
 	
 	public void clearAll(Canvas gameCanvas, GraphicsContext gamePencil, Canvas warningCanvas,

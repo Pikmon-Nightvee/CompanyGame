@@ -143,7 +143,8 @@ public class UIMenuManager {
 			
 			game.updateState("InTopDown");
 		});
-		openUIGame.setOnAction(event->{			
+		openUIGame.setOnAction(event->{
+			visual.setWarningCanvasInt(reader.brokenMachines());
 			sfx.playButton(sfxOn);
 			vBox.getChildren().clear();
 			game.updateState("InUIState");
@@ -284,6 +285,8 @@ public class UIMenuManager {
 			level.loadLevel(company.getCompanyType(), player);
 			level.machinesLoad(reader.machinesPlaced());
 			level.interactLoad(level.getMachines());
+			
+			visual.setWarningCanvasInt(reader.brokenMachines());
 			
 			if(reader.isAdded()) {
 				System.out.println("Player cords found");

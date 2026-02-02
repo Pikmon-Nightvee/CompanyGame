@@ -431,4 +431,23 @@ public class ReadCSVFiles {
 			e.printStackTrace();
 		}
 	}
+	
+	public int brokenMachines() {
+		int brokenAmount = 0;
+		String location = "DataCSV/EquipmentData/MachineBroken.csv";
+		File file = new File(location);
+		try(Scanner reader = new Scanner(file)){
+			while(reader.hasNext()) {
+				String line = reader.nextLine();
+				String[] dataAll = line.split(",");
+				
+				int addAmount = Integer.parseInt(dataAll[1]);
+				brokenAmount += addAmount;
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		return brokenAmount;
+	}
 }
