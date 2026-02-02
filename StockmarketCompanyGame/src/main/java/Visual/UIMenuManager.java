@@ -228,9 +228,10 @@ public class UIMenuManager {
 				if(reader.gameAlreadyStarted()) {
 					vBox.getChildren().add(load);
 				}
+				vBox.getChildren().add(options);
 				vBox.getChildren().add(quit);
 			}else {
-				vBox.getChildren().addAll(openTopDown,openUIGame,backToMainMenu,quit);
+				vBox.getChildren().addAll(openTopDown,openUIGame,options,backToMainMenu,quit);
 			}
 		});
 		options.setOnAction(event->{
@@ -305,5 +306,8 @@ public class UIMenuManager {
 	}
 	public boolean isMusicOn() {
 		return musicOn;
+	}
+	public void setStarted(boolean started) {
+		this.started = started;
 	}
 }

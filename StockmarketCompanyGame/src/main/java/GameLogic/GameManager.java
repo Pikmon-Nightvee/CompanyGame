@@ -123,6 +123,7 @@ public class GameManager {
 		
 		buttonManager.getBankrupt().setOnAction(event->{
 			uiMenuManager.startUp(gameVBox, buttonManager, visual, writer, reader, stage, company, warningCanvas, gamePane, gameCanvas, level, player, gameManager, sfx);
+			uiMenuManager.setStarted(false);
 			gamePencil.setFill(Color.LIGHTGREY);
 			level.getWalls().clear();
 			state = "InMenu";
