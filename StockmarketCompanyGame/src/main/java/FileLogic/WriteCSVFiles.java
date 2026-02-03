@@ -898,7 +898,7 @@ public class WriteCSVFiles {
 		File file = new File("DataCSV/EquipmentData/MachineBroken.csv");
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file,false))){
 			for(Machine m : machines) {
-				if(m.getCondition() >= 0) {
+				if(m.getCondition() <= 0) {
 					for(Machine mB : alreadyBroken) {
 						if(mB.getName().equals(m.getName())) {
 							writer.write(m.getName()+","+m.getAmount()+","+m.getCost()+","+m.getCondition()+","+company.getCompanyType());
