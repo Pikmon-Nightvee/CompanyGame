@@ -90,20 +90,20 @@ public class VisualElementsHolder {
 	
 	//CSS Styles and call up
 	public void insertTypes() {
-		selectCompanyType.getItems().add("GmbH");
-		selectCompanyType.getItems().add("Einzel Unternehmen");
+		selectCompanyType.getItems().add("LLC");
+		selectCompanyType.getItems().add("sole proprietorship");
 	}
 	
 	public void insertSpecifications() {
 		selectCompanySpecification.getItems().add("Foodtruck");
-		selectCompanySpecification.getItems().add("EDV-Manager");
+		selectCompanySpecification.getItems().add("IT Manager");
 		selectCompanySpecification.getItems().add("Craft Buisness");
 	}
 	
 	public void insertDifficulty() {
-		selectDifficulty.getItems().add("Easy");
-		selectDifficulty.getItems().add("Normal");
-		selectDifficulty.getItems().add("Hard");
+		selectDifficulty.getItems().add("15.000");
+		selectDifficulty.getItems().add("10.000");
+		selectDifficulty.getItems().add("5.000");
 	}
 	
 	public void insertCycleDates() {

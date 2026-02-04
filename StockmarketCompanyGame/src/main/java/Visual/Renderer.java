@@ -173,6 +173,13 @@ public class Renderer {
 				switchTo = "PC1.png";
 			}  
 			break;
+		case "Soldering Iron": 
+			if(notTurned) {
+				switchTo = "SolderingIron.png";
+			}else {
+				switchTo = "SolderingIronD.png";
+			}  
+			break;
 		case "Ofen": 
 			if(notTurned) {
 				switchTo = "Ofen.png";

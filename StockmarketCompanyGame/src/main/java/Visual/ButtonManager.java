@@ -176,12 +176,12 @@ public class ButtonManager {
 			
 			String difficulty = visual.getSelectDifficulty().getValue();
 			switch(difficulty) {
-			case "Easy": moneyStart = 15000.00; break;
-			case "Normal": moneyStart = 10000.00; break;
-			case "Hard": moneyStart = 5000.00; break;
+			case "15.000": moneyStart = 15000.00; break;
+			case "10.000": moneyStart = 10000.00; break;
+			case "5.000": moneyStart = 5000.00; break;
 			}
 			
-			if(visual.getSelectCompanyType().getValue().equals("GmbH")) {
+			if(visual.getSelectCompanyType().getValue().equals("LLC")) {
 				company.setReputation(company.getReputation() + 25);
 				moneyStart -= 2000;
 			}
@@ -940,7 +940,7 @@ public class ButtonManager {
 		visual.insertCycleDates();
 		visual.insertSpecifications();
 		visual.insertTypes();
-		visual.getSelectDifficulty().setValue("Easy");
+		visual.getSelectDifficulty().setValue("15.000");
 		visual.getSelectCycleAmount().setValue("Day");
 		visual.start(reader,company);
 	}

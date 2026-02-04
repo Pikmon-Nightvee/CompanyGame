@@ -46,7 +46,7 @@ public class LevelHolder {
 		System.out.println(selected);
 		switch(selected) {
 		case "Foodtruck": loadLevel = levelFoodtruck; break;
-		case "EDV-Manager": loadLevel = levelEDVManager; break;
+		case "IT Manager": loadLevel = levelEDVManager; break;
 		case "Craft Buisness": loadLevel = levelCraftBusiness; break;
 		}
 		int sizeWall = 100;

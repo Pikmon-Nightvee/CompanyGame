@@ -808,9 +808,10 @@ public class WriteCSVFiles {
 			case 3:machine = "Kreissäge";break;
 			}
 			break;
-		case "EDV-Manager":
+		case "IT Manager":
 			switch(scrollAmount) {
 			case 0:machine = "PC";break;
+			case 1:machine = "Soldering Iron";break;
 			}
 			break;
 		}

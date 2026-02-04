@@ -97,8 +97,8 @@ public class GameManager {
 			case 3:placeHolder.setWidth(25);placeHolder.setHeight(25);machine="Kreissäge";break;
 			}
 			break;
-		case "EDV-Manager":
-			maximum = 0;
+		case "IT Manager":
+			maximum = 1;
 			if(scrollAmount < minimum) {
 				scrollAmount = maximum;
 			}
@@ -107,6 +107,7 @@ public class GameManager {
 			}
 			switch(scrollAmount) {
 			case 0:placeHolder.setWidth(75);placeHolder.setHeight(25);machine="PC";break;
+			case 1:placeHolder.setWidth(45);placeHolder.setHeight(30);machine="Soldering Iron";break;
 			}
 			break;
 		}
