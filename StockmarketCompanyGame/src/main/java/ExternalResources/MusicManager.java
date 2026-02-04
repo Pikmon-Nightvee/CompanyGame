@@ -10,17 +10,20 @@ public class MusicManager {
 	
 	private int musicPlaying = 0;
 	private boolean notPlayed = true;
+	private String folder = "/Music/";
 	
 	public void loadMusic() {
 		try {
-			String folder = "/Music/";
-	        Media sound = new Media(getClass().getResource(folder+"ElevatorJazz.mp3").toExternalForm());
+			String filePath = folder+"ElevatorJazz.mp3";
+	        Media sound = new Media(getClass().getResource(filePath).toExternalForm());
 	        elevator = new MediaPlayer(sound);
 
-	        sound = new Media(getClass().getResource(folder+"HotelJazz.mp3").toExternalForm());
+			filePath = folder+"HotelJazz.mp3";
+	        sound = new Media(getClass().getResource(filePath).toExternalForm());
 	        lounge = new MediaPlayer(sound);
 
-	        sound = new Media(getClass().getResource(folder+"RelaxingMusic.mp3").toExternalForm());
+			filePath = folder+"RelaxingMusic.mp3";
+	        sound = new Media(getClass().getResource(filePath).toExternalForm());
 	        musicRelax = new MediaPlayer(sound);
 	        
 	        elevator.setCycleCount(1);

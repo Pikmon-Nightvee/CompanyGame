@@ -17,41 +17,52 @@ public class SoundeffectManager {
 	private MediaPlayer select;
 	private MediaPlayer pickUp;
 	private MediaPlayer error;
+	String folder = "/SoundEffects/";
 	
 	public void loadSfx() {
 		try {
-			String folder = "/SoundEffects/";
-	        Media sound = new Media(getClass().getResource(folder+"buttonClick.mp3").toExternalForm());
+			String filePath = folder+"buttonClick.mp3";
+	        Media sound = new Media(getClass().getResource(filePath).toExternalForm());
 	        button = new MediaPlayer(sound);
 
-	        sound = new Media(getClass().getResource(folder+"gameover.mp3").toExternalForm());
+			filePath = folder+"gameover.mp3";
+	        sound = new Media(getClass().getResource(filePath).toExternalForm());
 	        gameOver = new MediaPlayer(sound);
 
-	        sound = new Media(getClass().getResource(folder+"levelComplete.mp3").toExternalForm());
+			filePath = folder+"levelComplete.mp3";
+	        sound = new Media(getClass().getResource(filePath).toExternalForm());
 	        levelComplete = new MediaPlayer(sound);
 
-	        sound = new Media(getClass().getResource(folder+"cashRegistre.mp3").toExternalForm());
+			filePath = folder+"cashRegistre.mp3";
+	        sound = new Media(getClass().getResource(filePath).toExternalForm());
 	        cash = new MediaPlayer(sound);
 
-	        sound = new Media(getClass().getResource(folder+"Rotation.mp3").toExternalForm());
+			filePath = folder+"Rotation.mp3";
+	        sound = new Media(getClass().getResource(filePath).toExternalForm());
 	        rotation = new MediaPlayer(sound);
 
-	        sound = new Media(getClass().getResource(folder+"MachineFix.mp3").toExternalForm());
+			filePath = folder+"MachineFix.mp3";
+	        sound = new Media(getClass().getResource(filePath).toExternalForm());
 	        repair = new MediaPlayer(sound);
 
-	        sound = new Media(getClass().getResource(folder+"Walking.mp3").toExternalForm());
+			filePath = folder+"Walking.mp3";
+	        sound = new Media(getClass().getResource(filePath).toExternalForm());
 	        walking = new MediaPlayer(sound);
 
-	        sound = new Media(getClass().getResource(folder+"MachinePlace.mp3").toExternalForm());
+			filePath = folder+"MachinePlace.mp3";
+	        sound = new Media(getClass().getResource(filePath).toExternalForm());
 	        placing = new MediaPlayer(sound);
 
-	        sound = new Media(getClass().getResource(folder+"select.mp3").toExternalForm());
+			filePath = folder+"select.mp3";
+	        sound = new Media(getClass().getResource(filePath).toExternalForm());
 	        select = new MediaPlayer(sound);
 
-	        sound = new Media(getClass().getResource(folder+"Pickup.mp3").toExternalForm());
+			filePath = folder+"Pickup.mp3";
+	        sound = new Media(getClass().getResource(filePath).toExternalForm());
 	        pickUp = new MediaPlayer(sound);
 
-	        sound = new Media(getClass().getResource(folder+"Error.mp3").toExternalForm());
+			filePath = folder+"Error.mp3";
+	        sound = new Media(getClass().getResource(filePath).toExternalForm());
 	        error = new MediaPlayer(sound);
 		}catch(Exception e) {
 			e.printStackTrace();
