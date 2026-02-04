@@ -1,12 +1,12 @@
-Wooden Board,1,25,5,0,Standard,Circular Saw,none,Craft Business,Wood,10
-Wooden Beam,1,40,5,0,Standard,Circular Saw,none,Craft Business,Wood,10
-Metal Plate,1,80,10,0,Standard,Milling Machine,none,Craft Business,Metal,10
-Iron Rod,1,120,10,0,Standard,Milling Machine,none,Craft Business,Iron,10
+Wooden Board,1,25,5,0,Standard,Circular Saw,none,Craft Buisness,Wood,10
+Wooden Beam,1,40,5,0,Standard,Circular Saw,none,Craft Buisness,Wood,10
+Metal Plate,1,80,10,0,Standard,Milling Machine,none,Craft Buisness,Metal,10
+Iron Rod,1,120,10,0,Standard,Milling Machine,none,Craft Buisness,Iron,10
 Copper Wire,1,180,1,0,Standard,Soldering Iron,none,IT Manager,Copper,10
-Metal Screws,10,2,60,0,Standard,Drill Press,none,Craft Business,Metal,10
-Iron Pot,1,200,15,0,Standard,Lathe,none,Craft Business,Iron,10
-Copper Pan,1,250,10,0,Standard,Lathe,none,Craft Business,Copper,10
-Wooden Bowl,1,35,5,0,Standard,Milling Machine,none,Craft Business,Wood,10
+Metal Screws,10,2,60,0,Standard,Drill Press,none,Craft Buisness,Metal,10
+Iron Pot,1,200,15,0,Standard,Lathe,none,Craft Buisness,Iron,10
+Copper Pan,1,250,10,0,Standard,Lathe,none,Craft Buisness,Copper,10
+Wooden Bowl,1,35,5,0,Standard,Milling Machine,none,Craft Buisness,Wood,10
 Cooked Meal,1,10,5,0,Standard,Stove,none,Foodtruck,Meat,Measuring Tools,5,2
 Baked Food,1,15,5,0,Standard,Oven,none,Foodtruck,Vegetables,Fruits,10,10
 Software,1,300,1,0,Standard,PC,none,IT Manager,Copper,Software License,5,1
