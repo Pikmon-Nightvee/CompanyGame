@@ -78,8 +78,8 @@ public class GameManager {
 				scrollAmount = minimum;
 			}
 			switch(scrollAmount) {
-			case 0:placeHolder.setWidth(50);placeHolder.setHeight(100);machine="Ofen";break;
-			case 1:placeHolder.setWidth(50);placeHolder.setHeight(50);machine="Herd";break;
+			case 0:placeHolder.setWidth(50);placeHolder.setHeight(100);machine="Oven";break;
+			case 1:placeHolder.setWidth(50);placeHolder.setHeight(50);machine="Stove";break;
 			}
 			break;
 		case "Craft Buisness":
@@ -91,10 +91,10 @@ public class GameManager {
 				scrollAmount = minimum;
 			}
 			switch(scrollAmount) {
-			case 0:placeHolder.setWidth(100);placeHolder.setHeight(75);machine="Fräsmaschine";break;
-			case 1:placeHolder.setWidth(75);placeHolder.setHeight(75);machine="Drehmaschine";break;
-			case 2:placeHolder.setWidth(120);placeHolder.setHeight(50);machine="Bohrmaschine";break;
-			case 3:placeHolder.setWidth(25);placeHolder.setHeight(25);machine="Kreissäge";break;
+			case 0:placeHolder.setWidth(100);placeHolder.setHeight(75);machine="Milling Machine";break;
+			case 1:placeHolder.setWidth(75);placeHolder.setHeight(75);machine="Lathe";break;
+			case 2:placeHolder.setWidth(120);placeHolder.setHeight(50);machine="Drill Press";break;
+			case 3:placeHolder.setWidth(25);placeHolder.setHeight(25);machine="Circular Saw";break;
 			}
 			break;
 		case "IT Manager":
@@ -211,10 +211,12 @@ public class GameManager {
 							}
 						}
 						if(canBeAdded) {
+							System.out.println("can be placed");
 							canBeAdded = !colission.AABB(player.getX(), player.getY(), player.getWidth(), player.getHeight(), xFinal, yFinal, placeHolder.getWidth(), placeHolder.getHeight());
 							if(canBeAdded) {
 								if(machine.isBlank()) {
 									canBeAdded = false;
+									System.out.println("is Blank");
 								}else {
 									canBeAdded = amountLowEnough(reader,machine,company);
 								}

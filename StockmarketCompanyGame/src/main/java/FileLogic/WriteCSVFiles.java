@@ -796,16 +796,16 @@ public class WriteCSVFiles {
 		switch(company.getCompanyType()) {
 		case "Foodtruck":
 			switch(scrollAmount) {
-			case 0:machine = "Ofen";break;
-			case 1:machine = "Herd";break;
+			case 0:machine = "Oven";break;
+			case 1:machine = "Stove";break;
 			}
 			break;
 		case "Craft Buisness":
 			switch(scrollAmount) {
-			case 0:machine = "Fräsmaschine";break;
-			case 1:machine = "Drehmaschine";break;
-			case 2:machine = "Bohrmaschine";break;
-			case 3:machine = "Kreissäge";break;
+			case 0:machine = "Milling Machine";break;
+			case 1:machine = "Lathe";break;
+			case 2:machine = "Drill Press";break;
+			case 3:machine = "Circular Saw";break;
 			}
 			break;
 		case "IT Manager":

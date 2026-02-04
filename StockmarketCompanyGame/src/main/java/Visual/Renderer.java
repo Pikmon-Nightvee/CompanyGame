@@ -180,34 +180,34 @@ public class Renderer {
 				switchTo = "SolderingIronD.png";
 			}  
 			break;
-		case "Ofen": 
+		case "Oven": 
 			if(notTurned) {
 				switchTo = "Ofen.png";
 			}else {
 				switchTo = "OfenD.png";
 			} 
 			break;
-		case "Herd":
+		case "Stove":
 			switchTo = "Oven.png";
 			break;
-		case "Bohrmaschine": 
+		case "Drill Press": 
 			if(notTurned) {
 				switchTo = "Bohrmaschine.png";
 			}else {
 				switchTo = "BohrmaschineD.png";
 			} 
 			break;
-		case "Drehmaschine":
+		case "Lathe":
 			switchTo = "Drehmaschine.png";
 			break;
-		case "Fräsmaschine": 
+		case "Milling Machine": 
 			if(notTurned) {
 				switchTo = "Fräsmaschine.png";
 			}else {
 				switchTo = "FräsmaschineD.png";
 			} 
 			break;
-		case "Kreissäge":
+		case "Circular Saw":
 			switchTo = "Kreissäge.png";
 			break;
 		}
