@@ -47,10 +47,6 @@ public class UIMenuManager {
 	private void CSSLabelNoAddAmount(Label label) {
 		label.setStyle("-fx-font-size: 100px;-fx-font-weight: bold; -fx-text-fill: #949494;");
 	}
-
-	private void changeGameState(String gameState, String insert) {
-		gameState = insert;
-	}
 	
 	private void setButtonBackground(GraphicsManager graphic, Button button) {
 		try {

@@ -2,8 +2,6 @@ package GameLogic;
 
 import java.util.ArrayList;
 
-import FileLogic.WriteCSVFiles;
-
 public class LevelHolder {
 	//0 -> Luft platzierbar, 1 -> Wand, 2 -> Spawnpoint, 3 -> Luft nicht platzierbar, 4 -> Rad, 5 -> Headlight
 	private ArrayList<Wall> walls = new ArrayList<>();

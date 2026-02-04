@@ -1,7 +1,5 @@
 package GameLogic;
 
-import java.util.Objects;
-
 public class InteractableObject extends Item{
 	private boolean interacted = false;
 	private boolean broken = false;

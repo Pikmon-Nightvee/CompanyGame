@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import GameLogic.Camera;
 import GameLogic.Company;
@@ -16,7 +15,6 @@ import GameLogic.MachinePlaceObject;
 import GameLogic.Player;
 import GameLogic.Product;
 import GameLogic.Resource;
-import GameLogic.Wall;
 
 public class WriteCSVFiles {
 	public void manageEmployeeInFiles(String id, String toWhere) {

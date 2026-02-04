@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import GameLogic.Camera;
 import GameLogic.Company;
 import GameLogic.Employee;
 import GameLogic.InteractableObject;
@@ -15,7 +14,6 @@ import GameLogic.MachinePlaceObject;
 import GameLogic.Player;
 import GameLogic.Product;
 import GameLogic.Resource;
-import GameLogic.Wall;
 
 public class ReadCSVFiles {
 	public Company gameAlreadyPlayedCompanyData() {
