@@ -24,7 +24,7 @@ public class VisualElementsHolder {
 	private Label moneyOfCompany = new Label("");
 	private Label nameOfCompany = new Label("");
 	private Label enterName = new Label("Enter the companys name");
-	private Label difficulty = new Label("Game difficulty:");
+	private Label difficulty = new Label("Select starting money:");
 	private Label chooseCompanyType = new Label("Company Type:");
 	private Label chooseCompanyWork = new Label("Company Specilty:");
 	private Label employ = new Label("Hire");
