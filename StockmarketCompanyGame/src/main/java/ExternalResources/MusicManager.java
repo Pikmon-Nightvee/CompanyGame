@@ -1,5 +1,7 @@
 package ExternalResources;
 
+import java.nio.file.Paths;
+
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
@@ -10,20 +12,20 @@ public class MusicManager {
 	
 	private int musicPlaying = 0;
 	private boolean notPlayed = true;
-	private String folder = "/Music/";
+	private String folder = "Music/";
 	
 	public void loadMusic() {
 		try {
 			String filePath = folder+"ElevatorJazz.mp3";
-	        Media sound = new Media(getClass().getResource(filePath).toExternalForm());
+	        Media sound = new Media(Paths.get(filePath).toUri().toString());
 	        elevator = new MediaPlayer(sound);
 
 			filePath = folder+"HotelJazz.mp3";
-	        sound = new Media(getClass().getResource(filePath).toExternalForm());
+			sound = new Media(Paths.get(filePath).toUri().toString());
 	        lounge = new MediaPlayer(sound);
 
 			filePath = folder+"RelaxingMusic.mp3";
-	        sound = new Media(getClass().getResource(filePath).toExternalForm());
+			sound = new Media(Paths.get(filePath).toUri().toString());
 	        musicRelax = new MediaPlayer(sound);
 	        
 	        elevator.setCycleCount(1);
