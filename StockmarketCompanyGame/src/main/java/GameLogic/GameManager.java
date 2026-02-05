@@ -116,6 +116,10 @@ public class GameManager {
 		return scrollAmount;
 	}
 	
+	public void setBack(int scroll) {
+		scroll = -1;
+	}
+	
 	//Game Loop
 	public void loop(Canvas gameCanvas, GraphicsContext gamePencil, StackPane gamePane,Canvas warningCanvas, GraphicsContext warningPencil, ReadCSVFiles reader, WriteCSVFiles writer, VBox gameVBox, Company company, UIMenuManager uiMenuManager, Stage stage, ButtonManager buttonManager, VisualElementsHolder visual, Set<KeyCode> inputs, Player player, LevelHolder level, GameManager gameManager, SoundeffectManager sfx, MusicManager music, GraphicsManager graphic) {
 		Timeline gameTimeline = new Timeline();
@@ -365,5 +369,8 @@ public class GameManager {
     }
 	public MachinePlaceObject getPlaceHolder() {
 		return placeHolder;
+	}
+	public String getState() {
+		return state;
 	}
 }

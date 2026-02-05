@@ -113,7 +113,10 @@ public class App extends Application {
     	});
     	
     	scene.setOnKeyPressed(event->{
-    		inputs.add(event.getCode());		
+    		inputs.add(event.getCode());	
+    		if(inputs.contains(KeyCode.E)) {
+    			scrollAmount = -1;
+    		}
     	});
     	scene.setOnKeyReleased(event->{
     		inputs.remove(event.getCode());
@@ -129,104 +132,106 @@ public class App extends Application {
     		gameManager.updateMouseCoordinates(event.getX(), event.getY());
     	});
     	scene.setOnScroll(event->{
-    		sfx.playSelect(uiMenuManager.isSfxOn());
-    		
-    		ArrayList<Machine> allMachine = readCSV.readMachines("MachinesData.csv",company);
-    		ArrayList<Machine> bought = readCSV.readMachines("MachineBought.csv",company);
-    		int increasedTotal = 0;
-    		boolean notFound = true;
-    		if (event.getDeltaY() > 0) {
-    			for(Machine machineAll : allMachine) {
-    				System.out.println(machineAll.toString());
-	    			if(notFound) {
-    					for(Machine machineBought : bought) {
-	    					if(machineBought.getName().equals(machineAll.getName())) {
-    	    					boolean result = amountLowEnough(readCSV,machineBought.getName(),machineBought.getAmount());
-    	    					System.out.println("More Bought than Placed?: "+result+" Scroll right?: "+(increasedTotal > scrollAmount));
-	    						if(increasedTotal > scrollAmount && result) {
-	    							scrollAmount = increasedTotal;
-	    							notFound = false;
-	    						}
-	    					}
-	    				}
-	    				increasedTotal++;
-	    				System.out.println("Iteration: "+increasedTotal+" scrollAmount: "+scrollAmount);
-	    			}
-    			}
-    			//At the top
-    			if(notFound) {
-    				System.out.println("Nothing Found");
-    				increasedTotal = 0;
-    				int setScroll=0;
-        	    	for(Machine machineAll : allMachine) {
-        				System.out.println(machineAll.toString());
-	        			if(notFound) {
-        	    			for(Machine machineBought : bought) {
-	    	    				if(machineBought.getName().equals(machineAll.getName())) {
-	    	    					boolean result = amountLowEnough(readCSV,machineBought.getName(),machineBought.getAmount());
-	    	    					System.out.println("More Bought than Placed?: "+result+" Scroll right?: "+(increasedTotal < scrollAmount));
-	    	    					if(increasedTotal < scrollAmount && result) {
-	    	    						setScroll = increasedTotal;
-	    	    						notFound = false;
-	    	    					}
-	    	    				}
-	    	    			}
-	    	    			increasedTotal++;
-	    	    			System.out.println("Iteration: "+increasedTotal+" scrollAmount: "+scrollAmount);
-	        			}
-    	    		}
-        	    	if(!notFound) {
-        	    		scrollAmount = setScroll;
-        	    	}
-    			}
-    	        System.out.println("Scrolled up");
-    	    } else if (event.getDeltaY() < 0) {
-    	    	int setScroll=0;
-    	    	for(Machine machineAll : allMachine) {
-    	    		if(notFound) {
-	    				for(Machine machineBought : bought) {
-		    				if(machineBought.getName().equals(machineAll.getName())) {
-		    					boolean result = amountLowEnough(readCSV,machineBought.getName(),machineBought.getAmount());
-		    					System.out.println("More Bought than Placed?: "+result+" Scroll right?: "+(increasedTotal < scrollAmount));
-		    					if(increasedTotal < scrollAmount && result) {
-		    						setScroll = increasedTotal;
-		    						notFound = false;
-		    					}
-		    				}
-		    			}
-		    			increasedTotal++;
-    	    		}
-	    			System.out.println("Iteration: "+increasedTotal+" scrollAmount: "+scrollAmount);
-	    		}
-    	    	if(!notFound) {
-    	    		scrollAmount = setScroll;
-    	    	}
-    	    	//At the bottom
-    	    	if(notFound) {
-    				System.out.println("Nothing Found");
-    	    		increasedTotal = 0;
-    				for(Machine machineAll : allMachine) {
-    					if(notFound) {
-	        				for(Machine machineBought : bought) {
-	    	    				if(machineBought.getName().equals(machineAll.getName())) {
+    		if(gameManager.getState().equals("InTopDown")) {
+	    		sfx.playSelect(uiMenuManager.isSfxOn());
+	    		
+	    		ArrayList<Machine> allMachine = readCSV.readMachines("MachinesData.csv",company);
+	    		ArrayList<Machine> bought = readCSV.readMachines("MachineBought.csv",company);
+	    		int increasedTotal = 0;
+	    		boolean notFound = true;
+	    		if (event.getDeltaY() > 0) {
+	    			for(Machine machineAll : allMachine) {
+	    				System.out.println(machineAll.toString());
+		    			if(notFound) {
+	    					for(Machine machineBought : bought) {
+		    					if(machineBought.getName().equals(machineAll.getName())) {
 	    	    					boolean result = amountLowEnough(readCSV,machineBought.getName(),machineBought.getAmount());
 	    	    					System.out.println("More Bought than Placed?: "+result+" Scroll right?: "+(increasedTotal > scrollAmount));
-	    	    					if(increasedTotal > scrollAmount && result) {
-	    	    						scrollAmount = increasedTotal;
-	    	    						notFound = false;
-	    	    					}
-	    	    				}
-	        				}
-	    	    			increasedTotal++;
-	    	    			System.out.println("Iteration: "+increasedTotal+" scrollAmount: "+scrollAmount);
-    					}
-    				}
-    	    	}
-    	        System.out.println("Scrolled down");
-    	    }
-    		if(!notFound) {
-    			scrollAmount = gameManager.updateMachine(scrollAmount, company);
-    			System.out.println("Scroll amount: " + scrollAmount + " Total Machine: " + allMachine.size());
+		    						if(increasedTotal > scrollAmount && result) {
+		    							scrollAmount = increasedTotal;
+		    							notFound = false;
+		    						}
+		    					}
+		    				}
+		    				increasedTotal++;
+		    				System.out.println("Iteration: "+increasedTotal+" scrollAmount: "+scrollAmount);
+		    			}
+	    			}
+	    			//At the top
+	    			if(notFound) {
+	    				System.out.println("Nothing Found");
+	    				increasedTotal = 0;
+	    				int setScroll=0;
+	        	    	for(Machine machineAll : allMachine) {
+	        				System.out.println(machineAll.toString());
+		        			if(notFound) {
+	        	    			for(Machine machineBought : bought) {
+		    	    				if(machineBought.getName().equals(machineAll.getName())) {
+		    	    					boolean result = amountLowEnough(readCSV,machineBought.getName(),machineBought.getAmount());
+		    	    					System.out.println("More Bought than Placed?: "+result+" Scroll right?: "+(increasedTotal < scrollAmount));
+		    	    					if(increasedTotal < scrollAmount && result) {
+		    	    						setScroll = increasedTotal;
+		    	    						notFound = false;
+		    	    					}
+		    	    				}
+		    	    			}
+		    	    			increasedTotal++;
+		    	    			System.out.println("Iteration: "+increasedTotal+" scrollAmount: "+scrollAmount);
+		        			}
+	    	    		}
+	        	    	if(!notFound) {
+	        	    		scrollAmount = setScroll;
+	        	    	}
+	    			}
+	    	        System.out.println("Scrolled up");
+	    	    } else if (event.getDeltaY() < 0) {
+	    	    	int setScroll=0;
+	    	    	for(Machine machineAll : allMachine) {
+	    	    		if(notFound) {
+		    				for(Machine machineBought : bought) {
+			    				if(machineBought.getName().equals(machineAll.getName())) {
+			    					boolean result = amountLowEnough(readCSV,machineBought.getName(),machineBought.getAmount());
+			    					System.out.println("More Bought than Placed?: "+result+" Scroll right?: "+(increasedTotal < scrollAmount));
+			    					if(increasedTotal < scrollAmount && result) {
+			    						setScroll = increasedTotal;
+			    						notFound = false;
+			    					}
+			    				}
+			    			}
+			    			increasedTotal++;
+	    	    		}
+		    			System.out.println("Iteration: "+increasedTotal+" scrollAmount: "+scrollAmount);
+		    		}
+	    	    	if(!notFound) {
+	    	    		scrollAmount = setScroll;
+	    	    	}
+	    	    	//At the bottom
+	    	    	if(notFound) {
+	    				System.out.println("Nothing Found");
+	    	    		increasedTotal = 0;
+	    				for(Machine machineAll : allMachine) {
+	    					if(notFound) {
+		        				for(Machine machineBought : bought) {
+		    	    				if(machineBought.getName().equals(machineAll.getName())) {
+		    	    					boolean result = amountLowEnough(readCSV,machineBought.getName(),machineBought.getAmount());
+		    	    					System.out.println("More Bought than Placed?: "+result+" Scroll right?: "+(increasedTotal > scrollAmount));
+		    	    					if(increasedTotal > scrollAmount && result) {
+		    	    						scrollAmount = increasedTotal;
+		    	    						notFound = false;
+		    	    					}
+		    	    				}
+		        				}
+		    	    			increasedTotal++;
+		    	    			System.out.println("Iteration: "+increasedTotal+" scrollAmount: "+scrollAmount);
+	    					}
+	    				}
+	    	    	}
+	    	        System.out.println("Scrolled down");
+	    	    }
+	    		if(!notFound) {
+	    			scrollAmount = gameManager.updateMachine(scrollAmount, company);
+	    			System.out.println("Scroll amount: " + scrollAmount + " Total Machine: " + allMachine.size());
+	    		}
     		}
     	});
     	gameManager.loop(gameCanvas, gamePencil, gamePane, warningCanvas, warningPencil, readCSV, writeCSV, gameVBox, company, uiMenuManager, stage, buttonManager, visualElementsHolder, inputs, player, level, gameManager, sfx, music, graphic);
