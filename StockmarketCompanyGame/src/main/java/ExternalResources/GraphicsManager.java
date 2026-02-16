@@ -104,7 +104,7 @@ public class GraphicsManager {
 	
 	public void loadMenu() {
 		try {
-			String filePath = "IconAISlop.png";
+			String filePath = "NewIcon.png";
 			filePath = folder + filePath;
 			icon = new Image(getClass().getResource(filePath).toExternalForm());
 
