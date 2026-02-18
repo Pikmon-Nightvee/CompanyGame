@@ -75,77 +75,65 @@ public class SoundeffectManager {
 		return button;
 	}
 
-	public Object playError(boolean isPlayed) {
+	public void playError(boolean isPlayed) {
 		error.stop();
 		if(isPlayed)error.play();
-		return null;
 	}
 
-	public Object playButton(boolean isPlayed) {
+	public void playButton(boolean isPlayed) {
 		button.stop();
 		if(isPlayed)button.play();
-		return null;
 	}
 
-	public Object playGameOver(boolean isPlayed) {
+	public void playGameOver(boolean isPlayed) {
 		gameOver.stop();
 		if(isPlayed)gameOver.play();
-		return null;
 	}
 
-	public Object playLevelComplete(boolean isPlayed) {
+	public void playLevelComplete(boolean isPlayed) {
 		levelComplete.stop();
 		if(isPlayed)levelComplete.play();
-		return null;
 	}
 
-	public Object playLevelCash(boolean isPlayed) {
+	public void playLevelCash(boolean isPlayed) {
 		cash.stop();
 		if(isPlayed)cash.play();
-		return null;
 	}
 
-	public Object playRotation(boolean isPlayed) {
+	public void playRotation(boolean isPlayed) {
 		rotation.stop();
 		if(isPlayed)rotation.play();
-		return null;
 	}
 
-	public Object playRepair(boolean isPlayed) {
+	public void playRepair(boolean isPlayed) {
 		repair.stop();
 		if(isPlayed)repair.play();
-		return null;
 	}
 
-	public Object playPlacing(boolean isPlayed) {
+	public void playPlacing(boolean isPlayed) {
 		placing.stop();
 		if(isPlayed)placing.play();
-		return null;
 	}
 
-	public Object playPickUp(boolean isPlayed) {
+	public void playPickUp(boolean isPlayed) {
 		pickUp.stop();
 		if(isPlayed)pickUp.play();
-		return null;
 	}
 
-	public Object playSelect(boolean isPlayed) {
+	public void playSelect(boolean isPlayed) {
 		select.stop();
 		if(isPlayed)select.play();
-		return null;
 	}
 
-	public Object playWalkingPlay(boolean isPlayed) {
+	public void playWalkingPlay(boolean isPlayed) {
 		if(isPlayed) {
 			walking.setCycleCount(-1);
 			walking.play();
 		}
-		return null;
 	}
 
-	public Object playWalkingStop() {
+	public void playWalkingStop() {
 		walking.stop();
-		return null;
 	}
 
 	public MediaPlayer getGameOver() {
