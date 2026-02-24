@@ -83,175 +83,83 @@ public class SoundeffectManager {
         return button;
     }
 
-    public Object playError(boolean isPlayed) {
-        stopSafely(error);
-        if (isPlayed) playSafely(error);
-        return null;
-    }
+    
 
-    public Object playButton(boolean isPlayed) {
-        stopSafely(button);
-        if (isPlayed) playSafely(button);
-        return null;
-    }
-
-    public Object playGameOver(boolean isPlayed) {
-        stopSafely(gameOver);
-        if (isPlayed) playSafely(gameOver);
-        return null;
-    }
-
-<<<<<<< HEAD
-    public Object playLevelComplete(boolean isPlayed) {
-        stopSafely(levelComplete);
-        if (isPlayed) playSafely(levelComplete);
-        return null;
-    }
-=======
 	public void playError(boolean isPlayed) {
 		error.stop();
 		if(isPlayed)error.play();
 	}
->>>>>>> branch 'main' of https://github.com/Pikmon-Nightvee/CompanyGame
 
-<<<<<<< HEAD
-    public Object playLevelCash(boolean isPlayed) {
-        stopSafely(cash);
-        if (isPlayed) playSafely(cash);
-        return null;
-    }
-=======
+
 	public void playButton(boolean isPlayed) {
 		button.stop();
 		if(isPlayed)button.play();
 	}
->>>>>>> branch 'main' of https://github.com/Pikmon-Nightvee/CompanyGame
 
-<<<<<<< HEAD
-    public Object playRotation(boolean isPlayed) {
-        stopSafely(rotation);
-        if (isPlayed) playSafely(rotation);
-        return null;
-    }
-=======
 	public void playGameOver(boolean isPlayed) {
 		gameOver.stop();
 		if(isPlayed)gameOver.play();
 	}
->>>>>>> branch 'main' of https://github.com/Pikmon-Nightvee/CompanyGame
 
-<<<<<<< HEAD
-    public Object playRepair(boolean isPlayed) {
-        stopSafely(repair);
-        if (isPlayed) playSafely(repair);
-        return null;
-    }
-=======
 	public void playLevelComplete(boolean isPlayed) {
 		levelComplete.stop();
 		if(isPlayed)levelComplete.play();
 	}
->>>>>>> branch 'main' of https://github.com/Pikmon-Nightvee/CompanyGame
 
-<<<<<<< HEAD
-    public Object playPlacing(boolean isPlayed) {
-        stopSafely(placing);
-        if (isPlayed) playSafely(placing);
-        return null;
-    }
-=======
 	public void playLevelCash(boolean isPlayed) {
 		cash.stop();
 		if(isPlayed)cash.play();
 	}
->>>>>>> branch 'main' of https://github.com/Pikmon-Nightvee/CompanyGame
 
-<<<<<<< HEAD
-    public Object playPickUp(boolean isPlayed) {
-        stopSafely(pickUp);
-        if (isPlayed) playSafely(pickUp);
-        return null;
-    }
-=======
 	public void playRotation(boolean isPlayed) {
 		rotation.stop();
 		if(isPlayed)rotation.play();
 	}
->>>>>>> branch 'main' of https://github.com/Pikmon-Nightvee/CompanyGame
 
-<<<<<<< HEAD
-    public Object playSelect(boolean isPlayed) {
-        stopSafely(select);
-        if (isPlayed) playSafely(select);
-        return null;
-    }
-=======
 	public void playRepair(boolean isPlayed) {
 		repair.stop();
 		if(isPlayed)repair.play();
 	}
->>>>>>> branch 'main' of https://github.com/Pikmon-Nightvee/CompanyGame
-
-<<<<<<< HEAD
-    public Object playWalkingPlay(boolean isPlayed) {
-        if (!isPlayed) return null;
-        if (walking == null) return null;
-=======
+    
 	public void playPlacing(boolean isPlayed) {
 		placing.stop();
 		if(isPlayed)placing.play();
-	}
->>>>>>> branch 'main' of https://github.com/Pikmon-Nightvee/CompanyGame
 
-<<<<<<< HEAD
         try {
             walking.setCycleCount(MediaPlayer.INDEFINITE);
             walking.play();
         } catch (Exception ignored) {
         }
-        return null;
     }
-=======
+
 	public void playPickUp(boolean isPlayed) {
 		pickUp.stop();
 		if(isPlayed)pickUp.play();
 	}
->>>>>>> branch 'main' of https://github.com/Pikmon-Nightvee/CompanyGame
 
-<<<<<<< HEAD
-    public Object playWalkingStop() {
-        stopSafely(walking);
-        return null;
-    }
-=======
 	public void playSelect(boolean isPlayed) {
 		select.stop();
 		if(isPlayed)select.play();
 	}
->>>>>>> branch 'main' of https://github.com/Pikmon-Nightvee/CompanyGame
 
-<<<<<<< HEAD
     public MediaPlayer getGameOver() {
         return gameOver;
     }
-=======
+
 	public void playWalkingPlay(boolean isPlayed) {
 		if(isPlayed) {
 			walking.setCycleCount(-1);
 			walking.play();
 		}
 	}
->>>>>>> branch 'main' of https://github.com/Pikmon-Nightvee/CompanyGame
 
-<<<<<<< HEAD
     public MediaPlayer getLevelComplete() {
         return levelComplete;
     }
-=======
+
 	public void playWalkingStop() {
 		walking.stop();
 	}
->>>>>>> branch 'main' of https://github.com/Pikmon-Nightvee/CompanyGame
 
     public MediaPlayer getCash() {
         return cash;
