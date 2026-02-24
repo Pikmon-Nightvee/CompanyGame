@@ -254,13 +254,16 @@ public class Renderer {
 		pencil.fillRect(0, 20, canvas.getWidth(), canvas.getHeight());
 		pencil.drawImage(graphic.getWarningCanvasOverlay(),0, 20, canvas.getWidth(), canvas.getHeight()-20);
 		
-		//ChatGPT generated code:
-		if(visual.getWarningCanvasInt() > 0) {
+		// Events:
+		boolean drewEvent = EventManager.getInstance().draw(canvas, pencil);
+		
+		// Fallback warning (broken machines):
+		if(!drewEvent && visual.getWarningCanvasInt() > 0) {
 			String error = visual.updateWarningCanvas();
 			pencil.setFill(Color.RED);
 			
 			Font font = Font.font("Arial", FontWeight.BOLD, 35);
-			pencil.setFont(font);;
+			pencil.setFont(font);
 	
 		    // Measure text size
 		    Text text = new Text(error);

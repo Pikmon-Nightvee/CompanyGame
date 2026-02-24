@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import GameLogic.Camera;
 import GameLogic.Company;
@@ -983,4 +985,78 @@ public class WriteCSVFiles {
 			e.printStackTrace();
 		}
 	}
+
+
+// ======================= EVENT SYSTEM (CSV) =======================
+// These helper methods are used by Visual.EventManager to store cooldown/time state.
+
+/**
+ * Writes the current cooldown state to:
+ * DataCSV/EventData/EventCooldown.csv
+ *
+ * Each row should be:
+ * id,nextAllowedDay,monthIndex,countThisMonth
+ */
+/**
+ * Writes the current cooldown state to:
+ * DataCSV/EventData/EventCooldown.csv
+ *
+ * Each row should be:
+ * EventID,cooldownRemaining,monthCount,monthWindowStartDay
+ */
+public void writeEventCooldownState(List<String[]> rows) {
+    writeRawCsv("DataCSV/EventData/EventCooldown.csv", rows);
+}
+
+/** Overload for existing calls that pass ArrayList. */
+public void writeEventCooldownState(ArrayList<String[]> rows) {
+    writeEventCooldownState((List<String[]>) rows);
+}
+
+/** Overload so EventManager can pass a Map (id -> row). */
+public void writeEventCooldownState(Map<String, String[]> state) {
+    if (state == null) return;
+    ArrayList<String[]> rows = new ArrayList<>(state.values());
+    writeEventCooldownState(rows);
+}
+/**
+ * Adds "days" to the event day counter stored in:
+ * DataCSV/EventData/GameTime.csv
+ *
+ * This is called from the cycle button (day/week/month/year).
+ */
+public void addEventDays(int delta) {
+    addEventDays(delta, new ReadCSVFiles());
+}
+
+public void addEventDays(int delta, ReadCSVFiles reader) {
+    int day = reader.readEventDay();
+    day += delta;
+
+    ArrayList<String[]> rows = new ArrayList<>();
+    rows.add(new String[] { String.valueOf(day) });
+    writeRawCsv("DataCSV/EventData/GameTime.csv", rows);
+}
+
+/**
+ * Small generic CSV writer used by the event system.
+ * Writes rows comma-separated.
+ */
+private void writeRawCsv(String path, List<String[]> rows) {
+    try {
+        File file = new File(path);
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists()) parent.mkdirs();
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(), false))) {
+            for (String[] r : rows) {
+                if (r == null) continue;
+                writer.write(String.join(",", r));
+                writer.write("\n");
+            }
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
 }

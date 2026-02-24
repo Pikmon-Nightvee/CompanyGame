@@ -173,7 +173,48 @@ public class CreateImportantCSVFiles {
 		return error;
 	}
 	
-	public boolean createDirectories() {
+	
+    /**
+     * Creates EventData files used by EventManager:
+     *  - Events.csv (event definitions editable in Excel)
+     *  - EventCooldown.csv (runtime state)
+     *  - GameTime.csv (day counter)
+     *
+     * Note: We only create files if missing (we do NOT overwrite existing ones).
+     */
+    public boolean createFilesEvents() {
+        boolean created = false;
+        try {
+            File file = new File("DataCSV/EventData/Events.csv");
+            if (file.createNewFile()) {
+                System.out.println("Important File: Events created");
+                created = true;
+            } else {
+                System.out.println("Important File: Events exists");
+            }
+
+            file = new File("DataCSV/EventData/EventCooldown.csv");
+            if (file.createNewFile()) {
+                System.out.println("Important File: EventCooldown created");
+                created = true;
+            } else {
+                System.out.println("Important File: EventCooldown exists");
+            }
+
+            file = new File("DataCSV/EventData/GameTime.csv");
+            if (file.createNewFile()) {
+                System.out.println("Important File: GameTime created");
+                created = true;
+            } else {
+                System.out.println("Important File: GameTime exists");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return created;
+    }
+
+public boolean createDirectories() {
 	    boolean created = false;
 
 	    try {

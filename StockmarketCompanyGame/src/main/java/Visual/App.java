@@ -65,6 +65,7 @@ public class App extends Application {
     	boolean error = false;
     	
     	error = createCSV.createDirectories();
+    	error = createCSV.createFilesEvents();
     	error = createCSV.createImportantGameStateFiles();
     	error = createCSV.createFilesEmployees();
     	error = createCSV.createFilesMachine();

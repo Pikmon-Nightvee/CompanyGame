@@ -1,8 +1,13 @@
 package FileLogic;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import GameLogic.Company;
@@ -16,6 +21,27 @@ import GameLogic.Product;
 import GameLogic.Resource;
 
 public class ReadCSVFiles {
+
+	/*
+	 * =====================
+	 *  Event-System (CSV)
+	 * =====================
+	 *
+	 * Diese Methoden werden vom neuen EventManager genutzt.
+	 * Damit du Events leicht in Excel bearbeiten kannst, lesen wir einfache CSV-Zeilen
+	 * und splitten per Komma.
+	 *
+	 * Dateien:
+	 *  - DataCSV/EventData/Events.csv
+	 *  - DataCSV/EventData/EventCooldown.csv
+	 *  - DataCSV/EventData/GameTime.csv
+	 */
+
+	/**
+	 * Liest die Event-Definitionen roh als String-Arrays.
+	 * Erwartetes CSV-Format (Header optional):
+	 * id,type,weight,cooldownDays,maxPerMonth,always,text,optTop,optRight,optBottom,optLeft,effectTop,effectRight,effectBottom,effectLeft
+	 */
 	public Company gameAlreadyPlayedCompanyData() {
 		File file = new File("DataCSV/GameStartUp/CompanyData.csv");
 		Company company = new Company("",0.0,"");
@@ -447,5 +473,99 @@ public class ReadCSVFiles {
 		}
 		
 		return brokenAmount;
+	}
+
+	/**
+	 * Liest alle Event-Definitionen roh (jede Zeile als String-Array).
+	 * Datei: DataCSV/EventData/Events.csv
+	 *
+	 * Erwartetes Format (Komma-getrennt):
+	 * id,type,weight,cooldownDays,maxPerMonth,always,text,optTop,optRight,optBottom,optLeft,effectTop,effectRight,effectBottom,effectLeft
+	 */
+	public ArrayList<String[]> readEventDefinitionsRaw() {
+		File file = new File("DataCSV/EventData/Events.csv");
+		ArrayList<String[]> rows = new ArrayList<>();
+		try (Scanner reader = new Scanner(file)) {
+			while (reader.hasNext()) {
+				String line = reader.nextLine();
+				if (line == null || line.isBlank()) continue;
+				String[] parts = line.split(",", -1);
+				// Header überspringen
+				if (parts.length > 0 && parts[0].equalsIgnoreCase("id")) continue;
+				rows.add(parts);
+			}
+		} catch (Exception e) {
+			// Wenn die Datei noch nicht existiert, soll das Spiel nicht abstürzen.
+			System.out.println("[ReadCSVFiles] Events.csv not readable: " + e.getMessage());
+		}
+		return rows;
+	}
+
+	/**
+	 * Liest den Cooldown-/Monatsstatus roh.
+	 * Datei: DataCSV/EventData/EventCooldown.csv
+	 * Format: id,nextAllowedDay,monthIndex,countThisMonth
+	 */
+	public ArrayList<String[]> readEventCooldownRaw() {
+		File file = new File("DataCSV/EventData/EventCooldown.csv");
+		ArrayList<String[]> rows = new ArrayList<>();
+		try (Scanner reader = new Scanner(file)) {
+			while (reader.hasNext()) {
+				String line = reader.nextLine();
+				if (line == null || line.isBlank()) continue;
+				rows.add(line.split(",", -1));
+			}
+		} catch (Exception e) {
+			System.out.println("[ReadCSVFiles] EventCooldown.csv not readable: " + e.getMessage());
+		}
+		return rows;
+	}
+
+	/**
+	 * Liest den aktuellen Event-Tag (DayCounter).
+	 * Datei: DataCSV/EventData/GameTime.csv
+	 * Inhalt: eine Zahl (z.B. 0, 1, 2, ...)
+	 */
+	public int readEventDay() {
+		File file = new File("DataCSV/EventData/GameTime.csv");
+		try (Scanner reader = new Scanner(file)) {
+			if (reader.hasNext()) {
+				String line = reader.nextLine();
+				return Integer.parseInt(line.trim());
+			}
+		} catch (Exception e) {
+			System.out.println("[ReadCSVFiles] GameTime.csv not readable: " + e.getMessage());
+		}
+		return 0;
+	}
+	
+	public HashMap<String, String[]> readEventCooldownStateRaw() {
+
+	    HashMap<String, String[]> map = new HashMap<>();
+
+	    try (BufferedReader br = new BufferedReader(
+	            new InputStreamReader(
+	                    new FileInputStream("DataCSV/EventData/EventCooldown.csv"),
+	                    StandardCharsets.UTF_8))) {
+
+	        String header = br.readLine(); // Header überspringen
+	        String line;
+
+	        while ((line = br.readLine()) != null) {
+
+	            if (line.isBlank()) continue;
+
+	            String[] parts = line.split(",");
+
+	            if (parts.length >= 3) {
+	                map.put(parts[0], parts); // EventID als Key
+	            }
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return map;
 	}
 }

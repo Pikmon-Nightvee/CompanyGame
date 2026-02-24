@@ -119,6 +119,8 @@ public class NextCycleStarted {
 												wasSold = true;
 												
 												company.setMoneyOfCompany(company.getMoneyOfCompany()-costPerUnit);
+												// Production cost should be visible in the cycle profit/loss report
+												balance -= costPerUnit;
 											}
 											timeTotal--;
 										}
@@ -159,7 +161,9 @@ public class NextCycleStarted {
 									amountToAdd++;
 									wasSold = true;
 									
-									company.setMoneyOfCompany(company.getMoneyOfCompany()-costPerUnit);
+											company.setMoneyOfCompany(company.getMoneyOfCompany()-costPerUnit);
+											// Production cost should be visible in the cycle profit/loss report
+											balance -= costPerUnit;
 								}
 							}
 							

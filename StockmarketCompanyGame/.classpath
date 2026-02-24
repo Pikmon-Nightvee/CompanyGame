@@ -28,7 +28,7 @@
 	</classpathentry>
 	<classpathentry kind="src" path="DataCSV"/>
 	<classpathentry kind="src" path="Resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-21">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
@@ -36,17 +36,6 @@
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/daneg/.m2/repository/org/openjfx/javafx-graphics/22.0.1/javafx-graphics-22.0.1-win.jar" sourcepath="C:/Users/daneg/.m2/repository/org/openjfx/javafx-graphics/22.0.1/javafx-graphics-22.0.1-sources.jar">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="module" value="true"/>
-			<attribute name="maven.groupId" value="org.openjfx"/>
-			<attribute name="maven.artifactId" value="javafx-graphics"/>
-			<attribute name="maven.version" value="22.0.1"/>
-			<attribute name="maven.classifier" value="win"/>
-			<attribute name="maven.scope" value="compile"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>

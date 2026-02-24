@@ -101,9 +101,15 @@ public class VisualElementsHolder {
 	}
 	
 	public void insertDifficulty() {
-		selectDifficulty.getItems().add("15.000");
-		selectDifficulty.getItems().add("10.000");
+		selectDifficulty.getItems().clear();
 		selectDifficulty.getItems().add("5.000");
+		selectDifficulty.getItems().add("10.000");
+		selectDifficulty.getItems().add("15.000");
+		selectDifficulty.getItems().add("25.000");
+		selectDifficulty.getItems().add("40.000");
+		if (selectDifficulty.getValue() == null) {
+			selectDifficulty.setValue("10.000");
+		}
 	}
 	
 	public void insertCycleDates() {

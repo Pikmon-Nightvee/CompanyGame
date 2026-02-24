@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ExternalResources.GraphicsManager;
 import ExternalResources.SoundeffectManager;
+import FileLogic.CreateImportantCSVFiles;
 import FileLogic.ReadCSVFiles;
 import FileLogic.WriteCSVFiles;
 import GameLogic.Company;
@@ -31,7 +32,7 @@ public class ButtonManager {
 	private Button resources = new Button("Resources");
 	private Button equipment = new Button("Equipment");
 	private Button employ = new Button("Employ");
-	private Button nextCycle = new Button("Next Cycle"); 
+	private static Button nextCycle = new Button("Next Cycle"); 
 	private Button produce = new Button("Produce");
 
 	private Button startButton = new Button("Start the game"); 	
@@ -65,6 +66,11 @@ public class ButtonManager {
 	private boolean changeTextResEqu = false;
 	private boolean isProduce = false;
 	private boolean isResource = false;
+	
+	private WriteCSVFiles writer = new WriteCSVFiles();
+	private CreateImportantCSVFiles createCSV = new CreateImportantCSVFiles();
+	private ReadCSVFiles reader = new ReadCSVFiles();
+
 	
 	private void setButtonBackground(GraphicsManager graphic, Button button) {
 		try {
@@ -151,8 +157,17 @@ public class ButtonManager {
 	}
 	
 	public void action(VBox vBox, VisualElementsHolder visual, Canvas warningCanvas, Canvas gameCanvas, Company company, NextCycleStarted nextCycleStarted, StackPane gamePane, LevelHolder level, Player player, GameManager game, SoundeffectManager sfx, UIMenuManager UI, GraphicsContext warningPencil) {
-		WriteCSVFiles writer = new WriteCSVFiles();
-		ReadCSVFiles reader = new ReadCSVFiles();
+		// CSV helpers (also used by the EventManager)
+		// Make the option "buttons" of the EventManager clickable on the warning canvas
+		warningCanvas.setOnMouseClicked(e -> {
+			boolean hit = EventManager.getInstance().handleClickAndApply(
+					warningCanvas, e.getX(), e.getY(), reader, writer, company);
+			if (hit) {
+				sfx.playButton(UI.isSfxOn());
+				updateNextCycleButtonState();
+			}
+		});
+		updateNextCycleButtonState();
 		
 		startButton.setOnAction(event -> {
 			sfx.playButton(UI.isSfxOn());
@@ -175,15 +190,30 @@ public class ButtonManager {
 			}
 			
 			String difficulty = visual.getSelectDifficulty().getValue();
-			switch(difficulty) {
-			case "15.000": moneyStart = 15000.00; break;
-			case "10.000": moneyStart = 10000.00; break;
-			case "5.000": moneyStart = 5000.00; break;
-			}
+
+// Robust parsing: supports values like "40.000", "25.000", "15.000", etc.
+moneyStart = 0.0;
+if (difficulty != null) {
+    switch(difficulty) {
+        case "40.000": moneyStart = 40000.00; break;
+        case "25.000": moneyStart = 25000.00; break;
+        case "15.000": moneyStart = 15000.00; break;
+        case "10.000": moneyStart = 10000.00; break;
+        case "5.000":  moneyStart = 5000.00;  break;
+        default:
+            // remove everything except digits and optional minus sign
+            String digits = difficulty.replaceAll("[^0-9-]", "");
+            if (!digits.isBlank()) {
+                try { moneyStart = Double.parseDouble(digits); } catch(Exception ex) { moneyStart = 0.0; }
+            }
+            break;
+    }
+}
 			
 			if(visual.getSelectCompanyType().getValue().equals("LLC")) {
 				company.setReputation(company.getReputation() + 25);
-				moneyStart -= 2000;
+				// moneyStart -= 2000; // removed: start money should match selection
+
 			}
 			
 			vBox.getChildren().clear();
@@ -716,8 +746,18 @@ public class ButtonManager {
 		});
 		nextCycle.setOnAction(event->{
 			sfx.playButton(UI.isSfxOn());
+			// Block advancing time while an event is waiting for a decision
+			if (EventManager.getInstance().isActive()) {
+				return;
+			}
+
 			nextCycleStarted.nextDay(visual.getSelectCycleAmount().getValue(),reader,company);
-			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
+			updateNextCycleButtonState();
+			
+			// Advance the event-system time counter based on the chosen cycle amount
+			int deltaDays = EventManager.getInstance().cycleToDays(visual.getSelectCycleAmount().getValue());
+			writer.addEventDays(deltaDays);
+writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
 			visual.updateResourceEquipment(reader, changeTextResEqu, company, false);
 
 			vBox.getChildren().clear();
@@ -762,7 +802,10 @@ public class ButtonManager {
 			gamePane.getChildren().clear();
 			gamePane.getChildren().addAll(gameCanvas, warningCanvas, vBox);
 			
-			visual.setWarningCanvasInt(reader.brokenMachines());
+						visual.setWarningCanvasInt(reader.brokenMachines());
+			// Generate a test event (50/50 INFO vs CHOICE) for the warning canvas
+			// Trigger a CSV-driven event (50% chance by default)
+			EventManager.getInstance().tryTriggerEventFromCSV(reader, writer, company);
 			
 			goBack.fire();
 		});
@@ -940,7 +983,7 @@ public class ButtonManager {
 		visual.insertCycleDates();
 		visual.insertSpecifications();
 		visual.insertTypes();
-		visual.getSelectDifficulty().setValue("15.000");
+		visual.getSelectDifficulty().setValue("10.000");
 		visual.getSelectCycleAmount().setValue("Day");
 		visual.start(reader,company);
 	}
@@ -1002,4 +1045,15 @@ public class ButtonManager {
 	public Button getBankrupt() {
 		return bankrupt;
 	}
+
+    public static void updateNextCycleButtonState() {
+        if (EventManager.isActive()) {
+            if (!nextCycle.getStyleClass().contains("blocked-button")) {
+                nextCycle.getStyleClass().add("blocked-button");
+            }
+        } else {
+            nextCycle.getStyleClass().remove("blocked-button");
+        }
+    }
+
 }
