@@ -27,11 +27,6 @@
     <artifactId>javafx-media</artifactId>
     <version>${javafx.version}</version>
   </dependency>
-  <dependency>
-  	<groupId>MinecraftOOP</groupId>
-  	<artifactId>MinecraftOOP</artifactId>
-  	<version>0.0.1-SNAPSHOT</version>
-  </dependency>
 </dependencies>
 
 <build>

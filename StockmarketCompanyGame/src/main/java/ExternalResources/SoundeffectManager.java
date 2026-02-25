@@ -83,8 +83,6 @@ public class SoundeffectManager {
         return button;
     }
 
-
-
 	public void playError(boolean isPlayed) {
 		error.stop();
 		if(isPlayed)error.play();
@@ -112,31 +110,32 @@ public class SoundeffectManager {
 		if(isPlayed)levelComplete.play();
 	}
 
-    public Object playPlacing(boolean isPlayed) {
-        stopSafely(placing);
-        if (isPlayed) playSafely(placing);
-        return null;
-    }
-
-
 	public void playRotation(boolean isPlayed) {
 		rotation.stop();
 		if(isPlayed)rotation.play();
 	}
-
 
 	public void playRepair(boolean isPlayed) {
 		repair.stop();
 		if(isPlayed)repair.play();
 	}
 
+	public void playPlacing(boolean isPlayed) {
+		placing.stop();
+		if(isPlayed)placing.play();
+
+        try {
+            walking.setCycleCount(MediaPlayer.INDEFINITE);
+            walking.play();
+        } catch (Exception ignored) {
+        }
+    }
 
 
 	public void playPickUp(boolean isPlayed) {
 		pickUp.stop();
 		if(isPlayed)pickUp.play();
 	}
-
 
 	public void playSelect(boolean isPlayed) {
 		select.stop();
