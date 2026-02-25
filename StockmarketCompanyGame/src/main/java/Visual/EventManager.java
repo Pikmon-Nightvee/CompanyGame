@@ -307,7 +307,7 @@ public class EventManager {
 
                 finishEventAndPersist(reader, writer, company, def);
 
-                setInfoEvent("Gewählt: " + options[i]);
+                setInfoEvent("Chosen: " + options[i]);
                 return true;
             }
         }
@@ -337,7 +337,7 @@ public class EventManager {
 
         for (int i = 0; i < 4; i++) {
             if (contains(lastOpt[i][0], lastOpt[i][1], lastOpt[i][2], lastOpt[i][3], x, y)) {
-                setInfoEvent("Gewählt: " + options[i]);
+                setInfoEvent("Chosen: " + options[i]);
                 return i;
             }
         }
