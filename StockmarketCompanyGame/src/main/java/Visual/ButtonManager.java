@@ -166,6 +166,9 @@ public class ButtonManager {
 				sfx.playButton(UI.isSfxOn());
 				updateNextCycleButtonState();
 			}
+			if (visual != null && visual.getMoneyOfCompany() != null) {
+			    visual.getMoneyOfCompany().setText(String.valueOf(company.getMoneyOfCompany()));
+			}
 		});
 		updateNextCycleButtonState();
 		

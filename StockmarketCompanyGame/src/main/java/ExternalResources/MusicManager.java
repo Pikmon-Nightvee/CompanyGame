@@ -1,6 +1,7 @@
 package ExternalResources;
 
 import java.net.URL;
+import java.nio.file.Paths;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -24,12 +25,12 @@ public class MusicManager {
 	private final String folder = "/Music/";
 
 	private MediaPlayer loadPlayerFromResources(String resourcePath) {
-		URL url = getClass().getResource(resourcePath);
+		String url = Paths.get(resourcePath).toUri().toString();
 		if (url == null) {
 			System.err.println("[MusicManager] Resource not found: " + resourcePath);
 			return null;
 		}
-		Media media = new Media(url.toExternalForm());
+		Media media = new Media(url);
 		return new MediaPlayer(media);
 	}
 
