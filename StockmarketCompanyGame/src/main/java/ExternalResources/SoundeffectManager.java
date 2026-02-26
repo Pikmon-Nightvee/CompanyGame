@@ -1,6 +1,7 @@
 package ExternalResources;
 
 import java.net.URL;
+import java.nio.file.Paths;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -27,7 +28,7 @@ public class SoundeffectManager {
      *
      * Then load them via classpath with getResource, not via file paths.
      */
-    private static final String FOLDER = "/SoundEffects/";
+    private static final String FOLDER = "SoundEffects/";
 
     public void loadSfx() {
         // Load all sfx from resources (classpath)
@@ -48,12 +49,12 @@ public class SoundeffectManager {
 
     private MediaPlayer loadPlayer(String resourcePath) {
         try {
-            URL url = getClass().getResource(resourcePath);
+    		String url = Paths.get(resourcePath).toUri().toString();
             if (url == null) {
                 System.err.println("[SoundeffectManager] Resource not found: " + resourcePath);
                 return null;
             }
-            Media media = new Media(url.toExternalForm());
+            Media media = new Media(url);
             return new MediaPlayer(media);
         } catch (Exception e) {
             System.err.println("[SoundeffectManager] Failed to load: " + resourcePath);
