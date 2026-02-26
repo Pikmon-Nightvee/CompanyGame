@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import FileLogic.ReadCSVFiles;
+import FileLogic.WriteCSVFiles;
 
 public class NextCycleStarted {
 	private long timePassed=0;
@@ -15,8 +16,17 @@ public class NextCycleStarted {
 	private int producedProducts = 0;
 	private int soldProducts = 0;
 	private long balance = 0;
+	private double lastPendingMoneyDelta = 0.0;
+    private String lastPendingEventNotes = "";
 	
 	public void nextDay(String time, ReadCSVFiles reader, Company company) {
+		// Reset per-cycle counters so the report shows ONLY this cycle
+		producedProducts = 0;
+		soldProducts = 0;
+		balance = 0;
+		lastPendingMoneyDelta = 0.0;
+        lastPendingEventNotes = "";
+
 		int days=0;
 		switch(time) {
 		case "Day": days=1;break;
@@ -39,7 +49,25 @@ public class NextCycleStarted {
 				newMachine(reader,company);
 			}
 		}
+
+		// Add "instant" transactions (buy/sell/repair/fire/etc.) that happened between cycles
+		lastPendingMoneyDelta = reader.readPendingMoneyDelta();
+        lastPendingEventNotes = reader.readPendingEventNotes();
+		if (lastPendingMoneyDelta != 0.0) {
+			balance += Math.round(lastPendingMoneyDelta);
+		}
+		// Always reset after consuming so it never carries over
+		new WriteCSVFiles().resetPendingMoneyDelta();
+        new WriteCSVFiles().resetPendingEventNotes();
 		setTimeStart();
+	}
+
+	public String getLastPendingEventNotes() {
+        return lastPendingEventNotes;
+    }
+
+    public double getLastPendingMoneyDelta() {
+		return lastPendingMoneyDelta;
 	}
 	
 	private void productsProduced(ReadCSVFiles reader, Company company) {

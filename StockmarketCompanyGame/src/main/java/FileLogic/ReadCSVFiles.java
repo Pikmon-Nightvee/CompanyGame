@@ -22,6 +22,18 @@ import GameLogic.Resource;
 
 public class ReadCSVFiles {
 
+	// Resolves a CSV file path whether the project uses a DataCSV/ folder or flat folders.
+	private File resolveFile(String... candidates) {
+		for (String c : candidates) {
+			if (c == null || c.isBlank()) continue;
+			File f = new File(c);
+			if (f.exists()) return f;
+		}
+		// If nothing exists yet, return the first candidate (so writers can create it)
+		return new File(candidates != null && candidates.length > 0 ? candidates[0] : "");
+	}
+
+
 	/*
 	 * =====================
 	 *  Event-System (CSV)
@@ -80,6 +92,34 @@ public class ReadCSVFiles {
 			e.printStackTrace();
 		}
 		return alreadyStarted;
+	}
+
+	/**
+	 * Runtime-only money delta that should still appear in the next-cycle report.
+	 * This is used for "instant" transactions like buying/selling resources/machines,
+	 * repairing machines, firing employees, etc.
+	 *
+	 * File format: one line with a single number (double). If missing/empty -> 0.
+	 */
+	public double readPendingMoneyDelta() {
+		File file = resolveFile("DataCSV/GameStartUp/PendingMoneyDelta.csv", "GameStartUp/PendingMoneyDelta.csv", "PendingMoneyDelta.csv");
+		if (!file.exists()) {
+			return 0.0;
+		}
+		try (Scanner reader = new Scanner(file)) {
+			if (!reader.hasNextLine()) {
+				return 0.0;
+			}
+			String line = reader.nextLine().trim();
+			if (line.isEmpty()) {
+				return 0.0;
+			}
+			return Double.parseDouble(line);
+		} catch (Exception e) {
+			// If file is corrupted, don't crash the game
+			System.out.println("Could not read PendingMoneyDelta.csv: " + e.getMessage());
+			return 0.0;
+		}
 	}
 	
 	public ArrayList<Employee> employedEmployees() {
@@ -155,8 +195,8 @@ public class ReadCSVFiles {
 	}
 	
 	public ArrayList<Machine> readMachines(String path,Company company){
-		String filePath = "DataCSV/EquipmentData/"  + path;
-		File file = new File(filePath);
+		File file = resolveFile("DataCSV/EquipmentData/" + path, "EquipmentData/" + path, path);
+		String filePath = file.getPath();
 		ArrayList<Machine> machines= new ArrayList<>();
 		
 		try(Scanner reader = new Scanner(file)){
@@ -182,8 +222,7 @@ public class ReadCSVFiles {
 	}
 	
 	public ArrayList<Resource> readResource(String path,Company company){
-		String filePath = "DataCSV/ResourceData/"  + path;
-		File file = new File(filePath);
+		File file = resolveFile("DataCSV/ResourceData/" + path, "ResourceData/" + path, path);
 		ArrayList<Resource> resources= new ArrayList<>();
 		
 		try(Scanner reader = new Scanner(file)){
@@ -211,26 +250,37 @@ public class ReadCSVFiles {
 		
 		return resources;
 	}
-	
-	public ArrayList<String> readResourceAsString(String path){
-		String filePath = "DataCSV/ResourceData/"  + path;
-		File file = new File(filePath);
-		ArrayList<String> resources= new ArrayList<>();
-		
-		try(Scanner reader = new Scanner(file)){
-			while(reader.hasNext()) {
-				resources.add(reader.nextLine());
-			}
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-		return resources;
+	public ArrayList<String> readResourceAsString(String path) {
+
+	    File file = new File("DataCSV/ResourceData/" + path);
+
+	    // Falls Datei dort nicht existiert → versuche ohne DataCSV
+	    if (!file.exists()) {
+	        file = new File("ResourceData/" + path);
+	    }
+
+	    // Falls auch dort nicht → versuche direkt
+	    if (!file.exists()) {
+	        file = new File(path);
+	    }
+
+	    ArrayList<String> lines = new ArrayList<>();
+
+	    try (Scanner reader = new Scanner(file)) {
+	        while (reader.hasNextLine()) {
+	            lines.add(reader.nextLine());
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return lines;
 	}
+
 	
 	public ArrayList<String> readMachineAsString(String path){
-		String filePath = "DataCSV/EquipmentData/"  + path;
-		File file = new File(filePath);
+		File file = resolveFile("DataCSV/EquipmentData/" + path, "EquipmentData/" + path, path);
+		String filePath = file.getPath();
 		ArrayList<String> machines = new ArrayList<>();
 		
 		try(Scanner reader = new Scanner(file)){
@@ -568,4 +618,23 @@ public class ReadCSVFiles {
 
 	    return map;
 	}
+
+/**
+ * Notes from the last chosen event option that should be shown on the next cycle screen.
+ * Stored in: DataCSV/GameStartUp/PendingEventNotes.txt
+ */
+public String readPendingEventNotes() {
+    File file = resolveFile("DataCSV/GameStartUp/PendingEventNotes.txt",
+                            "GameStartUp/PendingEventNotes.txt",
+                            "PendingEventNotes.txt");
+    if (file == null || !file.exists()) return "";
+    try (Scanner scanner = new Scanner(file)) {
+        // Read the whole file safely
+        scanner.useDelimiter("\\Z");
+        return scanner.hasNext() ? scanner.next().trim() : "";
+    } catch (Exception e) {
+        System.out.println("Could not read PendingEventNotes.txt: " + e.getMessage());
+        return "";
+    }
+}
 }

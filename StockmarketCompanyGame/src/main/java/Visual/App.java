@@ -79,6 +79,9 @@ public class App extends Application {
     	}else {
     		System.out.println("All Important Files and Directorys there");
     	}
+
+		// Runtime-only report delta must never carry over between app launches
+		writeCSV.resetPendingMoneyDelta();
     	
     	sfx.loadSfx();
     	music.loadMusic();

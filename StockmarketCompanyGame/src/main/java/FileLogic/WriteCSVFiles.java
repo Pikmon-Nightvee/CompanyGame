@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 import GameLogic.Camera;
 import GameLogic.Company;
@@ -19,6 +20,598 @@ import GameLogic.Product;
 import GameLogic.Resource;
 
 public class WriteCSVFiles {
+
+	// Resolves a CSV file path whether the project uses a DataCSV/ folder or flat folders.
+	private File resolveFile(String... candidates) {
+		for (String c : candidates) {
+			if (c == null || c.isBlank()) continue;
+			File f = new File(c);
+			if (f.exists()) return f;
+		}
+		return new File(candidates != null && candidates.length > 0 ? candidates[0] : "");
+	}
+
+	private void ensureParentDir(File f) {
+		File p = f.getParentFile();
+		if (p != null && !p.exists()) p.mkdirs();
+	}
+
+	private static final String PENDING_MONEY_DELTA_PATH = "DataCSV/GameStartUp/PendingMoneyDelta.csv";
+    private static final String PENDING_EVENT_NOTES_PATH = "DataCSV/GameStartUp/PendingEventNotes.txt";
+	private static final int DEFAULT_MARKET_COST_INCREASE = 5;
+	private static final int RESOURCE_MACHINE_MARKET_COST_DELTA = -5;
+
+
+	// =========================
+	// Resource / Product / Machine delta helpers (used by Events, Production, etc.)
+	// =========================
+
+	/**
+	 * Adds/removes a resource amount in ResourcesBought.csv for the given company.
+	 *
+	 * @param resourceName name exactly as in CSV (e.g. "Wood")
+	 * @param delta positive = add, negative = remove
+	 * @return true if applied, false if not enough resources (when delta is negative)
+	 */
+	public boolean changeResourceAmount(Company company, String resourceName, int delta) {
+		return changeResourceAmount(company, resourceName, delta, new ReadCSVFiles());
+	}
+
+	public boolean changeResourceAmount(Company company, String resourceName, int delta, ReadCSVFiles reader) {
+		if (company == null || resourceName == null || resourceName.isBlank() || delta == 0) return true;
+
+		ArrayList<Resource> current = reader.readResource("ResourcesBought.csv", company);
+		int have = 0;
+		Resource found = null;
+		for (Resource r : current) {
+			if (r.getName().equals(resourceName)) { found = r; have = r.getAmount(); break; }
+		}
+
+		if (delta < 0 && have < -delta) {
+			return false; // not enough
+		}
+
+		int newAmount = have + delta;
+
+		// Determine cost if we have to create a new row (delta > 0 and resource not present)
+		int cost = (found != null) ? found.getCost() : 0;
+		if (found == null && delta > 0) {
+			ArrayList<Resource> all = reader.readResource("ResourceData.csv", company);
+			for (Resource r : all) {
+				if (r.getName().equals(resourceName)) { cost = r.getCost(); break; }
+			}
+		}
+
+		File file = resolveFile("DataCSV/ResourceData/ResourcesBought.csv", "ResourceData/ResourcesBought.csv", "ResourcesBought.csv");
+		ensureParentDir(file);
+
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(), false))) {
+			boolean wrote = false;
+			for (Resource r : current) {
+				if (!r.getName().equals(resourceName)) {
+					writer.write(r.getName() + "," + r.getAmount() + "," + r.getCost() + "," + company.getCompanyType());
+					writer.write("\n");
+				} else {
+					if (newAmount > 0) {
+						writer.write(resourceName + "," + newAmount + "," + cost + "," + company.getCompanyType());
+						writer.write("\n");
+					}
+					wrote = true;
+				}
+			}
+			if (!wrote && newAmount > 0) {
+				writer.write(resourceName + "," + newAmount + "," + cost + "," + company.getCompanyType());
+				writer.write("\n");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+
+	/**
+	 * Adds/removes product stock in ProductsData/OnStock.csv.
+	 * If adding a product that doesn't exist yet, we use Produceable.csv as template (Standard quality by default).
+	 *
+	 * @param quality if null/blank => "Standard"
+	 * @return true if applied, false if not enough stock for removal
+	 */
+	public boolean changeProductStock(Company company, String productName, String quality, int delta) {
+		return changeProductStock(company, productName, quality, delta, new ReadCSVFiles());
+	}
+
+	public boolean changeProductStock(Company company, String productName, String quality, int delta, ReadCSVFiles reader) {
+		if (company == null || productName == null || productName.isBlank() || delta == 0) return true;
+		if (quality == null || quality.isBlank()) quality = "Standard";
+
+		ArrayList<Product> stock = reader.readProducts("OnStock.csv", company);
+		Product found = null;
+		for (Product p : stock) {
+			if (p.getName().equals(productName) && p.getQuality().equals(quality)) { found = p; break; }
+		}
+
+		int have = (found != null) ? found.getAmount() : 0;
+		if (delta < 0 && have < -delta) return false;
+
+		int newAmount = have + delta;
+
+		// Template if we need to create
+		Product template = found;
+		if (template == null && delta > 0) {
+			ArrayList<Product> produceable = reader.readProducts("Produceable.csv", company);
+			for (Product p : produceable) {
+				if (p.getName().equals(productName)) { template = p; break; }
+			}
+		}
+
+		File file = resolveFile("DataCSV/ProductsData/OnStock.csv", "ProductsData/OnStock.csv", "OnStock.csv");
+		ensureParentDir(file);
+
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(), false))) {
+			boolean wrote = false;
+			for (Product p : stock) {
+				if (!(p.getName().equals(productName) && p.getQuality().equals(quality))) {
+					// keep as-is
+					writer.write(p.getName()+","+p.getAmount()+","+p.getCost()+","+p.getTimePerUnit()+","+p.getTime()+","+p.getQuality()+","+p.getMachineNeeded()+","+p.getAsignedEmployee()+","+p.getAsignedCompanyType());
+					for(int i=0;i<p.getResourcesNeeded().length;i++) writer.write(","+p.getResourcesNeeded()[i]);
+					for(int i=0;i<p.getResourcesAmount().length;i++) writer.write(","+p.getResourcesAmount()[i]);
+					writer.write("\n");
+				} else {
+					if (newAmount > 0) {
+						writer.write(productName+","+newAmount+","+p.getCost()+","+p.getTimePerUnit()+","+p.getTime()+","+quality+","+p.getMachineNeeded()+","+p.getAsignedEmployee()+","+p.getAsignedCompanyType());
+						for(int i=0;i<p.getResourcesNeeded().length;i++) writer.write(","+p.getResourcesNeeded()[i]);
+						for(int i=0;i<p.getResourcesAmount().length;i++) writer.write(","+p.getResourcesAmount()[i]);
+						writer.write("\n");
+					}
+					wrote = true;
+				}
+			}
+			if (!wrote && newAmount > 0 && template != null) {
+				writer.write(productName+","+newAmount+","+template.getCost()+","+template.getTimePerUnit()+","+template.getTime()+","+quality+","+template.getMachineNeeded()+",none,"+company.getCompanyType());
+				for(int i=0;i<template.getResourcesNeeded().length;i++) writer.write(","+template.getResourcesNeeded()[i]);
+				for(int i=0;i<template.getResourcesAmount().length;i++) writer.write(","+template.getResourcesAmount()[i]);
+				writer.write("\n");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+
+	/**
+	 * Adds/removes owned machines in EquipmentData/MachineBought.csv.
+	 * If adding a new machine, we use MachineNotBought.csv as template (cost/condition).
+	 *
+	 * @return true if applied, false if not enough machines for removal
+	 */
+	public boolean changeMachineOwned(Company company, String machineName, int delta) {
+		return changeMachineOwned(company, machineName, delta, new ReadCSVFiles());
+	}
+
+	public boolean changeMachineOwned(Company company, String machineName, int delta, ReadCSVFiles reader) {
+		if (company == null || machineName == null || machineName.isBlank() || delta == 0) return true;
+
+		ArrayList<Machine> owned = reader.readMachines("MachineBought.csv", company);
+		Machine found = null;
+		for (Machine m : owned) {
+			if (m.getName().equals(machineName)) { found = m; break; }
+		}
+
+		int have = (found != null) ? found.getAmount() : 0;
+		if (delta < 0 && have < -delta) return false;
+		int newAmount = have + delta;
+
+		Machine template = found;
+		if (template == null && delta > 0) {
+			ArrayList<Machine> market = reader.readMachines("MachineNotBought.csv", company);
+			for (Machine m : market) {
+				if (m.getName().equals(machineName)) { template = m; break; }
+			}
+		}
+
+		File file = resolveFile("DataCSV/EquipmentData/MachineBought.csv", "EquipmentData/MachineBought.csv", "MachineBought.csv");
+		ensureParentDir(file);
+
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(), false))) {
+			boolean wrote = false;
+			for (Machine m : owned) {
+				if (!m.getName().equals(machineName)) {
+					writer.write(m.getName() + "," + m.getAmount() + "," + m.getCost() + "," + m.getCondition() + "," + company.getCompanyType());
+					writer.write("\n");
+				} else {
+					if (newAmount > 0) {
+						writer.write(machineName + "," + newAmount + "," + m.getCost() + "," + m.getCondition() + "," + company.getCompanyType());
+						writer.write("\n");
+					}
+					wrote = true;
+				}
+			}
+			if (!wrote && newAmount > 0 && template != null) {
+				writer.write(machineName + "," + newAmount + "," + template.getCost() + "," + template.getCondition() + "," + company.getCompanyType());
+				writer.write("\n");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+
+	/**
+	 * Convenience for Events: applies multiple deltas with a simple text format.
+	 *
+	 * Supported formats (very tolerant):
+	 *  - "Wood:-10;Iron:+5"
+	 *  - "Wood=-10;Iron=5"
+	 *  - "Wood,-10;Iron,5"
+	 *
+	 * Type prefix optional:
+	 *  - "R:Wood:-10" (resource)
+	 *  - "P:Wooden Board:2" (product, Standard quality)
+	 *  - "M:Circular Saw:1" (machine)
+	 *
+	 * Without prefix we default to Resource.
+	 *
+	 * @return true if all changes were applied, false if something failed because of missing stock.
+	 */
+	public boolean applyEventDeltas(Company company, String spec, ReadCSVFiles reader) {
+		if (spec == null || spec.isBlank()) return true;
+		String[] entries = spec.split(";");
+		for (String raw : entries) {
+			String s = raw.trim();
+			if (s.isEmpty()) continue;
+
+			String type = "R";
+			if (s.length() > 2 && s.charAt(1) == ':') {
+				type = ("" + s.charAt(0)).toUpperCase();
+				s = s.substring(2).trim();
+			}
+
+			// Normalize separators to ':'
+			s = s.replace('=', ':').replace(',', ':');
+			String[] parts = s.split(":");
+			if (parts.length < 2) continue;
+
+			String name = parts[0].trim();
+			int delta;
+			try { delta = Integer.parseInt(parts[1].trim()); } catch (Exception ex) { continue; }
+
+			switch (type) {
+				case "P":
+					if (!changeProductStock(company, name, "Standard", delta, reader)) return false;
+					break;
+				case "M":
+					if (!changeMachineOwned(company, name, delta, reader)) return false;
+					break;
+				default:
+					if (!changeResourceAmount(company, name, delta, reader)) return false;
+					break;
+			}
+		}
+		return true;
+	}
+
+
+	/**
+	 * Helper: rewrite a CSV file and increase the "cost" column for a given item.
+	 * This persists price changes immediately for the current run.
+	 */
+	private void increaseCostInFile(String relativePath,
+								 String itemName,
+								 String companyTypeFilter,
+								 int costIndex,
+								 int delta) {
+		File file = resolveFile(relativePath,
+					 relativePath.replaceFirst("^DataCSV/",""),
+					 "DataCSV/" + relativePath,
+					 relativePath.startsWith("DataCSV/") ? relativePath.substring("DataCSV/".length()) : relativePath);
+		if (!file.exists()) return;
+		List<String> lines = new ArrayList<>();
+		try (java.util.Scanner sc = new java.util.Scanner(file)) {
+			while (sc.hasNextLine()) {
+				lines.add(sc.nextLine());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(), false))) {
+			for (String line : lines) {
+				if (line == null || line.isBlank()) continue;
+				String[] parts = line.split(",");
+				if (parts.length <= costIndex) {
+					writer.write(line);
+					writer.write("\n");
+					continue;
+				}
+
+				String name = parts[0];
+				String companyType = parts[parts.length - 1];
+				boolean matchesCompany = (companyTypeFilter == null || companyTypeFilter.isBlank())
+						|| companyTypeFilter.equals(companyType);
+
+				if (matchesCompany && name.equals(itemName)) {
+					try {
+						int oldCost = Integer.parseInt(parts[costIndex]);
+						int newCost = Math.max(0, oldCost + delta);
+						parts[costIndex] = String.valueOf(newCost);
+					} catch (Exception ignore) {
+						// keep line as-is if parsing fails
+					}
+				}
+
+				StringBuilder b = new StringBuilder();
+				for (int i = 0; i < parts.length; i++) {
+					b.append(parts[i]);
+					if (i + 1 < parts.length) b.append(",");
+				}
+				writer.write(b.toString());
+				writer.write("\n");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void increaseResourceMarketCost(String resourceName, Company company, int delta) {
+		if (company == null || resourceName == null) return;
+		String type = company.getCompanyType();
+		increaseCostInFile("DataCSV/ResourceData/ResourcesOnSell.csv", resourceName, type, 2, delta);
+		increaseCostInFile("DataCSV/ResourceData/ResourcesBought.csv", resourceName, type, 2, delta);
+	}
+
+	private void increaseMachineMarketCost(String machineName, Company company, int delta) {
+		if (company == null || machineName == null) return;
+		String type = company.getCompanyType();
+		increaseCostInFile("DataCSV/EquipmentData/MachineNotBought.csv", machineName, type, 2, delta);
+		increaseCostInFile("DataCSV/EquipmentData/MachineBought.csv", machineName, type, 2, delta);
+		increaseCostInFile("DataCSV/EquipmentData/MachineBroken.csv", machineName, type, 2, delta);
+	}
+
+	private void increaseProductMarketCost(String productName, Company company, int delta) {
+		if (company == null || productName == null) return;
+		String type = company.getCompanyType();
+		// product CSV: cost is column 2, company type is column 8
+		increaseCostInFile("DataCSV/ProductsData/Produceable.csv", productName, type, 2, delta);
+		increaseCostInFile("DataCSV/ProductsData/OnStock.csv", productName, type, 2, delta);
+		increaseCostInFile("DataCSV/ProductsData/InProduction.csv", productName, type, 2, delta);
+	}
+
+	// =========================
+	// Event market-effect helpers (used by EventManager)
+	// =========================
+	/**
+	 * Applies a cost delta to ALL resources of the company's type.
+	 * This changes the cost column in both ResourcesBought.csv and ResourcesOnSell.csv.
+	 */
+	public void changeAllResourceMarketCosts(Company company, int delta, ReadCSVFiles reader) {
+		if (company == null || delta == 0) return;
+		ReadCSVFiles r = (reader != null) ? reader : new ReadCSVFiles();
+
+		// Use ResourceData.csv as the "master list" for resources of this company type
+		ArrayList<Resource> resources = r.readResource("ResourceData.csv", company);
+		if (resources == null || resources.isEmpty()) {
+			resources = r.readResource("ResourcesBought.csv", company);
+		}
+		if (resources == null) return;
+
+		for (Resource res : resources) {
+			if (res == null) continue;
+			increaseResourceMarketCost(res.getName(), company, delta);
+		}
+	}
+
+	/**
+	 * Applies a cost delta to ALL products of the company's type.
+	 * This changes the cost column in Produceable.csv, OnStock.csv, and InProduction.csv.
+	 */
+	public void changeAllProductMarketCosts(Company company, int delta, ReadCSVFiles reader) {
+		if (company == null || delta == 0) return;
+		ReadCSVFiles r = (reader != null) ? reader : new ReadCSVFiles();
+
+		// Use Produceable.csv as the master list
+		ArrayList<Product> products = r.readProducts("Produceable.csv", company);
+		if (products == null) return;
+
+		// Avoid duplicates by name
+		HashMap<String, Boolean> seen = new HashMap<>();
+		for (Product p : products) {
+			if (p == null || p.getName() == null) continue;
+			String name = p.getName();
+			if (seen.containsKey(name)) continue;
+			seen.put(name, true);
+			increaseProductMarketCost(name, company, delta);
+		}
+	}
+
+	/**
+	 * Applies a cost delta to ALL machines of the company's type.
+	 * This changes the cost column in MachineNotBought.csv, MachineBought.csv, and MachineBroken.csv.
+	 */
+	public void changeAllMachineMarketCosts(Company company, int delta, ReadCSVFiles reader) {
+		if (company == null || delta == 0) return;
+		ReadCSVFiles r = (reader != null) ? reader : new ReadCSVFiles();
+
+		// Use MachinesData.csv as the master list
+		ArrayList<Machine> machines = r.readMachines("MachinesData.csv", company);
+		if (machines == null || machines.isEmpty()) {
+			machines = r.readMachines("MachineNotBought.csv", company);
+		}
+		if (machines == null) return;
+
+		HashMap<String, Boolean> seen = new HashMap<>();
+		for (Machine m : machines) {
+			if (m == null || m.getName() == null) continue;
+			String name = m.getName();
+			if (seen.containsKey(name)) continue;
+			seen.put(name, true);
+			increaseMachineMarketCost(name, company, delta);
+		}
+	}
+
+	// --- Reliability / durability adjustments (column index 3 in equipment CSVs) ---
+
+	private void changeIntInFileClamped(String filePath, String itemName, String companyTypeFilter,
+	                                  int valueIndex, int delta, int minValue, int maxValue) {
+		File file = resolveFile(filePath, filePath.replace("DataCSV/", ""), new File(filePath).getName());
+		String inputPath = file.getPath();
+		ensureParentDir(file);
+
+		List<String> lines = new ArrayList<>();
+		try (java.util.Scanner sc = new java.util.Scanner(file)) {
+			while (sc.hasNextLine()) lines.add(sc.nextLine());
+		} catch (Exception e) {
+			// If it doesn't exist yet, nothing to adjust
+			return;
+		}
+
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(inputPath, false))) {
+			for (String line : lines) {
+				if (line == null || line.isBlank()) continue;
+
+				String[] parts = line.split(",");
+				if (parts.length <= valueIndex) {
+					writer.write(line);
+					writer.write("\n");
+					continue;
+				}
+
+				String name = parts[0];
+				String companyType = parts[parts.length - 1];
+				boolean matchesCompany = (companyTypeFilter == null || companyTypeFilter.isBlank())
+						|| companyTypeFilter.equals(companyType);
+
+				if (matchesCompany && name.equals(itemName)) {
+					try {
+						int oldVal = Integer.parseInt(parts[valueIndex]);
+						int newVal = oldVal + delta;
+						if (newVal < minValue) newVal = minValue;
+						if (newVal > maxValue) newVal = maxValue;
+						parts[valueIndex] = String.valueOf(newVal);
+					} catch (Exception ignore) {
+						// keep line as-is
+					}
+				}
+
+				StringBuilder b = new StringBuilder();
+				for (int i = 0; i < parts.length; i++) {
+					b.append(parts[i]);
+					if (i + 1 < parts.length) b.append(",");
+				}
+				writer.write(b.toString());
+				writer.write("\n");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void changeMachineReliability(String machineName, Company company, int delta) {
+		if (company == null || machineName == null) return;
+		String type = company.getCompanyType();
+
+		// reliability is column index 3
+		changeIntInFileClamped("DataCSV/EquipmentData/MachineBought.csv", machineName, type, 3, delta, 0, 100);
+		changeIntInFileClamped("DataCSV/EquipmentData/MachineBroken.csv", machineName, type, 3, delta, 0, 100);
+	}
+
+	/**
+	 * Applies a reliability/durability delta to ALL machines of the company's type.
+	 * (Machines in MachineBought + MachineBroken get their reliability column adjusted, clamped 0..100.)
+	 */
+	public void changeAllMachineReliability(Company company, int delta, ReadCSVFiles reader) {
+		if (company == null || delta == 0) return;
+		ReadCSVFiles r = (reader != null) ? reader : new ReadCSVFiles();
+
+		ArrayList<Machine> machines = r.readMachines("MachinesData.csv", company);
+		if (machines == null || machines.isEmpty()) {
+			machines = r.readMachines("MachineBought.csv", company);
+		}
+		if (machines == null) return;
+
+		HashMap<String, Boolean> seen = new HashMap<>();
+		for (Machine m : machines) {
+			if (m == null || m.getName() == null) continue;
+			String name = m.getName();
+			if (seen.containsKey(name)) continue;
+			seen.put(name, true);
+			changeMachineReliability(name, company, delta);
+		}
+	}
+
+
+
+	/**
+	 * Adds a runtime-only money delta that should still show up in the next-cycle report.
+	 * We keep it in a CSV file so the UI/report can read it easily.
+	 *
+	 * File format: one line with a single number (double).
+	 */
+	public void addPendingMoneyDelta(double delta) {
+		ReadCSVFiles reader = new ReadCSVFiles();
+		double current = reader.readPendingMoneyDelta();
+		double next = current + delta;
+		File file = resolveFile(PENDING_MONEY_DELTA_PATH, "GameStartUp/PendingMoneyDelta.csv", "PendingMoneyDelta.csv");
+		ensureParentDir(file);
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(), false))) {
+			writer.write(String.valueOf(next));
+			writer.write("\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/** Resets the pending delta to 0 (call on startup and after the report consumed it). */
+	public void resetPendingMoneyDelta() {
+		File file = resolveFile(PENDING_MONEY_DELTA_PATH, "GameStartUp/PendingMoneyDelta.csv", "PendingMoneyDelta.csv");
+		ensureParentDir(file);
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(), false))) {
+			writer.write("0");
+			writer.write("\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+    /** Appends a short note that will be shown on the next cycle report screen. */
+    public void addPendingEventNote(String note) {
+        if (note == null) return;
+        String n = note.trim();
+        if (n.isEmpty()) return;
+
+        File file = resolveFile(PENDING_EVENT_NOTES_PATH, "GameStartUp/PendingEventNotes.txt", "PendingEventNotes.txt");
+        try {
+            file.getParentFile().mkdirs();
+        } catch (Exception ignore) {}
+
+        String existing = new ReadCSVFiles().readPendingEventNotes();
+        String combined;
+        if (existing == null || existing.trim().isEmpty()) {
+            combined = n;
+        } else {
+            combined = existing.trim() + " | " + n;
+        }
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, false))) {
+            bw.write(combined);
+        } catch (Exception e) {
+            System.out.println("Could not write PendingEventNotes: " + e.getMessage());
+        }
+    }
+
+    /** Clears the pending event notes (called after showing the cycle report). */
+    public void resetPendingEventNotes() {
+        File file = resolveFile(PENDING_EVENT_NOTES_PATH, "GameStartUp/PendingEventNotes.txt", "PendingEventNotes.txt");
+        try {
+            file.getParentFile().mkdirs();
+        } catch (Exception ignore) {}
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, false))) {
+            bw.write("");
+        } catch (Exception e) {
+            System.out.println("Could not reset PendingEventNotes: " + e.getMessage());
+        }
+    }
+
 	public void manageEmployeeInFiles(String id, String toWhere) {
 		ArrayList<Employee> employees = new ArrayList<>();
 		ReadCSVFiles reader = new ReadCSVFiles();
@@ -127,7 +720,8 @@ public class WriteCSVFiles {
 			System.out.println("No Resource was found!");
 			return;
 		}
-		File file = new File("DataCSV/ResourceData/" + path1);
+		File file = resolveFile("DataCSV/ResourceData/" + path1, "ResourceData/" + path1, path1);
+		ensureParentDir(file);
 
 		if(holder.getAmount() < amount) {
 			amount = holder.getAmount();
@@ -154,7 +748,8 @@ public class WriteCSVFiles {
 			e.printStackTrace();
 		}
 
-		file = new File("DataCSV/ResourceData/" + path2);
+		file = resolveFile("DataCSV/ResourceData/" + path2, "ResourceData/" + path2, path2);
+		ensureParentDir(file);
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),false))){
 			for(Resource toAdd : resources) {
 				if(!toAdd.getName().equals(id)) {
@@ -177,6 +772,14 @@ public class WriteCSVFiles {
 			money = company.getMoneyOfCompany()+costToCompany;
 		}
 		company.setMoneyOfCompany(money);
+
+		// Track for next-cycle report
+		addPendingMoneyDelta(sell ? costToCompany : -costToCompany);
+
+		// Persist price change (old cost - 5) after buying
+		if (!sell) {
+			increaseResourceMarketCost(id, company, RESOURCE_MACHINE_MARKET_COST_DELTA);
+		}
 	}
 	
 	public void buySellMachines(String id, String toWhere, Company company, int amount) {
@@ -210,7 +813,8 @@ public class WriteCSVFiles {
 			System.out.println("No Machine was found!");
 			return;
 		}
-		File file = new File("DataCSV/EquipmentData/" + path1);
+		File file = resolveFile("DataCSV/EquipmentData/" + path1, "EquipmentData/" + path1, path1);
+		ensureParentDir(file);
 
 		if(holder.getAmount() < amount) {
 			amount = holder.getAmount();
@@ -237,7 +841,8 @@ public class WriteCSVFiles {
 			e.printStackTrace();
 		}
 
-		file = new File("DataCSV/EquipmentData/" + path2);
+		file = resolveFile("DataCSV/EquipmentData/" + path2, "EquipmentData/" + path2, path2);
+		ensureParentDir(file);
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(),false))){
 			for(Machine toAdd : machines) {
 				if(!toAdd.getName().equals(id)) {
@@ -260,6 +865,14 @@ public class WriteCSVFiles {
 			money = company.getMoneyOfCompany()+costToCompany;
 		}
 		company.setMoneyOfCompany(money);
+
+		// Track for next-cycle report
+		addPendingMoneyDelta(sell ? costToCompany : -costToCompany);
+
+		// Persist price change (old cost - 5) after buying
+		if (!sell) {
+			increaseMachineMarketCost(id, company, RESOURCE_MACHINE_MARKET_COST_DELTA);
+		}
 		
 		if(toWhere.equals("Sold")) {
 			employeeNoMachine(id,amount,company,reader,machines);
@@ -371,6 +984,7 @@ public class WriteCSVFiles {
 		ArrayList<Product> products = reader.readProducts("Produceable.csv", company);
 		
 		ArrayList<Product> product = new ArrayList<>();
+		int totalCost = 0;
 		for(Product p : products) {
 			if(p.getName().equals(selectedProduct)) {
 				int cost = p.getCost() * selectedAmount;
@@ -378,7 +992,16 @@ public class WriteCSVFiles {
 				Product toAdd = new Product(p.getName(),selectedAmount,cost,p.getTimePerUnit(),time,p.getQuality(),p.getMachineNeeded(),asignedEmployee,p.getAsignedCompanyType(),p.getResourcesNeeded(),p.getResourcesAmount());
 				System.out.println(toAdd.toString());
 				product.add(toAdd);
+				totalCost += cost;
 			}
+		}
+
+		// Pay production cost immediately (so UI money changes instantly) and track for next-cycle report
+		if (totalCost != 0) {
+			company.setMoneyOfCompany(company.getMoneyOfCompany() - totalCost);
+			addPendingMoneyDelta(-totalCost);
+			// Persist product cost increase (old cost + 5) for this run
+			increaseProductMarketCost(selectedProduct, company, DEFAULT_MARKET_COST_INCREASE);
 		}
 		
 		File file = new File("DataCSV/ResourceData/ResourcesBought.csv");

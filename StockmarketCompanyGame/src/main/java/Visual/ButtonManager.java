@@ -27,6 +27,40 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class ButtonManager {
+
+    // --- Static hooks so other systems (e.g. EventManager) can refresh the UI immediately ---
+    private static VisualElementsHolder lastVisualRef = null;
+    private static VBox lastVBoxRef = null;
+    private static boolean lastChangeTextResEqu = false;
+    private static boolean lastIsResourceScreen = false;
+
+    /**
+     * Updates the currently visible money label immediately.
+     * This works because we ensure VisualElementsHolder#getMoneyOfCompany() always points at the label
+     * that is currently shown in the top bar (see updateMoney()).
+     */
+    public static void refreshMoneyLabel(Company company) {
+        if (company == null || lastVisualRef == null) return;
+        try {
+            if (lastVisualRef.getMoneyOfCompany() != null) {
+                lastVisualRef.getMoneyOfCompany().setText(String.valueOf(company.getMoneyOfCompany()));
+            }
+        } catch (Exception ignored) {}
+    }
+
+    /**
+     * Refreshes resource/equipment screens after market-changing events (resource costs, machine costs, etc.).
+     * Safe no-op if the player is not currently in that screen.
+     */
+    public static void refreshMarketScreen(ReadCSVFiles reader, Company company) {
+        if (lastVisualRef == null || company == null || reader == null) return;
+        try {
+            if (lastIsResourceScreen) {
+                // Rebuild the resource list/text area with the current file (Bought vs OnSell)
+                lastVisualRef.updateResourceEquipment(reader, lastChangeTextResEqu, company, false);
+            }
+        } catch (Exception ignored) {}
+    }
 	private ErrorMessageHandler errorMessage = new ErrorMessageHandler();
 	
 	private Button resources = new Button("Resources");
@@ -166,9 +200,6 @@ public class ButtonManager {
 				sfx.playButton(UI.isSfxOn());
 				updateNextCycleButtonState();
 			}
-			if (visual != null && visual.getMoneyOfCompany() != null) {
-			    visual.getMoneyOfCompany().setText(String.valueOf(company.getMoneyOfCompany()));
-			}
 		});
 		updateNextCycleButtonState();
 		
@@ -254,6 +285,11 @@ if (difficulty != null) {
 			
 			resourceEquipmentUI(true,vBox,visual,changeTextResEqu);
 			isResource = true;
+			// remember current screen so EventManager can refresh costs immediately
+			lastVisualRef = visual;
+			lastVBoxRef = vBox;
+			lastIsResourceScreen = true;
+			lastChangeTextResEqu = changeTextResEqu;
 			
 			String resourcePath = "";
 			if(changeTextResEqu) {
@@ -274,6 +310,8 @@ if (difficulty != null) {
 				}else{
 					changeTextResEqu = true;
 				}
+				// keep static state in sync for event refresh
+				lastChangeTextResEqu = changeTextResEqu;
 				visual.updateResourceEquipment(reader, changeTextResEqu, company,false);
 			}else {
 				String currentCase = "";
@@ -428,6 +466,12 @@ if (difficulty != null) {
 			
 			int newCompanyMoney = (int) (company.getMoneyOfCompany() - spentRepair);
 			company.setMoneyOfCompany(newCompanyMoney);
+			// Track repair cost for next-cycle report
+			writer.addPendingMoneyDelta(-spentRepair);
+			// Update money display immediately
+			if(visual.getMoneyOfCompany() != null) {
+				visual.getMoneyOfCompany().setText(String.valueOf(company.getMoneyOfCompany()));
+			}
 			writer.repairMachine(visual.getAssignToMachine().getValue(), reader, company);
 			writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
 			
@@ -457,6 +501,12 @@ if (difficulty != null) {
 						return;
 					}
 					company.setMoneyOfCompany(money);
+				// Track firing cost for next-cycle report
+				writer.addPendingMoneyDelta(-e.getCost());
+				// Update money display immediately
+				if(visual.getMoneyOfCompany() != null) {
+					visual.getMoneyOfCompany().setText(String.valueOf(company.getMoneyOfCompany()));
+				}
 				}
 			}
 			
@@ -479,6 +529,7 @@ if (difficulty != null) {
 			
 			isProduce = false;
 			isResource = false;
+			lastIsResourceScreen = false;
 			subSelect = 1;
 
 			visual.getAmountBuySell().setStyle("-fx-font-size:15px;");	
@@ -539,7 +590,7 @@ if (difficulty != null) {
 						int moneyToSpend = buyAmount * r.getCost();
 						System.out.println("Test Money: " + moneyToSpend);
 						System.out.println("Test Company: " + company.getMoneyOfCompany());
-						if(company.getMoneyOfCompany() <= moneyToSpend) {
+						if(company.getMoneyOfCompany() < moneyToSpend) {
 							sfx.playError(UI.isSfxOn());
 							errorMessage.errorMessageText(visual.getAmountBuySell(), vBox);
 							return;
@@ -548,13 +599,18 @@ if (difficulty != null) {
 				}
 				
 				writer.buySellResources(visual.getSelectResource().getValue(), "Bought", company, buyAmount);
+				// Update money display immediately
+				if(visual.getMoneyOfCompany() != null) {
+					visual.getMoneyOfCompany().setText(String.valueOf(company.getMoneyOfCompany()));
+				}
+
 				visual.getSelectResource().setValue(null);
 			}else {
 				ArrayList<Machine> machines = reader.readMachines("MachineNotBought.csv", company);
 				for(Machine m : machines) {
 					if(m.getName().equals(visual.getSelectEquipment().getValue())) {
 						int moneyToSpend = buyAmount * m.getCost();
-						if(company.getMoneyOfCompany() <= moneyToSpend) {
+						if(company.getMoneyOfCompany() < moneyToSpend) {
 							sfx.playError(UI.isSfxOn());
 							errorMessage.errorMessageText(visual.getAmountBuySell(), vBox);
 							return;
@@ -563,6 +619,11 @@ if (difficulty != null) {
 				}
 				
 				writer.buySellMachines(visual.getSelectEquipment().getValue(), "Bought", company, buyAmount);
+				// Update money display immediately
+				if(visual.getMoneyOfCompany() != null) {
+					visual.getMoneyOfCompany().setText(String.valueOf(company.getMoneyOfCompany()));
+				}
+
 				visual.getSelectEquipment().setValue(null);
 			}
 
@@ -609,6 +670,11 @@ if (difficulty != null) {
 			
 			if(isResource) {
 				writer.buySellResources(visual.getSelectResource().getValue(), "Sold", company, sellAmount);
+				// Update money display immediately
+				if(visual.getMoneyOfCompany() != null) {
+					visual.getMoneyOfCompany().setText(String.valueOf(company.getMoneyOfCompany()));
+				}
+
 				visual.getSelectResource().setValue(null);
 			}else {
 				boolean removeMachine = false;
@@ -663,6 +729,11 @@ if (difficulty != null) {
 				}
 				
 				writer.buySellMachines(visual.getSelectEquipment().getValue(), "Sold", company, sellAmount);
+				// Update money display immediately
+				if(visual.getMoneyOfCompany() != null) {
+					visual.getMoneyOfCompany().setText(String.valueOf(company.getMoneyOfCompany()));
+				}
+
 				visual.getSelectEquipment().setValue(null);
 				
 				if(removeMachine) {
@@ -725,7 +796,7 @@ if (difficulty != null) {
 			for(Product p : products) {
 				if(p.getName().equals(visual.getSelectProduct().getValue())) {
 					int moneyToSpend = produceAmount * p.getCost();
-					if(company.getMoneyOfCompany() <= moneyToSpend) {
+					if(company.getMoneyOfCompany() < moneyToSpend) {
 						sfx.playError(UI.isSfxOn());
 						errorMessage.errorMessageText(visual.getAmountToProduce(), vBox);
 						return;
@@ -766,6 +837,11 @@ writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.g
 			vBox.getChildren().clear();
 			
 			Label money = new Label("Money made/lost: " + nextCycleStarted.getBalance());
+			Label currentMoney = new Label("Current money: " + Math.round(company.getMoneyOfCompany()));
+			Label manualMoney = null;
+			if(nextCycleStarted.getLastPendingMoneyDelta() != 0.0) {
+				manualMoney = new Label("Manual money (buy/sell/repair/etc.): " + Math.round(nextCycleStarted.getLastPendingMoneyDelta()));
+			}
 			Label producedProducts = new Label("Products made: " + nextCycleStarted.getProducedProducts());
 			Label soldProducts = new Label("Products sold: " + nextCycleStarted.getSoldProducts());
 			Label date = new Label(visual.getSelectCycleAmount().getValue() + " report:");
@@ -777,6 +853,7 @@ writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.g
 			vBox.getChildren().clear();
 			
 			visual.CSSLabelNoAddAmountBig(date);
+			visual.CSSLabelNoAddAmount(currentMoney);
 			if(nextCycleStarted.getBalance() < 0) {
 				visual.CSSLabelNoAddAmountRed(money);
 			}else {
@@ -792,7 +869,11 @@ writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.g
 			
 			writer.machineBroken(reader, company);
 			
-			vBox.getChildren().addAll(money,producedProducts,soldProducts,nextDay);
+			if(manualMoney != null) {
+				vBox.getChildren().addAll(money, currentMoney, manualMoney, producedProducts, soldProducts, nextDay);
+			} else {
+				vBox.getChildren().addAll(money, currentMoney, producedProducts, soldProducts, nextDay);
+			}
 			
 			nextCycleStarted.setBalance(0);
 			nextCycleStarted.setProducedProducts(0);
@@ -917,6 +998,12 @@ writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.g
 	}
 	
 	public void startUpMain(VBox vBox, VisualElementsHolder visual, Company company) {
+		// store refs for static refresh helpers
+		lastVisualRef = visual;
+		lastVBoxRef = vBox;
+		lastIsResourceScreen = false;
+		lastChangeTextResEqu = false;
+
 		HBox hBox = new HBox();
 		Label name = new Label("Name of Company: ");
 		Label money = new Label(" | Money of the Company (€): ");
@@ -935,9 +1022,16 @@ writer.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.g
 	}
 	
 	public void updateMoney(VBox vBox, VisualElementsHolder visual, Company company) {
+		// store refs for static refresh helpers
+		lastVisualRef = visual;
+		lastVBoxRef = vBox;
+		// keep lastIsResourceScreen / lastChangeTextResEqu as they are
+
 		Label moneyOver = new Label();
 		moneyOver.setText(String.valueOf(company.getMoneyOfCompany()));
 		visual.CSSLabelWhite(moneyOver);
+		// IMPORTANT: make sure getMoneyOfCompany() points at the currently visible label
+		visual.setMoneyOfCompany(moneyOver);
 		
 		HBox hBox = new HBox();
 		Label name = new Label("Name of Company: ");

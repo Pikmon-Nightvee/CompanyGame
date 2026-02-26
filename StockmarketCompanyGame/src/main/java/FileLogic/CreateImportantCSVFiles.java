@@ -60,6 +60,15 @@ public class CreateImportantCSVFiles {
 			}else {
 				System.out.println("Important File: Game Cycle exists");
 			}
+
+			// Runtime-only money delta for the next-cycle report (resets each cycle / on startup)
+			file = new File("DataCSV/GameStartUp/PendingMoneyDelta.csv");
+			if(file.createNewFile()) {
+				System.out.println("Important File: PendingMoneyDelta created");
+				error = true;
+			}else {
+				System.out.println("Important File: PendingMoneyDelta exists");
+			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

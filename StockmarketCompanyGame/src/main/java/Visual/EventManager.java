@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 import FileLogic.ReadCSVFiles;
 import FileLogic.WriteCSVFiles;
@@ -77,6 +78,11 @@ public class EventManager {
 
     // Tracks how much money events changed since the last cycle-report.
     private double pendingMoneyDeltaForReport = 0.0;
+
+    // Two-step option confirmation: first click shows costs, second click confirms
+    private int pendingChoiceIndex = -1;
+    private String baseChoiceMessage = null;
+
 
     // -------------------------
     // Gameplay config
@@ -262,7 +268,7 @@ public class EventManager {
             setInfoEvent(chosen.text);
 
             // INFO consequence happens immediately
-            applyEffectString(company, safe(chosen.effects[0]));
+            applyEffectString(company, safe(chosen.effects[0]), reader, writer);
             finishEventAndPersist(reader, writer, company, chosen);
         } else {
             setChoiceEvent(chosen.text,
@@ -292,7 +298,7 @@ public class EventManager {
             return false;
         }
 
-        // CHOICE
+        // CHOICE (apply immediately on first click)
         for (int i = 0; i < 4; i++) {
             double ox = lastOpt[i][0];
             double oy = lastOpt[i][1];
@@ -300,19 +306,23 @@ public class EventManager {
             double oh = lastOpt[i][3];
 
             if (contains(ox, oy, ow, oh, x, y)) {
-                applyEffectString(company, safe(currentEffects[i]));
+                applyEffectString(company, safe(currentEffects[i]), reader, writer);
 
                 // find def for cooldown/maxPerMonth handling
                 EventDef def = findDefinition(currentEventId);
-
                 finishEventAndPersist(reader, writer, company, def);
 
-                setInfoEvent("Chosen: " + options[i]);
+                // reset any legacy preview state (kept for backward compatibility)
+                pendingChoiceIndex = -1;
+                baseChoiceMessage = null;
+
+                // Keep the applied message clean (no extra summary like "Geldänderung ...").
+                setInfoEvent("Applied: " + options[i]);
                 return true;
             }
         }
 
-        return false;
+return false;
     }
 
     // -------------------------
@@ -355,6 +365,9 @@ public class EventManager {
     public void setChoiceEvent(String message, String top, String right, String bottom, String left) {
         this.type = EventType.CHOICE;
         this.message = message == null ? "" : message;
+        // Reset confirmation/preview state whenever a new choice-event is shown.
+        this.pendingChoiceIndex = -1;
+        this.baseChoiceMessage = this.message;
         options[0] = top == null ? "" : top;
         options[1] = right == null ? "" : right;
         options[2] = bottom == null ? "" : bottom;
@@ -369,6 +382,8 @@ public class EventManager {
 
     public void clear() {
         active = false;
+        pendingChoiceIndex = -1;
+        baseChoiceMessage = null;
         ButtonManager.updateNextCycleButtonState();
         message = "";
         options[0] = options[1] = options[2] = options[3] = "";
@@ -545,7 +560,56 @@ private static String buildEffect(String type, String value) {
     return t + ":" + v;
 }
 
-    
+
+private static String buildEffectSummary(String effect) {
+    if (effect == null) return "";
+    String e = effect.trim();
+    if (e.isEmpty()) return "";
+    // effect format: Type:Value
+    String[] parts = e.split(":", 2);
+    String type = parts.length > 0 ? parts[0].trim() : "";
+    String value = parts.length > 1 ? parts[1].trim() : "";
+    if (type.isEmpty() || value.isEmpty()) return e;
+
+    // Normalize common variants
+    String t = type.replaceAll("\\s+", "").toLowerCase();    if (t.equals("money") || t.equals("gesamtgeld")) {
+        String v = value.trim();
+        if (!(v.startsWith("+") || v.startsWith("-"))) v = "+" + v;
+        return "";
+    }
+    if (t.equals("rep") || t.equals("reputation")) {
+        String v = value.trim();
+        if (!(v.startsWith("+") || v.startsWith("-"))) v = "+" + v;
+        return "Reputation " + v;
+    }
+    if (t.equals("resourcen") || t.equals("resources")) {
+        String v = value.trim();
+        if (!(v.startsWith("+") || v.startsWith("-"))) v = "+" + v;
+        return "Ressourcen-Kosten " + v;
+    }
+    if (t.equals("produkte") || t.equals("products")) {
+        String v = value.trim();
+        if (!(v.startsWith("+") || v.startsWith("-"))) v = "+" + v;
+        return "Produkt-Kosten " + v;
+    }
+    if (t.equals("maschinengeld") || t.equals("machinecost") || t.equals("maschinenkosten")) {
+        String v = value.trim();
+        if (!(v.startsWith("+") || v.startsWith("-"))) v = "+" + v;
+        return "Maschinen-Kosten " + v;
+    }
+    if (t.equals("maschinenhaltbarkeit") || t.equals("machinedurability") || t.equals("durability")) {
+        String v = value.trim();
+        if (!(v.startsWith("+") || v.startsWith("-"))) v = "+" + v;
+        return "Maschinen-Haltbarkeit " + v;
+    }
+
+    // Fallback: still show something readable, but never append raw "-900 Gesamtgeld" etc.
+    String v = value.trim();
+    if (!(v.startsWith("+") || v.startsWith("-"))) v = "+" + v;
+    return type + ": " + v;
+}
+
+
     /**
      * Checks whether an event definition is allowed for the current company type.
      * Allowed values in CSV (CompanyTypes column):
@@ -627,44 +691,102 @@ private EventDef findDefinition(String id) {
      *
      * Example: MONEY:+200|REP:+1
      */
-    private void applyEffectString(Company company, String effect) {
+        private void applyEffectString(Company company, String effect, ReadCSVFiles reader, WriteCSVFiles writer) {
         if (company == null) return;
         if (effect == null) return;
         String e = effect.trim();
         if (e.isEmpty()) return;
 
-        String[] parts = e.split("\\|");
-        for (String p : parts) {
-            if (p == null) continue;
-            p = p.trim();
+        // Effects can be chained with |
+        String[] parts = e.split(Pattern.quote("|"));
+        for (String part : parts) {
+            if (part == null) continue;
+            String p = part.trim();
             if (p.isEmpty()) continue;
 
             String[] kv = p.split(":", 2);
             if (kv.length != 2) continue;
 
-            String key = kv[0].trim().toUpperCase();
-            String val = kv[1].trim();
+            String rawKey = kv[0] == null ? "" : kv[0].trim();
+            String key = rawKey.toUpperCase().replaceAll("\\s+", ""); // tolerate spaces in CSV
+            String val = kv[1] == null ? "" : kv[1].trim();
 
-            int delta;
-            try {
-                delta = Integer.parseInt(val);
-            } catch (Exception ex) {
+            // Values in CSV can be integers or decimals (e.g. 1100, 1100.0, 1100,0).
+            double dVal = parseDoubleSafe(val, Double.NaN);
+            if (Double.isNaN(dVal)) {
                 continue;
             }
+            int iDelta = (int) Math.round(dVal);
 
             switch (key) {
+                // --------------------
+                // Company stats
+                // --------------------
                 case "MONEY":
                 case "GESAMTGELD":
-                case "TOTALMONEY":
-                    company.setMoneyOfCompany(company.getMoneyOfCompany() + delta);
-                    addMoneyDeltaForReport(delta);
+                case "TOTALMONEY": {
+                    // Apply immediately to the in-memory company object
+                    company.setMoneyOfCompany(company.getMoneyOfCompany() + dVal);
+
+                    // IMPORTANT: Persist immediately using a guaranteed writer instance.
+                    // Some call sites may pass null; also ensures the UI that reloads from CSV sees the change right away.
+                    WriteCSVFiles w2 = (writer != null) ? writer : new WriteCSVFiles();
+                    if (w2 != null) {
+                        w2.companyDataSave(company.getName(), company.getMoneyOfCompany(), company.getReputation(), company.getCompanyType());
+                        // Track for next-cycle report (does NOT change money there; only for display)
+                        w2.addPendingMoneyDelta(dVal);
+                        w2.addPendingEventNote("Event money: " + (dVal >= 0 ? "+" : "") +
+                                ((Math.round(dVal) == dVal) ? String.valueOf((long) Math.round(dVal)) : String.valueOf(dVal)));
+                    }
+
+                    // Refresh the current money label immediately (if the label currently exists)
+                    ButtonManager.refreshMoneyLabel(company);
+
+                    // Also track locally (used by the event system if needed)
+                    addMoneyDeltaForReport(dVal);
                     break;
+                }
+
                 case "REP":
                 case "REPUTATION":
-                    company.setReputation(company.getReputation() + delta);
+                    company.setReputation(company.getReputation() + iDelta);
                     break;
+
+                // --------------------
+                // Market modifiers from your Events.csv types
+                // These change COSTS/VALUES in the CSV market files.
+                // --------------------
+                case "RESOURCEN":
+                case "RESOURCES":
+                    if (writer != null) writer.changeAllResourceMarketCosts(company, iDelta, reader);
+                    if (writer != null) writer.addPendingEventNote("Resource costs " + (iDelta >= 0 ? "+" : "") + iDelta);
+                    // Update UI immediately if the player is currently in the resource screen
+                    ButtonManager.refreshMarketScreen(reader, company);
+                    break;
+
+                case "PRODUKTE":
+                case "PRODUCTS":
+                    if (writer != null) writer.changeAllProductMarketCosts(company, iDelta, reader);
+                    if (writer != null) writer.addPendingEventNote("Product costs " + (iDelta >= 0 ? "+" : "") + iDelta);
+                    break;
+
+                case "MASCHINENGELD":
+                case "MACHINECOST":
+                case "MACHINES":
+                    if (writer != null) writer.changeAllMachineMarketCosts(company, iDelta, reader);
+                    if (writer != null) writer.addPendingEventNote("Machine costs " + (iDelta >= 0 ? "+" : "") + iDelta);
+                    // (Equipment screen refresh can be added later if needed)
+                    break;
+
+                case "MASCHINENHALTBARKEIT":
+                case "MACHINEDURABILITY":
+                case "MACHINERELIABILITY":
+                    if (writer != null) writer.changeAllMachineReliability(company, iDelta, reader);
+                    if (writer != null) writer.addPendingEventNote("Machine durability " + (iDelta >= 0 ? "+" : "") + iDelta);
+                    break;
+
                 default:
-                    // unknown token -> ignore
+                    // Unknown token -> ignore (keeps system forward compatible)
                     break;
             }
         }
