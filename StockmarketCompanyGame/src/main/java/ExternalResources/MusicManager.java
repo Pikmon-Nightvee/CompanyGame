@@ -22,7 +22,7 @@ public class MusicManager {
 	 *   src/main/resources/Music/HotelJazz.mp3
 	 *   src/main/resources/Music/RelaxingMusic.mp3
 	 */
-	private final String folder = "Resources/Music/";
+	private final String folder = "Music/";
 
 	private MediaPlayer loadPlayerFromResources(String resourcePath) {
 		String url = Paths.get(resourcePath).toUri().toString();
